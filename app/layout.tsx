@@ -1,7 +1,12 @@
 import { ThemeProvider } from "@/components/theme-provider";
-import { Outfit, Plus_Jakarta_Sans } from "next/font/google";
+import {
+  Outfit,
+  Plus_Jakarta_Sans,
+  Montserrat_Alternates,
+  Manrope,
+} from "next/font/google";
 import "./globals.css";
-const plus_Jakarta_Sans = Plus_Jakarta_Sans({
+const plus_Jakarta_Sans = Manrope({
   subsets: ["latin"],
   weight: ["200", "300", "400", "500", "600", "700", "800"],
   preload: true,

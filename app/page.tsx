@@ -2,17 +2,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Work } from "@/components/work";
-import {
-  GitHubLogoIcon,
-  LinkedInLogoIcon,
-  DiscordLogoIcon,
-  EnvelopeClosedIcon,
-} from "@radix-ui/react-icons";
 import { Noto_Sans } from "next/font/google";
 import { ModeToggle } from "@/components/toogle-theme";
 import Particles from "@/components/ui/particles";
 import { useTheme } from "next-themes";
 import { Skills } from "@/components/skills";
+import CardDemo from "@/components/blocks/cards-demo-3";
 
 const noto_Sans = Noto_Sans({
   subsets: ["latin"],
@@ -88,7 +83,7 @@ export default function BackgroundBeamsWithCollisionDemo() {
           <ModeToggle />
         </div>
         <h2
-          className={`z-20 text-5xl sm:text-7xl text-black dark:text-white  sm:tracking-[-3px] font-bold sm:my-16 mb-3 ${noto_Sans.className} italic`}
+          className={`z-20 text-5xl sm:text-7xl text-black dark:text-white  sm:tracking-[-3px] font-bold sm:my-8 mb-3 ${noto_Sans.className} italic`}
         >
           SHUBHAM
         </h2>
@@ -105,22 +100,8 @@ export default function BackgroundBeamsWithCollisionDemo() {
             <br />
             let's team up and create something unforgettable!
           </p>
-          <div className="flex mt-8">
-            <a href="https://github.com/10shubham01" target="_blank">
-              <GitHubLogoIcon className="size-5 cursor-pointer" />
-            </a>
-            <a href="mailto:shubhamedu.01@gmail.com">
-              <EnvelopeClosedIcon className="size-5 mx-3 cursor-pointer" />
-            </a>
-            <a href="https://discord.com/users/V0LD3M0R7" target="_blank">
-              <DiscordLogoIcon className="size-5 mx-2 cursor-pointer" />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/shubhamgupta001/"
-              target="_blank"
-            >
-              <LinkedInLogoIcon className="size-5 mx-2 cursor-pointer" />
-            </a>
+          <div>
+            <CardDemo></CardDemo>
           </div>
         </div>
       </div>
@@ -141,7 +122,6 @@ export default function BackgroundBeamsWithCollisionDemo() {
           <Skills />
         </div>
       </div>
-      <div className="min-h-dvh py-20"></div>
     </BackgroundBeamsWithCollision>
   );
 }

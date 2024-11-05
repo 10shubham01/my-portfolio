@@ -72,14 +72,18 @@ const config = {
           "0%": { transform: "scale(0)", opacity: "0.4" },
           "100%": { transform: "scale(4)", opacity: "0" },
         },
+        move: {
+          "0%": { transform: "translateX(-200px)" },
+          "100%": { transform: "translateX(200px)" },
+        },
       },
       animation: {
         ripple: "ripple 0.6s ease-out",
+        move: "move 5s linear infinite",
       },
     },
   },
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  plugins: [require("tailwindcss-animate"),addVariablesForColors],
+  plugins: [require("tailwindcss-animate"), addVariablesForColors],
 } satisfies Config;
 
 // This plugin adds each Tailwind color as a global CSS variable, e.g. var(--gray-200).
@@ -88,7 +92,7 @@ function addVariablesForColors({ addBase, theme }: any) {
   let newVars = Object.fromEntries(
     Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
   );
- 
+
   addBase({
     ":root": newVars,
   });

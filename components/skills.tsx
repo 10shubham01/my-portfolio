@@ -108,7 +108,7 @@ export function Skills() {
           <h2 className="text-lg sm:text-4xl text-black dark:text-white max-w-4xl font-medium">
             {skillContent[selectedSkill].title}
           </h2>
-          <p className="text-sm text-black dark:text-white mb-2">
+          <p className="text-xs text-white dark:text-black mb-2 dark:bg-white bg-black px-2 py-[2px] font-normal tracking-widest rounded my-1">
             {skillContent[selectedSkill].stack}
           </p>
           <p className="text-xl sm:text-lg mt-8">
