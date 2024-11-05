@@ -1,8 +1,9 @@
 import { ThemeProvider } from "@/components/theme-provider";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import {
-  Outfit,
-  Plus_Jakarta_Sans,
-  Montserrat_Alternates,
+  // Outfit,
+  // Plus_Jakarta_Sans,
+  // Montserrat_Alternates,
   Manrope,
 } from "next/font/google";
 import "./globals.css";
@@ -29,6 +30,7 @@ export default function RootLayout({
           >
             {children}
           </ThemeProvider>
+          <GoogleAnalytics gaId="G-J0KJVW0YZH"></GoogleAnalytics>
         </body>
       </html>
     </>
