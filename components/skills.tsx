@@ -105,7 +105,7 @@ export function Skills() {
           transition={{ duration: 1 }}
           className="sm:min-h-80 min-h-96"
         >
-          <h2 className="text-lg sm:text-4xl text-black dark:text-white max-w-4xl font-medium">
+          <h2 className="text-2xl mb-4 text-left font-bold text-neutral-500 dark:text-neutral-500">
             {skillContent[selectedSkill].title}
           </h2>
           <p className="text-xs text-white dark:text-black mb-2 dark:bg-white bg-black px-2 py-[2px] font-normal tracking-widest rounded my-1">

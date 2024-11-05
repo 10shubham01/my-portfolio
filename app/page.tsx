@@ -3,17 +3,16 @@ import React, { useEffect, useState, useRef } from "react";
 export const runtime = "edge";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Work } from "@/components/work";
-import { Noto_Sans } from "next/font/google";
+import { Noto_Sans, Stalinist_One } from "next/font/google";
 import { ModeToggle } from "@/components/toogle-theme";
 import Particles from "@/components/ui/particles";
 import { useTheme } from "next-themes";
 import { Skills } from "@/components/skills";
 import CardDemo from "@/components/blocks/cards-demo-3";
 
-const noto_Sans = Noto_Sans({
+const noto_Sans = Stalinist_One({
   subsets: ["latin"],
-  weight: ["400", "900"],
-  style: ["italic"],
+  weight: ["400"],
   preload: true,
 });
 
@@ -22,12 +21,22 @@ export default function BackgroundBeamsWithCollisionDemo() {
   const [color, setColor] = useState<string>("#ffffff");
   const circleRef = useRef<HTMLDivElement>(null);
   const innerCircle = useRef<HTMLDivElement>(null);
+  const periodRef = useRef<HTMLSpanElement>(null); // New ref for the period
 
   useEffect(() => {
     setColor(theme === "dark" ? "#ffffff" : "#000000");
   }, [theme]);
 
   useEffect(() => {
+    // Set initial position of the circles to match the period
+    if (periodRef.current && circleRef.current && innerCircle.current) {
+      const rect = periodRef.current.getBoundingClientRect();
+      circleRef.current.style.left = `${rect.left - 35}px`;
+      circleRef.current.style.top = `${rect.top + 68}px`;
+      innerCircle.current.style.left = `${rect.left + 5}px`;
+      innerCircle.current.style.top = `${rect.top + 110}px`;
+    }
+
     const handleMouseMove = (e: MouseEvent) => {
       setTimeout(() => {
         if (circleRef.current) {
@@ -41,6 +50,7 @@ export default function BackgroundBeamsWithCollisionDemo() {
         innerCircle.current.style.top = `${e.pageY - 5}px`;
       }
     };
+
     const handleClick = (e: MouseEvent) => {
       const ripple = document.createElement("div");
       ripple.className =
@@ -68,7 +78,7 @@ export default function BackgroundBeamsWithCollisionDemo() {
         className="size-24 rounded-full border-[.5px] opacity-50 dark:border-white border-black absolute top-[72px] left-[72px] sm:block hidden"
       ></div>
       <div
-        className="absolute size-3 rounded-full dark:bg-white bg-black top-28 left-28 sm:block hidden"
+        className="absolute size-4 rounded-full bg-purple-500 sm:block hidden"
         ref={innerCircle}
       ></div>
       <Particles
@@ -80,13 +90,13 @@ export default function BackgroundBeamsWithCollisionDemo() {
         staticity={10}
       />
       <div className="min-h-dvh grid place-content-center sm:px-60 px-3">
-        <div className="sm:fixed sm:top-20 top-10 sm:left-20 mx-auto place-self-end mb-20">
+        <div className="sm:fixed sm:top-20 top-10 sm:left-20 mx-auto place-self-end mb-20 mt-10">
           <ModeToggle />
         </div>
         <h2
-          className={`z-20 text-5xl sm:text-7xl text-black dark:text-white  sm:tracking-[-3px] font-bold sm:my-8 mb-3 ${noto_Sans.className} italic`}
+          className={`z-20 text-5xl sm:text-9xl text-black dark:text-white font-bold ${noto_Sans.className}`}
         >
-          SHUBHAM
+          Shubham<span ref={periodRef}></span> {/* Wrapped period in span */}
         </h2>
         <div className="sm:m-2 mt-4 ml-2 text-xl sm:text-2xl sm:pr-20 font-extralight">
           <p>
