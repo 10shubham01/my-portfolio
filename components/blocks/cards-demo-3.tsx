@@ -60,8 +60,8 @@ const Skeleton = () => {
   ];
 
   useEffect(() => {
-    // @ts-ignore
     animate(sequence, {
+      //@ts-ignore
       repeat: Infinity,
       repeatDelay: 1,
     });
