@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
+export const runtime = "edge";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Work } from "@/components/work";
 import { Noto_Sans } from "next/font/google";
