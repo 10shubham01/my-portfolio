@@ -9,6 +9,7 @@ import {
   EnvelopeClosedIcon,
   TwitterLogoIcon,
 } from "@radix-ui/react-icons";
+import { RiFileDownloadFill } from "react-icons/ri";
 export default function CardDemo() {
   return <Skeleton />;
 }
@@ -70,8 +71,8 @@ const Skeleton = () => {
     <div className="overflow-hidden h-full relative flex items-center py-4">
       <div className="flex flex-row flex-shrink-0 justify-center items-center gap-2">
         <Container className="h-8 w-8 circle-1">
-          <a href="https://discord.com/channels/@10shubham01" target="_blank">
-            <DiscordLogoIcon className="h-4 w-4 " />
+          <a href="https://x.com/10Shubham01" target="_blank">
+            <TwitterLogoIcon className="h-4 w-4 " />
           </a>
         </Container>
         <Container className="h-12 w-12 circle-2">
@@ -93,8 +94,12 @@ const Skeleton = () => {
           </a>
         </Container>
         <Container className="h-8 w-8 circle-5">
-          <a href="https://x.com/10Shubham01" target="_blank">
-            <TwitterLogoIcon className="h-4 w-4 " />
+          <a
+            href="https://pub-37e1aa402ba24ef28ab68650caa7a432.r2.dev/SHUBHAM_GUPTA_RESUME.pdf"
+            download
+            target="_blank"
+          >
+            <RiFileDownloadFill className="h-4 w-4 " />
           </a>
         </Container>
       </div>

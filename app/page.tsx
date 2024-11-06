@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 export const runtime = "edge";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
+// import { RiArrowDownDoubleFill } from "react-icons/ri";
 import { Work } from "@/components/work";
 import { Noto_Sans, Stalinist_One, Bungee_Outline } from "next/font/google";
 import { ModeToggle } from "@/components/toogle-theme";
@@ -89,6 +90,7 @@ export default function BackgroundBeamsWithCollisionDemo() {
         refresh
         staticity={10}
       />
+
       <div className="min-h-dvh grid place-content-center sm:px-60 px-3">
         <div className="sm:fixed top-10 sm:left-10 mx-auto place-self-end mb-20 mt-10">
           <ModeToggle />
