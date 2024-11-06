@@ -90,13 +90,14 @@ export default function BackgroundBeamsWithCollisionDemo() {
         staticity={10}
       />
       <div className="min-h-dvh grid place-content-center sm:px-60 px-3">
-        <div className="sm:fixed sm:top-20 top-10 sm:left-20 mx-auto place-self-end mb-20 mt-10">
+        <div className="sm:fixed top-10 sm:left-10 mx-auto place-self-end mb-20 mt-10">
           <ModeToggle />
         </div>
         <h2
-          className={`z-20 text-5xl sm:text-9xl text-black dark:text-white font-bold ${noto_Sans.className}`}
+          className={`z-20 text-7xl sm:text-9xl  font-bold ${noto_Sans.className} bg-gradient-to-r from-indigo-600 via-purple-500 to-transparent inline-block text-transparent bg-clip-text`}
         >
-          Shubham<span ref={periodRef}></span> {/* Wrapped period in span */}
+          {"Shubham"}
+          <span ref={periodRef}></span> {/* Wrapped period in span */}
         </h2>
         <div className="sm:m-2 mt-4 ml-2 text-xl sm:text-2xl sm:pr-20 font-extralight">
           <p>
@@ -122,7 +123,7 @@ export default function BackgroundBeamsWithCollisionDemo() {
       <div className="min-h-dvh py-20">
         <div>
           <h1
-            className={`relative sm:px-60 px-10 z-20 text-4xl sm:text-7xl text-black dark:text-white font-bold sm:my-16 my-8 ${noto_Sans.className} italic`}
+            className={`relative sm:px-60 px-10 z-20 text-4xl sm:text-7xl bg-gradient-to-r from-indigo-600 via-purple-500 to-transparent inline-block text-transparent bg-clip-text font-bold sm:my-16 my-8 ${noto_Sans.className} italic`}
           >
             SPECIAL ABILITIES
             <br />
