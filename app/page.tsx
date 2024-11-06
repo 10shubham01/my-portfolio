@@ -3,14 +3,14 @@ import React, { useEffect, useState, useRef } from "react";
 export const runtime = "edge";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { Work } from "@/components/work";
-import { Noto_Sans, Stalinist_One } from "next/font/google";
+import { Noto_Sans, Stalinist_One, Bungee_Outline } from "next/font/google";
 import { ModeToggle } from "@/components/toogle-theme";
 import Particles from "@/components/ui/particles";
 import { useTheme } from "next-themes";
 import { Skills } from "@/components/skills";
 import CardDemo from "@/components/blocks/cards-demo-3";
 
-const noto_Sans = Stalinist_One({
+const noto_Sans = Bungee_Outline({
   subsets: ["latin"],
   weight: ["400"],
   preload: true,
