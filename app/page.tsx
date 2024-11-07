@@ -92,27 +92,36 @@ export function Page1() {
             animate="animate"
           >
             {text.split("").map((char, index) => (
-              <motion.span
-                key={index}
-                className="inline-block z-20 cursor-pointer"
-                initial={{ rotate: Math.random() * 70 - 30 }}
-                animate={{ rotate: 0 }}
-                transition={{
-                  delay: Math.random() * 2,
-                  duration: Math.random() * 0.2,
-                  ease: "easeInOut",
-                }}
-                whileHover={{
-                  rotate: Math.random() * 60 - 30,
-                  transition: {
-                    duration: 0.1,
+              <Draggable key={index}>
+                <motion.span
+                  key={index}
+                  className="inline-block z-20 cursor-grab"
+                  initial={{ rotate: Math.random() * 70 - 30 }}
+                  animate={{ rotate: 0 }}
+                  transition={{
+                    delay: Math.random() * 2,
+                    duration: Math.random() * 0.2,
                     ease: "easeInOut",
-                    velocity: 10,
-                  },
-                }}
-              >
-                {char}
-              </motion.span>
+                  }}
+                  whileHover={{
+                    rotate: Math.random() * 60 - 30,
+                    transition: {
+                      duration: 0.1,
+                      ease: "easeInOut",
+                      velocity: 10,
+                    },
+                  }}
+                  drag
+                  dragConstraints={{
+                    top: -400,
+                    left: -400,
+                    right: 400,
+                    bottom: 400,
+                  }}
+                >
+                  {char}
+                </motion.span>
+              </Draggable>
             ))}
           </motion.div>
           <span
@@ -136,7 +145,13 @@ export function Page1() {
 }
 
 export function Page2() {
-  return <div></div>;
+  return (
+    <div className={`relative min-h-screen flex bg-red-600`}>
+      <div className="container max-w-screen-xl mx-auto flex justify-center items-center text-4xl ">
+        Page 2
+      </div>
+    </div>
+  );
 }
 
 export function Page3() {
