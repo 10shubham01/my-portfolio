@@ -104,7 +104,7 @@ export default function BackgroundBeamsWithCollisionDemo() {
       />
 
       <div className="min-h-dvh grid place-content-center sm:px-60 px-3 relative">
-        <div className="sm:fixed top-10 sm:left-10 mx-auto place-self-end mb-20 mt-10">
+        <div className="fixed top-10 right-10 mx-auto place-self-end">
           <ModeToggle />
         </div>
 
