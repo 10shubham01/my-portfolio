@@ -12,7 +12,6 @@ import { ModeToggle } from "@/components/toogle-theme";
 import Particles from "@/components/ui/particles";
 import { useTheme } from "next-themes";
 import { Skills } from "@/components/skills";
-import CardDemo from "@/components/blocks/cards-demo-3";
 const myFont = localFont({ src: "./fonts/UltraSolar Normal.ttf" });
 
 const noto_Sans = Bungee_Outline({
@@ -86,7 +85,7 @@ export default function BackgroundBeamsWithCollisionDemo() {
   }, []);
 
   return (
-    <BackgroundBeamsWithCollision className="relative !cursor-none">
+    <BackgroundBeamsWithCollision className="relative !cursor-none text-gray-900 dark:text-gray-200">
       <div
         ref={circleRef}
         className="size-24 rounded-full border-[.5px] opacity-50 dark:border-white border-black absolute top-[72px] left-[72px] sm:block hidden"
@@ -104,69 +103,66 @@ export default function BackgroundBeamsWithCollisionDemo() {
         staticity={10}
       />
 
-      <div className="min-h-dvh grid place-content-center sm:px-60 px-3">
+      <div className="min-h-dvh grid place-content-center sm:px-60 px-3 relative">
         <div className="sm:fixed top-10 sm:left-10 mx-auto place-self-end mb-20 mt-10">
           <ModeToggle />
         </div>
 
-        <div className="relative w-fit h-fit py-14 px-6 grid place-items-center border-[.5px] border-y-0 border-gray-300">
-          <motion.div
-            className={`relative sm:text-[160px] text-6xl font-bold sm:mt-8 mt-4 flex ${myFont.className}`}
-            variants={containerVariants}
-            initial="initial"
-            animate="animate"
-          >
-            {text.split("").map((char, index) => (
-              <Draggable key={index}>
-                <motion.span
-                  key={index}
-                  className="inline-block z-20 cursor-grab"
-                  initial={{ rotate: Math.random() * 70 - 30 }}
-                  animate={{ rotate: 0 }}
-                  transition={{
-                    delay: Math.random() * 2,
-                    duration: Math.random() * 0.2,
-                    ease: "easeInOut",
-                  }}
-                  whileHover={{
-                    rotate: Math.random() * 60 - 30,
-                    transition: {
-                      duration: 0.1,
+        <div className="absolute w-full sm:h-48 h-24 m-auto left-0 right-0 top-0 bottom-0 grid place-content-center border-x-0 border-[.5px] border-gray-300">
+          <div className="relative w-fit h-fit py-14 px-6 grid place-items-center border-[.5px] border-y-0 border-gray-300">
+            <motion.div
+              className={`relative sm:text-[160px] text-6xl font-bold sm:mt-8 mt-4 flex ${myFont.className}`}
+              variants={containerVariants}
+              initial="initial"
+              animate="animate"
+            >
+              {text.split("").map((char, index) => (
+                <Draggable key={index}>
+                  <motion.span
+                    key={index}
+                    className="inline-block z-20 cursor-grab"
+                    initial={{ rotate: Math.random() * 70 - 30 }}
+                    animate={{ rotate: 0 }}
+                    transition={{
+                      delay: Math.random() * 2,
+                      duration: Math.random() * 0.2,
                       ease: "easeInOut",
-                      velocity: 10,
-                    },
-                  }}
-                  drag
-                  dragConstraints={{
-                    top: -400,
-                    left: -500,
-                    right: 500,
-                    bottom: 400,
-                  }}
-                >
-                  {char}
-                </motion.span>
-              </Draggable>
-            ))}
-          </motion.div>
-          <span
-            className={`absolute font-outline-1 text-transparent sm:text-[160px] text-6xl inset-0 flex items-center justify-center sm:mt-8 mt-4 z-10 ${myFont.className}`}
-          >
-            Shubham
-          </span>
-          <div className="absolute left-0 mx-2 sm:top-8 top-2 flex items-center text-sm">
-            <div className="size-2 bg-green-500 rounded-full mx-2 shadow-md shadow-green-900"></div>{" "}
-            Hi, I am
-          </div>
-          <div className="absolute px-4 left-0 sm:bottom-2 -bottom-10 text-sm sm:w-3/4">
-            and I make websites. Coding my way through the digital realm, one
-            line at a time, crafting intuitive user experiences as a front-end
-            developer
-          </div>
-        </div>
-        <div className="sm:m-2 mt-4 ml-2 text-xl sm:text-2xl sm:pr-20 font-extralight">
-          <div>
-            <CardDemo></CardDemo>
+                    }}
+                    whileHover={{
+                      rotate: Math.random() * 60 - 30,
+                      transition: {
+                        duration: 0.1,
+                        ease: "easeInOut",
+                        velocity: 10,
+                      },
+                    }}
+                    drag
+                    dragConstraints={{
+                      top: -400,
+                      left: -500,
+                      right: 500,
+                      bottom: 400,
+                    }}
+                  >
+                    {char}
+                  </motion.span>
+                </Draggable>
+              ))}
+            </motion.div>
+            <span
+              className={`absolute font-outline-1 text-transparent sm:text-[160px] text-6xl inset-0 flex items-center justify-center sm:mt-8 mt-4 z-10 ${myFont.className}`}
+            >
+              Shubham
+            </span>
+            <div className="absolute left-0 mx-2 sm:top-8 top-2 flex items-center text-sm">
+              <div className="size-2 bg-green-500 rounded-full mx-2 shadow-md shadow-green-900"></div>{" "}
+              Hi, I am
+            </div>
+            <div className="absolute px-4 left-0 sm:bottom-2 -bottom-10 text-sm sm:w-3/4">
+              and I make websites. Coding my way through the digital realm, one
+              line at a time, crafting intuitive user experiences as a front-end
+              developer
+            </div>
           </div>
         </div>
       </div>

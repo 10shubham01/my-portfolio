@@ -69,4 +69,10 @@
   *{
     /* cursor: none !important; */
   }
+   .font-outline-1 {
+    -webkit-text-stroke: 1px rgba(255, 0, 0, 0.363);
+  }
+  .font-outline-1-black {
+    -webkit-text-stroke: 1px black;
+  }
 }
