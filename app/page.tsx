@@ -67,7 +67,7 @@ export default function BackgroundBeamsWithCollisionDemo() {
     const handleClick = (e: MouseEvent) => {
       const ripple = document.createElement("div");
       ripple.className =
-        "absolute size-8 bg-black dark:bg-white rounded-full opacity-30 animate-[ripple_0.6s_ease-out] pointer-events-none";
+        "absolute size-8 bg-[#FF0000] dark:bg-[#FF0000] rounded-full opacity-30 animate-[ripple_0.6s_ease-out] pointer-events-none";
       ripple.style.left = `${e.pageX - circleRef.current!.offsetLeft - 16}px`;
       ripple.style.top = `${e.pageY - circleRef.current!.offsetTop - 16}px`;
       circleRef.current!.appendChild(ripple);
@@ -88,10 +88,10 @@ export default function BackgroundBeamsWithCollisionDemo() {
     <BackgroundBeamsWithCollision className="relative !cursor-none text-gray-900 dark:text-gray-200">
       <div
         ref={circleRef}
-        className="size-24 rounded-full border-[.5px] opacity-50 dark:border-white border-black absolute top-[72px] left-[72px] sm:block hidden"
+        className="size-24 rounded-full border-[.5px]  [#FF0000] absolute top-[72px] left-[72px] sm:block hidden"
       ></div>
       <div
-        className="absolute size-4 rounded-full bg-purple-500 sm:block hidden"
+        className="absolute size-4 rounded-full bg-[#FF000080] sm:block hidden"
         ref={innerCircle}
       ></div>
       <Particles
@@ -139,9 +139,9 @@ export default function BackgroundBeamsWithCollisionDemo() {
                     drag
                     dragConstraints={{
                       top: -400,
-                      left: -500,
-                      right: 500,
-                      bottom: 400,
+                      left: -600,
+                      right: 600,
+                      bottom: 2500,
                     }}
                   >
                     {char}
@@ -150,7 +150,7 @@ export default function BackgroundBeamsWithCollisionDemo() {
               ))}
             </motion.div>
             <span
-              className={`absolute font-outline-1 text-transparent sm:text-[160px] text-6xl inset-0 flex items-center justify-center sm:mt-8 mt-4 z-10 ${myFont.className}`}
+              className={`select-none absolute font-outline-1 text-transparent sm:text-[160px] text-6xl inset-0 flex items-center justify-center sm:mt-8 mt-4 z-10 ${myFont.className}`}
             >
               Shubham
             </span>

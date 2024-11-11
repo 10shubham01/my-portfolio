@@ -69,8 +69,8 @@ const config = {
       },
       keyframes: {
         ripple: {
-          "0%": { transform: "scale(0)", opacity: "0.4" },
-          "100%": { transform: "scale(4)", opacity: "0" },
+          "0%": { transform: "scale(0)", opacity: "0.2" },
+          "100%": { transform: "scale(6)", opacity: "0" },
         },
         move: {
           "0%": { transform: "translateX(-200px)" },
@@ -79,7 +79,7 @@ const config = {
       },
       animation: {
         ripple: "ripple 0.6s ease-out",
-        move: "move 5s linear infinite",
+        move: "move 10s linear infinite",
       },
     },
   },
