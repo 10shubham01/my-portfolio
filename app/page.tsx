@@ -1,15 +1,19 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-export const runtime = "edge";
+
+import { motion } from "framer-motion";
+
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
-// import { RiArrowDownDoubleFill } from "react-icons/ri";
+import localFont from "next/font/local";
+import Draggable from "react-draggable";
 import { Work } from "@/components/work";
-import { Noto_Sans, Stalinist_One, Bungee_Outline } from "next/font/google";
+import { Bungee_Outline } from "next/font/google";
 import { ModeToggle } from "@/components/toogle-theme";
 import Particles from "@/components/ui/particles";
 import { useTheme } from "next-themes";
 import { Skills } from "@/components/skills";
 import CardDemo from "@/components/blocks/cards-demo-3";
+const myFont = localFont({ src: "./fonts/UltraSolar Normal.ttf" });
 
 const noto_Sans = Bungee_Outline({
   subsets: ["latin"],
@@ -17,6 +21,15 @@ const noto_Sans = Bungee_Outline({
   preload: true,
 });
 
+const text = "Shubham";
+
+const containerVariants = {
+  animate: {
+    transition: {
+      staggerChildren: 0.5,
+    },
+  },
+};
 export default function BackgroundBeamsWithCollisionDemo() {
   const { theme } = useTheme();
   const [color, setColor] = useState<string>("#ffffff");
@@ -95,25 +108,63 @@ export default function BackgroundBeamsWithCollisionDemo() {
         <div className="sm:fixed top-10 sm:left-10 mx-auto place-self-end mb-20 mt-10">
           <ModeToggle />
         </div>
-        <h2
-          className={`z-20 text-7xl sm:text-9xl  font-bold ${noto_Sans.className} bg-gradient-to-r from-indigo-600 via-purple-500 to-transparent inline-block text-transparent bg-clip-text`}
-        >
-          {"Shubham"}
-          <span ref={periodRef}></span> {/* Wrapped period in span */}
-        </h2>
+
+        <div className="relative w-fit h-fit py-14 px-6 grid place-items-center border-[.5px] border-y-0 border-gray-300">
+          <motion.div
+            className={`relative sm:text-[160px] text-6xl font-bold sm:mt-8 mt-4 flex ${myFont.className}`}
+            variants={containerVariants}
+            initial="initial"
+            animate="animate"
+          >
+            {text.split("").map((char, index) => (
+              <Draggable key={index}>
+                <motion.span
+                  key={index}
+                  className="inline-block z-20 cursor-grab"
+                  initial={{ rotate: Math.random() * 70 - 30 }}
+                  animate={{ rotate: 0 }}
+                  transition={{
+                    delay: Math.random() * 2,
+                    duration: Math.random() * 0.2,
+                    ease: "easeInOut",
+                  }}
+                  whileHover={{
+                    rotate: Math.random() * 60 - 30,
+                    transition: {
+                      duration: 0.1,
+                      ease: "easeInOut",
+                      velocity: 10,
+                    },
+                  }}
+                  drag
+                  dragConstraints={{
+                    top: -400,
+                    left: -500,
+                    right: 500,
+                    bottom: 400,
+                  }}
+                >
+                  {char}
+                </motion.span>
+              </Draggable>
+            ))}
+          </motion.div>
+          <span
+            className={`absolute font-outline-1 text-transparent sm:text-[160px] text-6xl inset-0 flex items-center justify-center sm:mt-8 mt-4 z-10 ${myFont.className}`}
+          >
+            Shubham
+          </span>
+          <div className="absolute left-0 mx-2 sm:top-8 top-2 flex items-center text-sm">
+            <div className="size-2 bg-green-500 rounded-full mx-2 shadow-md shadow-green-900"></div>{" "}
+            Hi, I am
+          </div>
+          <div className="absolute px-4 left-0 sm:bottom-2 -bottom-10 text-sm sm:w-3/4">
+            and I make websites. Coding my way through the digital realm, one
+            line at a time, crafting intuitive user experiences as a front-end
+            developer
+          </div>
+        </div>
         <div className="sm:m-2 mt-4 ml-2 text-xl sm:text-2xl sm:pr-20 font-extralight">
-          <p>
-            A shadow in the code, Your go-to front-end developer, UX architect,
-            and JavaScript engineer, ready to bring ideas to life on the digital
-            canvas! Whether it’s day or night, I'm all about turning lines of
-            code into captivating, interactive experiences.
-            <br /> <br />I live by a minimalist mantra, finding beauty in
-            simplicity and order. When I’m not crafting web magic, you can find
-            me strategizing my next move in Valorant.
-            <br />
-            <br />
-            let's team up and create something unforgettable!
-          </p>
           <div>
             <CardDemo></CardDemo>
           </div>
