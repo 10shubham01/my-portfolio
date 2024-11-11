@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Skills } from "@/components/skills";
 import Draggable from "react-draggable";
 const myFont = localFont({ src: "./fonts/UltraSolar Normal.ttf" });
-
+import { RxArrowDown } from "react-icons/rx";
 export default function Page() {
   // Create refs for each page section
   const page1Ref = useRef<HTMLDivElement>(null);
@@ -82,7 +82,7 @@ export function Page1() {
   };
 
   return (
-    <div className={`relative min-h-screen flex`}>
+    <div className={`relative min-h-screen flex `}>
       <div className="absolute w-full sm:h-48 h-24 m-auto left-0 right-0 top-0 bottom-0 grid place-content-center border-x-0 border-[.5px] border-gray-300">
         <div className="relative w-fit h-fit py-14 px-6 grid place-items-center border-[.5px] border-y-0 border-gray-300">
           <motion.div
@@ -114,8 +114,8 @@ export function Page1() {
                   drag
                   dragConstraints={{
                     top: -400,
-                    left: -400,
-                    right: 400,
+                    left: -500,
+                    right: 500,
                     bottom: 400,
                   }}
                 >
@@ -133,7 +133,7 @@ export function Page1() {
             <div className="size-2 bg-green-500 rounded-full mx-2 shadow-md shadow-green-900"></div>{" "}
             Hi, I am
           </div>
-          <div className="absolute px-4 left-0 sm:bottom-2 -bottom-6 text-sm sm:w-3/4">
+          <div className="absolute px-4 left-0 sm:bottom-2 -bottom-10 text-sm sm:w-3/4">
             and I make websites. Coding my way through the digital realm, one
             line at a time, crafting intuitive user experiences as a front-end
             developer
@@ -146,9 +146,59 @@ export function Page1() {
 
 export function Page2() {
   return (
-    <div className={`relative min-h-screen flex bg-red-600`}>
-      <div className="container max-w-screen-xl mx-auto flex justify-center items-center text-4xl ">
-        Page 2
+    <div className="relative min-h-screen">
+      {/* <h1
+        className={`${myFont.className} text-[200px] absolute top-1/2 transform -translate-y-1/2 text-right ml-20 opacity-10 font-outline-1-black text-transparent`}
+      >
+        Professional <br />
+        Journey
+      </h1> */}
+
+      <h1 className="absolute bottom-10 left-10 border-[.5px] border-gray-400 p-8 text-2xl">
+        The journey that brought <br /> me here..
+      </h1>
+
+      <div className="grid sm:grid-cols-2 grid-cols-1 absolute top-1/3 transform -translate-y-1/2 w-full sm:px-48 px-12 gap-x-8">
+        <div className="grid sm:grid-cols-2 grid-cols-1 gap-x-8">
+          <div className="border-[.5px] border-gray-400  border-b-orange-600 border-b-4 h-44 w-full mt-28 relative">
+            <span className="text-2xl mb-4 text-left font-bold text-black absolute bottom-0 left-4">
+              DEC 2022 - PRESENT
+            </span>
+            <span className="text-xl text-orange-600 absolute right-4 top-4 italic">
+              1
+            </span>
+          </div>
+          <div className="border-[.5px] border-gray-400  border-b-orange-600 border-b-4 h-72 relative">
+            <span className="text-2xl mb-4 text-left font-bold text-black absolute bottom-0 left-4">
+              AUG 2021 - NOV 2022
+            </span>
+            <span className="text-xl text-orange-600 absolute right-4 top-4 italic">
+              2
+            </span>
+          </div>
+        </div>
+        <div className="grid sm:grid-cols-2 grid-cols-1 gap-x-8">
+          <div className="border-[.5px] border-gray-400  border-b-orange-600 border-b-4 h-72 mt-28 relative">
+            <span className="text-2xl mb-4 text-left font-bold text-black absolute bottom-0 left-4">
+              JAN 2020 - JULY 2021
+            </span>
+            <span className="text-xl text-orange-600 absolute right-4 top-4 italic">
+              3
+            </span>
+          </div>
+          <div className="border-[.5px] border-gray-400  border-b-orange-600 border-b-4 h-44 place-self-end w-full mb-28 relative">
+            <span className="text-2xl mb-4 text-left font-bold text-black absolute bottom-0 left-4">
+              EDUCATION
+            </span>
+            <span className="text-xl text-orange-600 absolute right-4 top-4 italic">
+              4
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="absolute top-1/2 transform -translate-y-1/4 border-[.5px] border-gray-400 p-8 left-40">
+        <div>The stack I’ve worked with</div>
       </div>
     </div>
   );
