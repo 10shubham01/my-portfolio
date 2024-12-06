@@ -39,7 +39,7 @@ export default function Home() {
         ref={ref}
       >
         <motion.div
-          className="child h-[250vh] min-w-[250vw] bg-[url('/gridImage.svg')] bg-repeat flex justify-center items-center relative !z-20"
+          className="child sm:h-[250vh] h-[350vh] sm:min-w-[250vw] min-w-[350vw] bg-[url('/gridImage.svg')] bg-repeat flex justify-center items-center relative !z-20"
           style={{
             backgroundSize: "40px 40px",
             backgroundBlendMode: "hard-light",
@@ -68,7 +68,7 @@ export default function Home() {
               <IoMdMove className="mx-2" />
               DRAG TO MOVE
             </div>
-            <div className="absolute -top-1/2 -left-1/3">
+            <div className="absolute sm:-top-1/2 -top-3/4 -left-1/3">
               <Sticky></Sticky>
             </div>
             <motion.div
@@ -81,7 +81,22 @@ export default function Home() {
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
               dragMomentum={false}
-              className={`${instrument_Serif.className} absolute -top-20 -left-20 size-48 bg-[url('/icons8-github.svg')] rounded-3xl p-0 rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-cover`}
+              className={`absolute -top-20 -left-20 size-48 bg-[url('/icons8-github.svg')] rounded-3xl p-0 rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-cover`}
+            ></motion.div>
+            <motion.div
+              drag
+              onClickCapture={(e) => {
+                if (!dragging) {
+                  window.open(
+                    "https://mail.google.com/mail/?view=cm&fs=1&to=shubhamedu.01@gmail.com",
+                    "_blank"
+                  );
+                }
+              }}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              dragMomentum={false}
+              className={`${instrument_Serif.className} absolute -top-10 -left-40 size-48 bg-[url('/icons8-gmail.svg')] rounded-3xl p-0 -rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-cover`}
             ></motion.div>
             <motion.div
               drag
@@ -103,10 +118,10 @@ export default function Home() {
             >
               get in touch
             </div>
-            <div className="absolute -bottom-96 -right-96">
+            <div className="absolute -bottom-96 -right-96 sm:block hidden">
               <SnakeGame></SnakeGame>
             </div>
-            <div className="absolute -bottom-1/4 left-10">
+            <div className="absolute -bottom-60 sm:left-4">
               <Github></Github>
             </div>
           </div>

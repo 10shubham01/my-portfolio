@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-
+import { sendGTMEvent } from "@next/third-parties/google";
 interface Note {
   id: number;
   pinned: boolean;
@@ -73,6 +73,7 @@ export default function StickyNotesStack() {
     setNotes((prevNotes) =>
       prevNotes.map((note) => (note.id === id ? { ...note, value } : note))
     );
+    sendGTMEvent({ event: "noteAdded", value: JSON.stringify(notes) });
   };
 
   return (
