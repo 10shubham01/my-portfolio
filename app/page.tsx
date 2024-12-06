@@ -6,6 +6,7 @@ import { IoMdMove } from "react-icons/io";
 import SnakeGame from "@/components/snake";
 import Github from "@/components/github";
 import Sticky from "@/components/sticky";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 const fasthand = Fasthand({
   subsets: ["latin"],
@@ -103,6 +104,27 @@ export default function Home() {
               onClickCapture={() => {
                 if (!dragging) {
                   window.open(
+                    "https://pub-37e1aa402ba24ef28ab68650caa7a432.r2.dev/Shubham's_Resume.pdf",
+                    "_blank"
+                  );
+                  sendGTMEvent({
+                    event: "ResumeDownloaded",
+                    value: true,
+                  });
+                }
+              }}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              dragMomentum={false}
+              className={`${instrument_Serif.className} absolute -top-10 -right-10 size-48 bg-[url('/icons8-document.svg')] rounded-3xl p-0 rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-cover`}
+            >
+              <a href="/public/file.svg" className="size-full" download></a>
+            </motion.div>
+            <motion.div
+              drag
+              onClickCapture={() => {
+                if (!dragging) {
+                  window.open(
                     "https://www.linkedin.com/in/shubhamgupta001/",
                     "_blank"
                   );
@@ -114,9 +136,14 @@ export default function Home() {
               className="absolute -top-20 left-20 size-52 rounded-3xl p-0 -rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-[url('/icons8-linkedin.svg')] bg-cover"
             ></motion.div>
             <div
-              className={`absolute sm:top-40 top-32 left-16 text-4xl -rotate-6`}
+              className={`absolute sm:top-40 top-32 left-16 sm:text-4xl text-xl -rotate-6`}
             >
               get in touch
+            </div>
+            <div
+              className={`absolute sm:top-40 top-32 right-16 sm:text-4xl text-xl rotate-6`}
+            >
+              Download Resume
             </div>
             <div className="absolute -bottom-96 -right-96 sm:block hidden">
               <SnakeGame></SnakeGame>
