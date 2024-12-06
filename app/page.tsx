@@ -57,11 +57,20 @@ export default function Home() {
             </div>
             <motion.div
               drag
+              onClickCapture={() => {
+                window.open("https://github.com/10shubham01", "_blank");
+              }}
               dragMomentum={false}
               className={`${instrument_Serif.className} absolute -top-20 -left-20 size-48 bg-[url('/icons8-github.svg')] rounded-3xl p-0 rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-cover`}
             ></motion.div>
             <motion.div
               drag
+              onClickCapture={() => {
+                window.open(
+                  "https://www.linkedin.com/in/shubhamgupta001/",
+                  "_blank"
+                );
+              }}
               dragMomentum={false}
               className="absolute -top-20 left-20 size-52 rounded-3xl p-0 -rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-[url('/icons8-linkedin.svg')] bg-cover"
             ></motion.div>
