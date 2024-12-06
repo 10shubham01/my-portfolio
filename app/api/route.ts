@@ -79,7 +79,7 @@ export async function GET() {
       contributions: mockedWeeks,
       totalContributions,
     });
-  } catch (error) {
+  } catch {
     // return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
