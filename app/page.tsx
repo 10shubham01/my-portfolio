@@ -1,9 +1,10 @@
 "use client";
 import { motion } from "framer-motion";
 import { useRef } from "react";
-import { Fasthand, Instrument_Serif } from "next/font/google";
+import { Fasthand, Instrument_Serif, Mona_Sans } from "next/font/google";
 import { IoMdMove } from "react-icons/io";
 import SnakeGame from "@/components/snake";
+import Github from "@/components/github";
 
 const fasthand = Fasthand({
   subsets: ["latin"],
@@ -18,17 +19,23 @@ const instrument_Serif = Instrument_Serif({
   style: ["italic"],
 });
 
+const mona_Sans = Mona_Sans({
+  subsets: ["latin"],
+  weight: ["400", "200", "300", "500", "600", "700", "800", "900"],
+  preload: true,
+});
+
 export default function Home() {
   const ref = useRef<HTMLDivElement>(null);
 
   return (
     <div className={`h-screen p-2 text-white ${fasthand.className}`}>
       <div
-        className="main size-full relative overflow-hidden border flex justify-center items-center bg-neutral-900 !cursor-grab"
-        ref={ref} // Ensure this ref is attached properly
+        className="size-full relative overflow-hidden border flex justify-center items-center bg-neutral-900 !cursor-grab"
+        ref={ref}
       >
         <motion.div
-          className="child h-[250%] min-w-[250%] bg-[url('/gridImage.svg')] bg-repeat flex justify-center items-center relative !z-20"
+          className="child h-[250vh] min-w-[250vw] bg-[url('/gridImage.svg')] bg-repeat flex justify-center items-center relative !z-20"
           style={{
             backgroundSize: "40px 40px",
             backgroundBlendMode: "hard-light",
@@ -51,8 +58,10 @@ export default function Home() {
                 Shubham Gupta
               </span>
             </div>
-            <div className="opacity-75 w-fit flex items-center">
-              <IoMdMove className="mx-2 !font-mono" />
+            <div
+              className={`opacity-75 w-fit flex items-center font-semibold tracking-wider ${mona_Sans.className}`}
+            >
+              <IoMdMove className="mx-2" />
               DRAG TO MOVE
             </div>
             <motion.div
@@ -81,6 +90,9 @@ export default function Home() {
             </div>
             <div className="absolute -bottom-96 -right-96">
               <SnakeGame></SnakeGame>
+            </div>
+            <div className="absolute -bottom-1/4 left-10">
+              <Github></Github>
             </div>
           </div>
         </motion.div>

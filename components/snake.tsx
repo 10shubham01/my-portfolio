@@ -84,7 +84,7 @@ const SnakeGame = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-fit h-fit">
       <div
         className="relative border-[.5px]"
         style={{
@@ -128,7 +128,7 @@ const SnakeGame = () => {
         />
       </div>
       {!isRunning && (
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center top-0">
           <button onClick={startGame} className="text-6xl text-white">
             {gameOver ? <VscDebugRestart /> : "▶"}
           </button>
