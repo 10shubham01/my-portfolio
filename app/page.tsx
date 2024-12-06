@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { useRef } from "react";
 import { Fasthand, Instrument_Serif } from "next/font/google";
 import { IoMdMove } from "react-icons/io";
-import Image from "next/image";
 import SnakeGame from "@/components/snake";
 
 const fasthand = Fasthand({
