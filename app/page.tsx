@@ -5,6 +5,7 @@ import { Fasthand, Instrument_Serif } from "next/font/google";
 import { IoMdMove } from "react-icons/io";
 import SnakeGame from "@/components/snake";
 import Github from "@/components/github";
+import Sticky from "@/components/sticky";
 
 const fasthand = Fasthand({
   subsets: ["latin"],
@@ -66,6 +67,9 @@ export default function Home() {
             >
               <IoMdMove className="mx-2" />
               DRAG TO MOVE
+            </div>
+            <div className="absolute -top-1/2 -left-1/3">
+              <Sticky></Sticky>
             </div>
             <motion.div
               drag
