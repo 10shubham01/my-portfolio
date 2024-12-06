@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { useRef } from "react";
-import { Fasthand, Instrument_Serif, Mona_Sans } from "next/font/google";
+import { Fasthand, Instrument_Serif } from "next/font/google";
 import { IoMdMove } from "react-icons/io";
 import SnakeGame from "@/components/snake";
 import Github from "@/components/github";
@@ -17,12 +17,6 @@ const instrument_Serif = Instrument_Serif({
   weight: ["400"],
   preload: true,
   style: ["italic"],
-});
-
-const mona_Sans = Mona_Sans({
-  subsets: ["latin"],
-  weight: ["400", "200", "300", "500", "600", "700", "800", "900"],
-  preload: true,
 });
 
 export default function Home() {
@@ -59,7 +53,7 @@ export default function Home() {
               </span>
             </div>
             <div
-              className={`opacity-75 w-fit flex items-center font-semibold tracking-wider ${mona_Sans.className}`}
+              className={`opacity-75 w-fit flex items-center font-semibold tracking-wider  ${instrument_Serif.className}`}
             >
               <IoMdMove className="mx-2" />
               DRAG TO MOVE

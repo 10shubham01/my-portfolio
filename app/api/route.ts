@@ -1,11 +1,44 @@
-// app/api/contributions/route.ts
+// Define the types for the GitHub response structure
+type ContributionDay = {
+  date: string;
+  contributionCount: number;
+};
+
+type ContributionWeek = {
+  contributionDays: ContributionDay[];
+};
+
+type GitHubResponse = {
+  data: {
+    user: {
+      contributionsCollection: {
+        contributionCalendar: {
+          totalContributions: number;
+          weeks: ContributionWeek[];
+        };
+      };
+    };
+  };
+};
+
+type MockedContributionWeek = {
+  contributionDays: {
+    date: string;
+    contributionCount: number;
+  }[];
+};
+
+type ContributionData = {
+  contributions: MockedContributionWeek[];
+  totalContributions: number;
+};
 
 import { NextResponse } from "next/server";
 
 export async function GET() {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("Authorization", `Bearer ${process.env.GITHUB_TOKEN}`); 
+  myHeaders.append("Authorization", `Bearer ${process.env.GITHUB_TOKEN}`);
 
   const graphqlQuery = JSON.stringify({
     query: `
@@ -41,24 +74,26 @@ export async function GET() {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const result = await response.json();
+    const result: GitHubResponse = await response.json();
     const weeks = result?.data?.user?.contributionsCollection?.contributionCalendar?.weeks ?? [];
 
     const currentYear = new Date().getFullYear();
 
-    const filteredWeeks = weeks
-      .map((week: any) => ({
+    // Filter weeks to include only the current year
+    const filteredWeeks: ContributionWeek[] = weeks
+      .map((week) => ({
         ...week,
-        contributionDays: week.contributionDays.filter((day: any) => {
+        contributionDays: week.contributionDays.filter((day) => {
           const date = new Date(day.date);
           return date.getFullYear() === currentYear;
         }),
       }))
-      .filter((week: any) => week.contributionDays.length > 0);
+      .filter((week) => week.contributionDays.length > 0);
 
-    const mockedWeeks = filteredWeeks.map((week: any) => ({
+    // Mock contributions if contributionCount is 0
+    const mockedWeeks: MockedContributionWeek[] = filteredWeeks.map((week) => ({
       ...week,
-      contributionDays: week.contributionDays.map((day: any) => ({
+      contributionDays: week.contributionDays.map((day) => ({
         ...day,
         contributionCount:
           day.contributionCount === 0 && Math.random() > 0.3
@@ -67,19 +102,25 @@ export async function GET() {
       })),
     }));
 
+    // Calculate total contributions
     const totalContributions = mockedWeeks.reduce(
-      (sum: number, week: any) => sum + week.contributionDays.reduce(
-        (daySum: number, day: any) => daySum + day.contributionCount,
-        0
-      ),
+      (sum, week) =>
+        sum +
+        week.contributionDays.reduce(
+          (daySum, day) => daySum + day.contributionCount,
+          0
+        ),
       0
     );
 
-    return NextResponse.json({
+    const contributionData: ContributionData = {
       contributions: mockedWeeks,
       totalContributions,
-    });
+    };
+
+    return NextResponse.json(contributionData);
   } catch {
-    // return NextResponse.json({ error: error.message }, { status: 500 });
+    // You can log the error or handle it as needed
+    return NextResponse.json({ error: "Failed to fetch data" }, { status: 500 });
   }
 }
