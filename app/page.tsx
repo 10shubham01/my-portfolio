@@ -73,7 +73,7 @@ export default function Home() {
             </div>
             <motion.div
               drag
-              onClickCapture={(e) => {
+              onClickCapture={() => {
                 if (!dragging) {
                   window.open("https://github.com/10shubham01", "_blank");
                 }
@@ -85,7 +85,7 @@ export default function Home() {
             ></motion.div>
             <motion.div
               drag
-              onClickCapture={(e) => {
+              onClickCapture={() => {
                 if (!dragging) {
                   window.open(
                     "https://mail.google.com/mail/?view=cm&fs=1&to=shubhamedu.01@gmail.com",
@@ -100,7 +100,7 @@ export default function Home() {
             ></motion.div>
             <motion.div
               drag
-              onClickCapture={(e) => {
+              onClickCapture={() => {
                 if (!dragging) {
                   window.open(
                     "https://www.linkedin.com/in/shubhamgupta001/",

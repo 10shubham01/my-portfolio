@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, PanInfo } from "framer-motion";
 import { useEffect, useState } from "react";
 import { sendGTMEvent } from "@next/third-parties/google";
 interface Note {
@@ -50,7 +50,11 @@ export default function StickyNotesStack() {
     localStorage.setItem("sticky-notes", JSON.stringify(notes));
   }, [notes]);
 
-  const handleDragEnd = (id: number, event: any, info: any) => {
+  const handleDragEnd = (
+    id: number,
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
     const target = event.target as HTMLElement;
     const noteWidth = target.offsetWidth;
     const noteHeight = target.offsetHeight;
@@ -109,7 +113,7 @@ export default function StickyNotesStack() {
       ))}
       <div className="absolute -bottom-32  w-full text-2xl tracking-wider text-right -rotate-6">
         Write, drag, and stick your genius… or your grocery list… or just say
-        'Hello, World!'
+        {"Hello, World!"}
         <br />
         —no judgment.
       </div>
