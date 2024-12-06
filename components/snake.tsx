@@ -103,7 +103,7 @@ const SnakeGame = () => {
                 index === snake.length - 1
                   ? "bg-yellow-400 rounded-full"
                   : index === 0
-                  ? "border"
+                  ? "border bg-red-600 !opacity-100"
                   : "bg-green-500"
               }`}
               style={{
