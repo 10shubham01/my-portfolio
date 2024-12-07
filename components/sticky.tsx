@@ -23,8 +23,9 @@ export default function StickyNotesStack() {
         {
           id: 1,
           pinned: false,
-          position: { x: 0, y: 0 },
-          value: "",
+          position: { x: 20, y: 20 },
+          value:
+            "Just tinkering with Symbiote UI – feel free to check it out or pitch in! 😎       https://symbiote-ui.vercel.app/",
           placeholder: "Confess your genius... or your caffeine addiction.",
         },
         {
@@ -97,18 +98,22 @@ export default function StickyNotesStack() {
             rotate: index * 5 - 5,
           }}
           whileDrag={{ scale: 0.9 }}
-          className="absolute bg-yellow-500 rounded-3xl p-6 w-80 h-80 shadow-2xl opacity-85"
+          className="absolute  shadow-2xl rounded-3xl overflow-hidden"
           style={{ zIndex: notes.length - index }}
         >
-          <textarea
-            placeholder={note.placeholder}
-            value={note.value}
-            onChange={(e) => handleTextChange(note.id, e.target.value)}
-            className="w-full h-full bg-transparent text-black text-xl resize-none border-none focus:outline-none placeholder:opacity-75 placeholder:text-gray-100 !cursor-grab tracking-widest"
-          ></textarea>
-          <motion.span className="absolute top-2 right-2 text-white p-2 rounded-full text-3xl">
-            {""}
-          </motion.span>
+          <div className="h-8 bg-yellow-500 w-full shadow-inner flex items-center">
+            <div className="size-3 rounded-full mx-1 ml-4 bg-red-500"></div>
+            <div className="size-3 rounded-full mx-1 bg-yellow-800"></div>
+            <div className="size-3 rounded-full mx-1 bg-green-500"></div>
+          </div>
+          <div className="opacity-85 bg-yellow-500 p-6 w-80 h-80">
+            <textarea
+              placeholder={note.placeholder}
+              value={note.value}
+              onChange={(e) => handleTextChange(note.id, e.target.value)}
+              className="w-full h-full bg-transparent text-black text-xl resize-none border-none focus:outline-none placeholder:opacity-75 placeholder:text-gray-100 !cursor-grab tracking-widest"
+            ></textarea>
+          </div>
         </motion.div>
       ))}
       <div className="absolute -bottom-32  w-full text-2xl tracking-wider text-right -rotate-6">

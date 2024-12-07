@@ -39,10 +39,10 @@ const ContributionGraph: React.FC = () => {
 
   const getColorClass = (contributionCount: number): string => {
     if (contributionCount === 0) return "bg-transparent";
-    if (contributionCount < 5) return "bg-green-400";
-    if (contributionCount < 10) return "bg-green-500";
-    if (contributionCount < 20) return "bg-green-600";
-    return "bg-green-700";
+    if (contributionCount < 5) return "bg-rose-400";
+    if (contributionCount < 10) return "bg-rose-500";
+    if (contributionCount < 20) return "bg-rose-600";
+    return "bg-rose-700";
   };
 
   useEffect(() => {

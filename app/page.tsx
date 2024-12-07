@@ -34,7 +34,7 @@ export default function Home() {
   };
 
   return (
-    <div className={`h-screen p-2 text-white ${fasthand.className}`}>
+    <div className={`h-screen sm:p-2 text-white ${fasthand.className}`}>
       <div
         className="size-full relative overflow-hidden border flex justify-center items-center bg-neutral-900 !cursor-grab"
         ref={ref}
