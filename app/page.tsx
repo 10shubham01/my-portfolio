@@ -64,7 +64,7 @@ export default function Home() {
               </span>
             </div>
             <div
-              className={`opacity-75 w-fit flex items-center font-semibold tracking-widest  font-sans`}
+              className={`opacity-75 w-fit flex items-center font-semibold tracking-widest font-sans`}
             >
               <IoMdMove className="mx-2" />
               DRAG TO MOVE
@@ -75,7 +75,7 @@ export default function Home() {
                 drag
                 dragMomentum={false}
                 src="/download.png"
-                className="sm:size-30 size-20 mt-20 -rotate-6 hover:scale-110 transition-all hover:rotate-0 hover:saturate-200"
+                className="sm:size-40 size-20 mt-20 -rotate-6 hover:scale-110 transition-all hover:rotate-0 hover:saturate-200"
               ></motion.img>
             </div>
             <motion.div

@@ -8,6 +8,7 @@ import {
   FaCaretRight,
   FaCaretLeft,
 } from "react-icons/fa6";
+import Counter from "./counter";
 
 type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
 
@@ -118,8 +119,9 @@ const SnakeGame = () => {
 
   return (
     <div className="relative w-fit h-fit">
+      <Counter value={snake.length}></Counter>
       <div
-        className={`relative ${isRunning && "border"}`}
+        className={`relative border`}
         style={{
           width: `${gridSize * 15}px`,
           height: `${gridSize * 15}px`,
@@ -159,7 +161,7 @@ const SnakeGame = () => {
       </div>
 
       {gameOver && (
-        <div className="absolute inset-0 flex items-center justify-center top-0">
+        <div className="absolute inset-0 flex items-center justify-center top-0 h-full w-full mt-20">
           <p className="text-2xl text-rose-500 tracking-widest">
             Game Over! Press Space to Restart
           </p>
@@ -167,7 +169,7 @@ const SnakeGame = () => {
       )}
 
       {!isRunning && !gameOver && (
-        <div className="absolute inset-0 flex items-center justify-center top-0">
+        <div className="absolute inset-0 flex items-center justify-center top-0 h-full w-full mt-20">
           <p className="text-2xl text-white tracking-widest">
             Press Space to Start/Resume
           </p>
