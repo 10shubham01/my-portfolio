@@ -1,7 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
+import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { VscDebugRestart } from "react-icons/vsc";
+import {
+  FaCaretUp,
+  FaCaretDown,
+  FaCaretRight,
+  FaCaretLeft,
+} from "react-icons/fa6";
 
 type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
 
@@ -11,6 +17,7 @@ const SnakeGame = () => {
   const [direction, setDirection] = useState<Direction>("RIGHT");
   const [gameOver, setGameOver] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
+  const [activeKey, setActiveKey] = useState<string | null>(null);
 
   const gridSize = 30;
 
@@ -55,14 +62,33 @@ const SnakeGame = () => {
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === " ") {
+      if (gameOver) resetGame();
+      else setIsRunning((prev) => !prev);
+      return;
+    }
+
     if (!isRunning) return;
+
     if (e.key === "ArrowUp" && direction !== "DOWN") setDirection("UP");
     if (e.key === "ArrowDown" && direction !== "UP") setDirection("DOWN");
     if (e.key === "ArrowLeft" && direction !== "RIGHT") setDirection("LEFT");
     if (e.key === "ArrowRight" && direction !== "LEFT") setDirection("RIGHT");
+
+    setActiveKey(e.key.replace("Arrow", "").toUpperCase());
   };
 
-  // Game loop
+  const handleButtonPress = (dir: Direction) => {
+    if (!isRunning) return;
+
+    if (dir === "UP" && direction !== "DOWN") setDirection("UP");
+    if (dir === "DOWN" && direction !== "UP") setDirection("DOWN");
+    if (dir === "LEFT" && direction !== "RIGHT") setDirection("LEFT");
+    if (dir === "RIGHT" && direction !== "LEFT") setDirection("RIGHT");
+
+    setActiveKey(dir);
+  };
+
   useEffect(() => {
     if (isRunning && !gameOver) {
       const interval = setInterval(moveSnake, 150);
@@ -75,7 +101,14 @@ const SnakeGame = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [direction, isRunning]);
 
-  const startGame = () => {
+  useEffect(() => {
+    if (activeKey) {
+      const timeout = setTimeout(() => setActiveKey(null), 100);
+      return () => clearTimeout(timeout);
+    }
+  }, [activeKey]);
+
+  const resetGame = () => {
     setSnake([[5, 5]]);
     setFood(generateFood());
     setDirection("RIGHT");
@@ -86,13 +119,12 @@ const SnakeGame = () => {
   return (
     <div className="relative w-fit h-fit">
       <div
-        className="relative border-[.5px]"
+        className={`relative ${isRunning && "border"}`}
         style={{
           width: `${gridSize * 15}px`,
           height: `${gridSize * 15}px`,
         }}
       >
-        {/* Snake */}
         {snake.map(([x, y], index) => {
           const segmentOpacity = (index + 1) / snake.length;
           const segmentHeight = 15 * segmentOpacity;
@@ -102,8 +134,6 @@ const SnakeGame = () => {
               className={`absolute ${
                 index === snake.length - 1
                   ? "bg-yellow-400 rounded-full"
-                  : index === 0
-                  ? "border bg-red-600 !opacity-100"
                   : "bg-green-500"
               }`}
               style={{
@@ -127,13 +157,69 @@ const SnakeGame = () => {
           }}
         />
       </div>
-      {!isRunning && (
+
+      {gameOver && (
         <div className="absolute inset-0 flex items-center justify-center top-0">
-          <button onClick={startGame} className="text-6xl text-white">
-            {gameOver ? <VscDebugRestart /> : "▶"}
-          </button>
+          <p className="text-2xl text-rose-500 tracking-widest">
+            Game Over! Press Space to Restart
+          </p>
         </div>
       )}
+
+      {!isRunning && !gameOver && (
+        <div className="absolute inset-0 flex items-center justify-center top-0">
+          <p className="text-2xl text-white tracking-widest">
+            Press Space to Start/Resume
+          </p>
+        </div>
+      )}
+
+      <div className="absolute -bottom-32 w-full -rotate-12">
+        <div className="flex flex-col justify-center items-center">
+          <motion.button
+            drag
+            dragMomentum={false}
+            onClick={() => handleButtonPress("UP")}
+            className={`w-16 h-8 bg-black text-white grid place-items-center text-xl rounded-md shadow shadow-white ${
+              activeKey === "UP" ? "shadow-none" : ""
+            }`}
+          >
+            <FaCaretUp />
+          </motion.button>
+          <div className="flex justify-center items-start gap-2 mt-1">
+            <motion.button
+              drag
+              dragMomentum={false}
+              onClick={() => handleButtonPress("LEFT")}
+              className={`w-16 h-8 bg-black text-white grid place-items-center text-xl rounded-md shadow shadow-white ${
+                activeKey === "LEFT" ? "shadow-none" : ""
+              }`}
+            >
+              <FaCaretLeft />
+            </motion.button>
+            <motion.button
+              drag
+              dragMomentum={false}
+              onClick={() => handleButtonPress("DOWN")}
+              className={`w-16 h-8 bg-black text-white grid place-items-center text-xl rounded-md shadow shadow-white ${
+                activeKey === "DOWN" ? "shadow-none" : ""
+              }`}
+            >
+              <FaCaretDown />
+            </motion.button>
+            <motion.button
+              drag
+              dragMomentum={false}
+              onClick={() => handleButtonPress("RIGHT")}
+              className={`w-16 h-8 bg-black text-white grid place-items-center text-xl rounded-md shadow shadow-white ${
+                activeKey === "RIGHT" ? "shadow-none" : ""
+              }`}
+            >
+              <FaCaretRight />
+            </motion.button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

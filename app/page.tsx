@@ -64,13 +64,19 @@ export default function Home() {
               </span>
             </div>
             <div
-              className={`opacity-75 w-fit flex items-center font-semibold tracking-wider  ${instrument_Serif.className}`}
+              className={`opacity-75 w-fit flex items-center font-semibold tracking-widest  font-sans`}
             >
               <IoMdMove className="mx-2" />
               DRAG TO MOVE
             </div>
             <div className="absolute sm:-top-1/2 -top-3/4 -left-1/3">
               <Sticky></Sticky>
+              <motion.img
+                drag
+                dragMomentum={false}
+                src="/download.png"
+                className="sm:size-30 size-20 mt-20 -rotate-6 hover:scale-110 transition-all hover:rotate-0 hover:saturate-200"
+              ></motion.img>
             </div>
             <motion.div
               drag
@@ -82,7 +88,7 @@ export default function Home() {
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
               dragMomentum={false}
-              className={`absolute -top-20 -left-20 size-48 bg-[url('/icons8-github.svg')] rounded-3xl p-0 rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-cover`}
+              className={`absolute -top-20 -left-20 size-48 bg-[url('/icons8-github.svg')] rounded-3xl p-0 rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-cover hover:saturate-200`}
             ></motion.div>
             <motion.div
               drag
@@ -97,7 +103,7 @@ export default function Home() {
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
               dragMomentum={false}
-              className={`${instrument_Serif.className} absolute -top-10 -left-40 size-48 bg-[url('/icons8-gmail.svg')] rounded-3xl p-0 -rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-cover`}
+              className={`${instrument_Serif.className} absolute -top-10 -left-40 size-48 bg-[url('/icons8-gmail.svg')] rounded-3xl p-0 -rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-cover hover:saturate-200`}
             ></motion.div>
             <motion.div
               drag
@@ -116,7 +122,7 @@ export default function Home() {
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
               dragMomentum={false}
-              className={`${instrument_Serif.className} absolute -top-10 -right-10 size-48 bg-[url('/icons8-document.svg')] rounded-3xl p-0 rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-cover`}
+              className={`absolute -top-10 -right-10 size-48 bg-[url('/icons8-document.svg')] rounded-3xl p-0 rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-cover hover:saturate-200`}
             >
               <a href="/public/file.svg" className="size-full" download></a>
             </motion.div>
@@ -133,7 +139,7 @@ export default function Home() {
               onDragStart={handleDragStart}
               onDragEnd={handleDragEnd}
               dragMomentum={false}
-              className="absolute -top-20 left-20 size-52 rounded-3xl p-0 -rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-[url('/icons8-linkedin.svg')] bg-cover"
+              className="absolute -top-20 left-20 size-52 rounded-3xl p-0 -rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-[url('/icons8-linkedin.svg')] bg-cover hover:saturate-200"
             ></motion.div>
             <div
               className={`absolute sm:top-40 top-32 left-16 sm:text-4xl text-xl -rotate-6`}
