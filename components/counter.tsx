@@ -7,7 +7,9 @@ const height = fontSize + padding;
 
 export default function Counter({ value }: { value: number }) {
   return (
-    <div
+    <motion.div
+      drag
+      dragMomentum={false}
       style={{ fontSize }}
       className="flex space-x-3 overflow-hidden rounded px-2 leading-none text-white"
     >
@@ -17,7 +19,7 @@ export default function Counter({ value }: { value: number }) {
           <Digit place={Math.pow(10, index)} key={index} value={value} />
         ))
         .reverse()}
-    </div>
+    </motion.div>
   );
 }
 
