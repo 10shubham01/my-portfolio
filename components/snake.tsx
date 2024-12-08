@@ -180,7 +180,7 @@ const SnakeGame = () => {
             drag
             dragMomentum={false}
             onClick={() => handleButtonPress("UP")}
-            className={`w-16 h-8 bg-black text-white grid place-items-center text-xl rounded-md shadow shadow-white ${
+            className={`w-16 h-8 bg-black text-white grid place-items-center text-xl rounded-md shadow shadow-white focus-visible:outline-none ${
               activeKey === "UP" ? "shadow-none" : ""
             }`}
           >
@@ -191,7 +191,7 @@ const SnakeGame = () => {
               drag
               dragMomentum={false}
               onClick={() => handleButtonPress("LEFT")}
-              className={`w-16 h-8 bg-black text-white grid place-items-center text-xl rounded-md shadow shadow-white ${
+              className={`w-16 h-8 bg-black text-white grid place-items-center text-xl rounded-md shadow shadow-white focus-visible:outline-none ${
                 activeKey === "LEFT" ? "shadow-none" : ""
               }`}
             >
@@ -201,7 +201,7 @@ const SnakeGame = () => {
               drag
               dragMomentum={false}
               onClick={() => handleButtonPress("DOWN")}
-              className={`w-16 h-8 bg-black text-white grid place-items-center text-xl rounded-md shadow shadow-white ${
+              className={`w-16 h-8 bg-black text-white grid place-items-center text-xl rounded-md shadow shadow-white focus-visible:outline-none ${
                 activeKey === "DOWN" ? "shadow-none" : ""
               }`}
             >
@@ -211,7 +211,7 @@ const SnakeGame = () => {
               drag
               dragMomentum={false}
               onClick={() => handleButtonPress("RIGHT")}
-              className={`w-16 h-8 bg-black text-white grid place-items-center text-xl rounded-md shadow shadow-white ${
+              className={`w-16 h-8 bg-black text-white grid place-items-center text-xl rounded-md shadow shadow-white focus-visible:outline-none ${
                 activeKey === "RIGHT" ? "shadow-none" : ""
               }`}
             >
