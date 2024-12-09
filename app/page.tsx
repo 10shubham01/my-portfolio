@@ -7,6 +7,7 @@ import SnakeGame from "@/components/snake";
 import Github from "@/components/github";
 import Sticky from "@/components/sticky";
 import { sendGTMEvent } from "@next/third-parties/google";
+import Experiance from "@/components/experieance";
 
 const fasthand = Fasthand({
   subsets: ["latin"],
@@ -157,6 +158,9 @@ export default function Home() {
             <div className="absolute -bottom-60 sm:left-4">
               <Github></Github>
             </div>
+          </div>
+          <div className="absolute top-10">
+            <Experiance></Experiance>
           </div>
         </motion.div>
       </div>
