@@ -92,7 +92,7 @@ const SnakeGame = () => {
 
   useEffect(() => {
     if (isRunning && !gameOver) {
-      const interval = setInterval(moveSnake, 150);
+      const interval = setInterval(moveSnake, 100);
       return () => clearInterval(interval);
     }
   }, [snake, direction, isRunning]);
@@ -136,6 +136,8 @@ const SnakeGame = () => {
               className={`absolute ${
                 index === snake.length - 1
                   ? "bg-yellow-400 rounded-full"
+                  : index === 0
+                  ? "border-2"
                   : "bg-green-500"
               }`}
               style={{
