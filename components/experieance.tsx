@@ -36,7 +36,7 @@ export default function Experiance() {
           dragMomentum={false}
           className="flex flex-col items-center justify-center"
         >
-          <div className="relative size-[400px] rotate-12 hover:rotate-0 hover:scale-110 transition-all  hover:saturate-200">
+          <div className="relative size-[400px] -rotate-12 hover:rotate-0 hover:scale-110 transition-all  hover:saturate-200">
             <p className="text-lg tracking-widest absolute top-20 z-10 left-4 text-white px-20">
               2018–2021: <br /> 🎓 Earned my BCA degree from Lovely Professional
               University, where I mastered coding, crammed for exams, and

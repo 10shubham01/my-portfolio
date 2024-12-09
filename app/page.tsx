@@ -67,7 +67,11 @@ export default function Home() {
             <div
               className={`opacity-75 w-fit flex items-center font-semibold tracking-widest font-sans`}
             >
-              <IoMdMove className="mx-2" />
+              <img
+                src="/com-video-to-gif-converter-unscreen.gif"
+                className="invert size-16"
+                alt=""
+              />
               DRAG TO MOVE
             </div>
             <div className="absolute sm:-top-1/2 -top-3/4 -left-1/3">
