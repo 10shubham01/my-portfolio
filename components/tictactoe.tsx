@@ -27,7 +27,7 @@ const TicTacToe: React.FC = () => {
       [2, 4, 6],
     ];
 
-    for (let combination of winningCombinations) {
+    for (const combination of winningCombinations) {
       const [a, b, c] = combination;
       if (board[a] && board[a] === board[b] && board[a] === board[c]) {
         setWinner(board[a]);
