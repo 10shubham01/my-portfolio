@@ -2,12 +2,12 @@
 import { motion } from "framer-motion";
 import { useRef, useState } from "react";
 import { Fasthand, Instrument_Serif } from "next/font/google";
-import { IoMdMove } from "react-icons/io";
 import SnakeGame from "@/components/snake";
 import Github from "@/components/github";
 import Sticky from "@/components/sticky";
 import { sendGTMEvent } from "@next/third-parties/google";
 import Experiance from "@/components/experieance";
+import TicTacToe from "@/components/tictactoe";
 
 const fasthand = Fasthand({
   subsets: ["latin"],
@@ -41,7 +41,7 @@ export default function Home() {
         ref={ref}
       >
         <motion.div
-          className="child sm:h-[250vh] h-[350vh] sm:min-w-[250vw] min-w-[350vw] bg-[url('/gridImage.svg')] bg-repeat flex justify-center items-center relative !z-20"
+          className="child sm:h-[250vh] h-[450vh] sm:min-w-[250vw] min-w-[550vw] bg-[url('/gridImage.svg')] bg-repeat flex justify-center items-center relative !z-20"
           style={{
             backgroundSize: "40px 40px",
             backgroundBlendMode: "hard-light",
@@ -165,6 +165,9 @@ export default function Home() {
           </div>
           <div className="absolute top-10">
             <Experiance></Experiance>
+          </div>
+          <div className="absolute top-10 left-10">
+            <TicTacToe></TicTacToe>
           </div>
         </motion.div>
       </div>
