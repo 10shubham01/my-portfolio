@@ -8,6 +8,7 @@ import Sticky from "@/components/sticky";
 import { sendGTMEvent } from "@next/third-parties/google";
 import Experiance from "@/components/experieance";
 import TicTacToe from "@/components/tictactoe";
+import Skills from "@/components/skills";
 
 const fasthand = Fasthand({
   subsets: ["latin"],
@@ -168,6 +169,9 @@ export default function Home() {
           </div>
           <div className="absolute top-10 left-10">
             <TicTacToe></TicTacToe>
+          </div>
+          <div className="absolute bottom-96 left-52">
+            <Skills></Skills>
           </div>
         </motion.div>
       </div>
