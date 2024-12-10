@@ -174,7 +174,7 @@ export default function Home() {
           <div className="absolute bottom-96 left-52">
             <Skills></Skills>
           </div>
-          <div className="absolute bottom-1/2 sm:right-96 right-20">
+          <div className="absolute bottom-1/2 sm:right-72 right-20">
             <Projects></Projects>
           </div>
         </motion.div>
