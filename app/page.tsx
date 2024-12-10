@@ -9,6 +9,7 @@ import { sendGTMEvent } from "@next/third-parties/google";
 import Experiance from "@/components/experieance";
 import TicTacToe from "@/components/tictactoe";
 import Skills from "@/components/skills";
+import Projects from "@/components/porjects";
 
 const fasthand = Fasthand({
   subsets: ["latin"],
@@ -172,6 +173,9 @@ export default function Home() {
           </div>
           <div className="absolute bottom-96 left-52">
             <Skills></Skills>
+          </div>
+          <div className="absolute bottom-1/2 sm:right-96 right-20">
+            <Projects></Projects>
           </div>
         </motion.div>
       </div>

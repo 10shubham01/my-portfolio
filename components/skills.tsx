@@ -46,7 +46,7 @@ const DraggableIcons: React.FC = () => {
               : "mb-10"
           }`}
         >
-          {row.map((icon, index) => (
+          {row.map((icon) => (
             <motion.img
               dragMomentum={false}
               key={icon.alt}
