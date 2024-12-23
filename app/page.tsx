@@ -134,6 +134,25 @@ export default function Home() {
               <a href="/public/file.svg" className="size-full" download></a>
             </motion.div>
             <motion.div
+            
+               drag
+              onClickCapture={() => {
+                if (!dragging) {
+                  window.open(
+                    "https://peerlist.io/10shubham01/project/shubhams-portfolio",
+                    "_blank"
+                  );
+                  sendGTMEvent({
+                    event: "ResumeDownloaded",
+                    value: true,
+                  });
+                }
+              }}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              dragMomentum={false}
+              className="bg-[url('/week_medal_2.svg')] size-32 bg-contain bg-no-repeat hover:rotate-0 hover:scale-105 transition-all cursor-grab hover:saturate-200 absolute top-1/2 right-28 rotate-12"></motion.div>
+            <motion.div
               drag
               onClickCapture={() => {
                 if (!dragging) {
