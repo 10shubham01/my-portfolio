@@ -83,7 +83,7 @@ const ContributionGraph: React.FC = () => {
         </div>
       )}
       <div className="text-3xl text-gray-100 absolute -right-36 -bottom-8 -rotate-45">
-        {totalContributions} contributions in 2024
+        {totalContributions} contributions in {new Date().getFullYear()}
       </div>
     </div>
   );
