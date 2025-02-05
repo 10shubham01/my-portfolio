@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     description:
       "Shubham Gupta is a Senior Software Engineer at Credilio, specializing in frontend development with expertise in React, Next.js, vue, and TypeScript.",
     url: "https://www.shubhamgupta.dev",
-    images: "https://www.shubhamgupta.dev/images/profile.jepg",
+    images: "https://www.shubhamgupta.dev/images/profile.jpeg",
     type: "website",
   },
   twitter: {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: "Shubham Gupta – Senior Software Engineer at Credilio",
     description:
       "Shubham Gupta is a Senior Software Engineer at Credilio, specializing in frontend development with expertise in React, Next.js, vue, and TypeScript.",
-    images: "https://www.shubhamgupta.dev/images/profile.jepg",
+    images: "https://www.shubhamgupta.dev/images/profile.jpeg",
   },
 };
 
