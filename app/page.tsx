@@ -11,6 +11,12 @@ import Experiance from "@/components/experieance";
 import TicTacToe from "@/components/tictactoe";
 import Skills from "@/components/skills";
 import Projects from "@/components/porjects";
+import InteractiveResume from "@/components/interactive-resume";
+import ContactForm from "@/components/contact-form";
+import SkillGame from "@/components/skill-game";
+import VisitorCounter from "@/components/visitor-counter";
+import ThemeToggle from "@/components/theme-toggle";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const fasthand = Fasthand({
   subsets: ["latin"],
@@ -28,6 +34,7 @@ const instrument_Serif = Instrument_Serif({
 export default function Home() {
   const ref = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState(false); // Track if dragging
+  const [currentView, setCurrentView] = useState<'canvas' | 'resume' | 'contact' | 'game'>('canvas');
 
   const handleDragStart = () => {
     setDragging(true);
@@ -38,7 +45,7 @@ export default function Home() {
   };
 
   return (
-    <>
+    <ThemeProvider>
       <Head>
         <script
           type="application/ld+json"
@@ -57,7 +64,62 @@ export default function Home() {
           }}
         />
       </Head>
-      <div className={`h-screen sm:p-2 text-white ${fasthand.className}`}>
+      
+      {/* Navigation */}
+      <nav className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex gap-2 bg-gray-900/80 backdrop-blur-sm rounded-full p-2">
+        <motion.button
+          onClick={() => setCurrentView('canvas')}
+          className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+            currentView === 'canvas' 
+              ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white' 
+              : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+          }`}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Canvas
+        </motion.button>
+        <motion.button
+          onClick={() => setCurrentView('resume')}
+          className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+            currentView === 'resume' 
+              ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white' 
+              : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+          }`}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Resume
+        </motion.button>
+        <motion.button
+          onClick={() => setCurrentView('contact')}
+          className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+            currentView === 'contact' 
+              ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white' 
+              : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+          }`}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Contact
+        </motion.button>
+        <motion.button
+          onClick={() => setCurrentView('game')}
+          className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+            currentView === 'game' 
+              ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white' 
+              : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+          }`}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Game
+        </motion.button>
+      </nav>
+
+      {/* Content Views */}
+      {currentView === 'canvas' && (
+        <div className={`h-screen sm:p-2 text-white ${fasthand.className}`}>
         <div
           className="size-full relative overflow-hidden border flex justify-center items-center bg-neutral-900 !cursor-grab"
           ref={ref}
@@ -219,6 +281,25 @@ export default function Home() {
           </motion.div>
         </div>
       </div>
-    </>
+      )}
+
+      {currentView === 'resume' && (
+        <InteractiveResume />
+      )}
+
+      {currentView === 'contact' && (
+        <ContactForm />
+      )}
+
+      {currentView === 'game' && (
+        <SkillGame />
+      )}
+
+      {/* Floating Visitor Counter */}
+      <VisitorCounter />
+      
+      {/* Theme Toggle */}
+      <ThemeToggle />
+    </ThemeProvider>
   );
 }
