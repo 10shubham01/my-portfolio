@@ -47,17 +47,93 @@ export default function Home() {
               "@context": "https://schema.org",
               "@type": "Person",
               name: "Shubham Gupta",
+              alternateName: ["Shubham", "Gupta"],
               jobTitle: "Senior Software Engineer",
+              description: "Expert Frontend Developer and Full Stack Engineer specializing in React, Next.js, Vue.js, and TypeScript",
               worksFor: {
                 "@type": "Organization",
                 name: "Credilio",
+                url: "https://credilio.com"
               },
               url: "https://www.shubhamgupta.dev",
+              sameAs: [
+                "https://github.com/10shubham01",
+                "https://www.linkedin.com/in/shubhamgupta001/",
+                "https://peerlist.io/10shubham01/project/shubhams-portfolio"
+              ],
+              knowsAbout: [
+                "Frontend Development",
+                "Web Development",
+                "React.js",
+                "Next.js",
+                "Vue.js",
+                "TypeScript",
+                "JavaScript",
+                "Full Stack Development",
+                "UI/UX Design",
+                "Progressive Web Apps"
+              ],
+              hasOccupation: {
+                "@type": "Occupation",
+                name: "Frontend Developer",
+                description: "Professional web developer with expertise in modern frontend technologies"
+              },
+              alumniOf: {
+                "@type": "Organization",
+                name: "Software Engineering Education"
+              },
+              address: {
+                "@type": "PostalAddress",
+                addressCountry: "India"
+              }
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "Shubham Gupta Portfolio",
+              description: "Professional portfolio of Shubham Gupta - Frontend Developer, Web Developer, and Full Stack Engineer",
+              url: "https://www.shubhamgupta.dev",
+              author: {
+                "@type": "Person",
+                name: "Shubham Gupta"
+              },
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://www.shubhamgupta.dev?search={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Shubham Gupta Web Development Services",
+              description: "Professional web development services including frontend development, React development, and full-stack solutions",
+              url: "https://www.shubhamgupta.dev",
+              logo: "https://www.shubhamgupta.dev/images/profile.jpeg",
+              contactPoint: {
+                "@type": "ContactPoint",
+                contactType: "customer service",
+                email: "shubhamedu.01@gmail.com"
+              },
+              sameAs: [
+                "https://github.com/10shubham01",
+                "https://www.linkedin.com/in/shubhamgupta001/"
+              ]
             }),
           }}
         />
       </Head>
-      <div className={`h-screen sm:p-2 text-white ${fasthand.className}`}>
+      <main className={`h-screen sm:p-2 text-white ${fasthand.className}`}>
         <div
           className="size-full relative overflow-hidden border flex justify-center items-center bg-neutral-900 !cursor-grab"
           ref={ref}
@@ -92,7 +168,7 @@ export default function Home() {
                 <img
                   src="/com-video-to-gif-converter-unscreen.gif"
                   className="invert size-16"
-                  alt=""
+                  alt="Drag to navigate portfolio"
                 />
                 DRAG TO MOVE
               </div>
@@ -103,6 +179,7 @@ export default function Home() {
                   dragMomentum={false}
                   src="/download.png"
                   className="sm:size-40 size-20 mt-20 -rotate-6 hover:scale-110 transition-all hover:rotate-0 hover:saturate-200"
+                  alt="Download Shubham Gupta's Resume"
                 ></motion.img>
               </div>
               <motion.div
@@ -116,6 +193,7 @@ export default function Home() {
                 onDragEnd={handleDragEnd}
                 dragMomentum={false}
                 className={`absolute -top-20 -left-20 size-48 bg-[url('/icons8-github.svg')] rounded-3xl p-0 rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-cover hover:saturate-200`}
+                aria-label="Visit Shubham Gupta's GitHub Profile"
               ></motion.div>
               <motion.div
                 drag
@@ -131,6 +209,7 @@ export default function Home() {
                 onDragEnd={handleDragEnd}
                 dragMomentum={false}
                 className={`${instrument_Serif.className} absolute -top-10 -left-40 size-48 bg-[url('/icons8-gmail.svg')] rounded-3xl p-0 -rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-cover hover:saturate-200`}
+                aria-label="Contact Shubham Gupta via Email"
               ></motion.div>
               <motion.div
                 drag
@@ -150,8 +229,9 @@ export default function Home() {
                 onDragEnd={handleDragEnd}
                 dragMomentum={false}
                 className={`absolute -top-10 -right-10 size-48 bg-[url('/icons8-document.svg')] rounded-3xl p-0 rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-cover hover:saturate-200`}
+                aria-label="Download Shubham Gupta's Resume"
               >
-                <a href="/public/file.svg" className="size-full" download></a>
+                <a href="/public/file.svg" className="size-full" download aria-label="Download Resume PDF"></a>
               </motion.div>
               <motion.div
                 drag
@@ -171,6 +251,7 @@ export default function Home() {
                 onDragEnd={handleDragEnd}
                 dragMomentum={false}
                 className="bg-[url('/week_medal_2.svg')] size-32 bg-contain bg-no-repeat hover:rotate-0 hover:scale-105 transition-all cursor-grab hover:saturate-200 absolute top-1/2 right-28 rotate-12"
+                aria-label="View Shubham Gupta's Portfolio on Peerlist"
               ></motion.div>
               <motion.div
                 drag
@@ -186,6 +267,7 @@ export default function Home() {
                 onDragEnd={handleDragEnd}
                 dragMomentum={false}
                 className="absolute -top-20 left-20 size-52 rounded-3xl p-0 -rotate-12 hover:rotate-0 hover:scale-105 transition-all cursor-grab bg-[url('/icons8-linkedin.svg')] bg-cover hover:saturate-200"
+                aria-label="Connect with Shubham Gupta on LinkedIn"
               ></motion.div>
               <div
                 className={`absolute sm:top-40 top-32 left-16 sm:text-4xl text-xl -rotate-6`}
@@ -204,21 +286,21 @@ export default function Home() {
                 <Github></Github>
               </div>
             </div>
-            <div className="absolute top-10">
+            <section className="absolute top-10" aria-label="Work Experience">
               <Experiance></Experiance>
-            </div>
-            <div className="absolute top-10 left-10">
+            </section>
+            <section className="absolute top-10 left-10" aria-label="Interactive Tic Tac Toe Game">
               <TicTacToe></TicTacToe>
-            </div>
-            <div className="absolute bottom-96 left-52">
+            </section>
+            <section className="absolute bottom-96 left-52" aria-label="Technical Skills">
               <Skills></Skills>
-            </div>
-            <div className="absolute bottom-1/2 sm:right-72 right-20">
+            </section>
+            <section className="absolute bottom-1/2 sm:right-72 right-20" aria-label="Projects Portfolio">
               <Projects></Projects>
-            </div>
+            </section>
           </motion.div>
         </div>
-      </div>
+      </main>
     </>
   );
 }

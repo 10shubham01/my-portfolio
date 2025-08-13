@@ -1,6 +1,30 @@
-# *
+# Robots.txt for Shubham Gupta Portfolio
+# Allow all search engines to crawl the site
+
+# All User Agents
 User-agent: *
 Allow: /
+
+# Specific rules for Googlebot
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Specific rules for Bingbot
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Block access to private areas
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /private/
+
+# Allow important directories
+Allow: /images/
+Allow: /public/
+Allow: /components/
 
 # Host
 Host: https://www.shubhamgupta.dev
@@ -8,3 +32,7 @@ Host: https://www.shubhamgupta.dev
 # Sitemaps
 Sitemap: https://www.shubhamgupta.dev/sitemap.xml
 Sitemap: https://www.shubhamgupta.dev/server-sitemap.xml
+
+# Additional information
+# This site is optimized for search engines
+# Contact: shubhamedu.01@gmail.com
