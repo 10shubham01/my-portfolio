@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+
 
 export default function Head() {
   return (
