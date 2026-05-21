@@ -12,13 +12,15 @@ export type ThemeToggleAnimation = {
   variant?: AnimationVariant;
   start?: AnimationStart;
   blur?: boolean;
+  /** View-transition wipe duration in seconds. */
+  durationSec?: number;
   /** Alternates transition origin on each toggle (e.g. bottom-up, then top-down). */
   alternateStarts?: [AnimationStart, AnimationStart];
 };
 
 const DEFAULT_THEME_ANIMATION: ThemeToggleAnimation = {
   variant: "rectangle",
-  blur: true,
+  blur: false,
   alternateStarts: ["bottom-up", "top-down"],
 };
 
@@ -42,6 +44,7 @@ export function ThemeToggleButton2({
     variant: animation.variant ?? DEFAULT_THEME_ANIMATION.variant,
     start: transitionStart,
     blur: animation.blur ?? DEFAULT_THEME_ANIMATION.blur,
+    durationSec: animation.durationSec ?? DEFAULT_THEME_ANIMATION.durationSec,
   });
 
   const toggleTheme = useCallback(() => {
@@ -59,7 +62,7 @@ export function ThemeToggleButton2({
       onClick={toggleTheme}
       aria-label="Toggle theme"
       className={cn(
-        "rounded-full transition-all duration-300 active:scale-95",
+        "cursor-pointer rounded-full transition-all duration-300 active:scale-95",
         isDark ? "bg-black text-white" : "bg-white text-black",
         className,
       )}
@@ -70,18 +73,19 @@ export function ThemeToggleButton2({
         fill="currentColor"
         strokeLinecap="round"
         viewBox="0 0 32 32"
+        className="pointer-events-none size-full"
       >
         <clipPath id={clipPathId}>
           <motion.path
             animate={{ y: isDark ? 10 : 0, x: isDark ? -12 : 0 }}
-            transition={{ ease: "easeInOut", duration: 0.35 }}
+            transition={{ ease: "easeInOut", duration: 0.55 }}
             d="M0-5h30a1 1 0 0 0 9 13v24H0Z"
           />
         </clipPath>
         <g clipPath={`url(#${clipPathId})`}>
           <motion.circle
             animate={{ r: isDark ? 10 : 8 }}
-            transition={{ ease: "easeInOut", duration: 0.35 }}
+            transition={{ ease: "easeInOut", duration: 0.55 }}
             cx="16"
             cy="16"
           />
@@ -91,7 +95,7 @@ export function ThemeToggleButton2({
               scale: isDark ? 0.5 : 1,
               opacity: isDark ? 0 : 1,
             }}
-            transition={{ ease: "easeInOut", duration: 0.35 }}
+            transition={{ ease: "easeInOut", duration: 0.55 }}
             stroke="currentColor"
             strokeWidth="1.5"
           >

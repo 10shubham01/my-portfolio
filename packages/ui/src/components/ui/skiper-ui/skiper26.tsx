@@ -446,11 +446,14 @@ export const useThemeToggle = ({
   start = "center",
   blur = false,
   gifUrl = "",
+  durationSec = 0.7,
 }: {
   variant?: AnimationVariant;
   start?: AnimationStart;
   blur?: boolean;
   gifUrl?: string;
+  /** View-transition wipe duration in seconds. */
+  durationSec?: number;
 } = {}) => {
   const { theme, setTheme, resolvedTheme } = useTheme();
 
@@ -480,7 +483,7 @@ export const useThemeToggle = ({
   const toggleTheme = useCallback(() => {
     setIsDark(!isDark);
 
-    const animation = createAnimation(variant, start, blur, gifUrl);
+    const animation = createAnimation(variant, start, blur, gifUrl, durationSec);
 
     updateStyles(animation.css, animation.name);
 
@@ -503,6 +506,7 @@ export const useThemeToggle = ({
     start,
     blur,
     gifUrl,
+    durationSec,
     updateStyles,
     isDark,
     setIsDark,
@@ -511,7 +515,7 @@ export const useThemeToggle = ({
   const setCrazyLightTheme = useCallback(() => {
     setIsDark(false);
 
-    const animation = createAnimation(variant, start, blur, gifUrl);
+    const animation = createAnimation(variant, start, blur, gifUrl, durationSec);
 
     updateStyles(animation.css, animation.name);
 
@@ -532,7 +536,7 @@ export const useThemeToggle = ({
   const setCrazyDarkTheme = useCallback(() => {
     setIsDark(true);
 
-    const animation = createAnimation(variant, start, blur, gifUrl);
+    const animation = createAnimation(variant, start, blur, gifUrl, durationSec);
 
     updateStyles(animation.css, animation.name);
 
@@ -559,7 +563,7 @@ export const useThemeToggle = ({
     ).matches;
     setIsDark(prefersDark);
 
-    const animation = createAnimation(variant, start, blur, gifUrl);
+    const animation = createAnimation(variant, start, blur, gifUrl, durationSec);
 
     updateStyles(animation.css, animation.name);
 
@@ -751,7 +755,9 @@ export const createAnimation = (
   start: AnimationStart = "center",
   blur = false,
   url?: string,
+  durationSec = 0.7,
 ): Animation => {
+  const transitionDuration = `${durationSec}s`;
   const svg = generateSVG(variant, start);
   const transformOrigin = getTransformOrigin(start);
 
@@ -812,7 +818,7 @@ export const createAnimation = (
       name: `${variant}-${start}${blur ? "-blur" : ""}`,
       css: `
        ::view-transition-group(root) {
-        animation-duration: 0.7s;
+        animation-duration: ${transitionDuration};
         animation-timing-function: var(--expo-out);
       }
             
@@ -862,7 +868,7 @@ export const createAnimation = (
       name: `${variant}-${start}${blur ? "-blur" : ""}`,
       css: `
        ::view-transition-group(root) {
-        animation-duration: 0.7s;
+        animation-duration: ${transitionDuration};
         animation-timing-function: var(--expo-out);
       }
             
@@ -1038,7 +1044,7 @@ export const createAnimation = (
       name: `${variant}-${start}${blur ? "-blur" : ""}`,
       css: `
       ::view-transition-group(root) {
-        animation-duration: 0.7s;
+        animation-duration: ${transitionDuration};
         animation-timing-function: var(--expo-out);
       }
             
@@ -1111,7 +1117,7 @@ export const createAnimation = (
       name: `${variant}-${start}${blur ? "-blur" : ""}`,
       css: `
        ::view-transition-group(root) {
-        animation-duration: 1s;
+        animation-duration: ${transitionDuration};
         animation-timing-function: var(--expo-out);
       }
             
