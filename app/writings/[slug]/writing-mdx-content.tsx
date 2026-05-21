@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { AlienText } from "@/components/alien-text";
 import { createHeadingIdFactory } from "@/lib/writing-headings";
 import { WritingCopyButton } from "./writing-copy-button";
 import { WritingVideoPlayer, type WritingVideoSource } from "./writing-video-player";
@@ -662,8 +663,14 @@ export function WritingMdxContent({ content }: { content: string }) {
           };
 
           return (
-            <HeadingTag key={index} id={id} className={className} {...sectionHeadingProps}>
-              {renderInline(block.text)}
+            <HeadingTag
+              key={index}
+              id={id}
+              aria-label={block.text}
+              className={className}
+              {...sectionHeadingProps}
+            >
+              <AlienText text={block.text} />
             </HeadingTag>
           );
         }

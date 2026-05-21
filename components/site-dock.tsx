@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { AlienText } from "@/components/alien-text";
 import { cn } from "@repo/ui/lib/utils";
 
 const DOCK_ITEMS = [
@@ -18,7 +19,7 @@ export function SiteDock() {
   return (
     <div
       data-site-dock="true"
-      className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-[max(0.5rem,env(safe-area-inset-top))]"
+      className="site-dock pointer-events-none fixed inset-x-0 top-[calc(11px+10px)] z-50 flex justify-center px-4 pt-[max(0.5rem,env(safe-area-inset-top))]"
     >
       <ul
         role="navigation"
@@ -36,6 +37,7 @@ export function SiteDock() {
             <li key={href}>
               <Link
                 href={href}
+                aria-label={label}
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "dock-item inline-flex rounded-full px-2.5 py-1 text-[11px] font-normal tracking-wide transition-colors",
@@ -45,7 +47,7 @@ export function SiteDock() {
                     : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground dark:hover:bg-white/6",
                 )}
               >
-                {label}
+                <AlienText text={label} />
               </Link>
             </li>
           );

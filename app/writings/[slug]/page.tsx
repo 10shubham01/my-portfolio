@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { absoluteUrl, SITE_AUTHOR, SITE_NAME, SITE_TWITTER_HANDLE, siteImages } from "@/lib/site";
 import { getAllWritings, getWritingBySlug } from "@/lib/writings";
 import { getWritingSections } from "@/lib/writing-headings";
+import { WritingArticleTitle } from "@/components/writing-article-title";
 import { WritingThumbnail } from "../writing-thumbnail";
 import { ProgressiveBlur } from "./progressive-blur";
 import { WritingMdxContent } from "./writing-mdx-content";
@@ -166,13 +167,7 @@ export default async function WritingPage({
             {formattedDate ? (
               <time className="text-xs font-medium tracking-[0.12em] text-[#FF5800]/85 uppercase">{formattedDate}</time>
             ) : null}
-            <h1
-              data-writing-section-heading="true"
-              data-writing-section-id="top"
-              className="font-display text-4xl leading-[1.05] tracking-normal text-foreground sm:text-5xl"
-            >
-              {frontmatter.title}
-            </h1>
+            <WritingArticleTitle title={frontmatter.title} />
             <p className="max-w-2xl font-sans text-base leading-7 text-muted-foreground sm:text-lg">
               {frontmatter.subtitle || frontmatter.summary}
             </p>

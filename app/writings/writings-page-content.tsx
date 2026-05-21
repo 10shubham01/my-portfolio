@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowSquareOutIcon } from "@phosphor-icons/react/dist/ssr";
 import { AnimatePresence, motion } from "framer-motion";
 import { type MouseEvent, useCallback, useEffect, useRef, useState } from "react";
+import { AlienText } from "@/components/alien-text";
 import type { WritingPreview } from "@/lib/writings";
 import { WritingThumbnail } from "./writing-thumbnail";
 
@@ -91,10 +92,11 @@ function WritingHeading({ label, activeIndex }: { label: string; activeIndex: nu
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           exit={{ opacity: 0, y: direction > 0 ? 28 : -28, filter: "blur(14px)" }}
           transition={{ duration: 0.52, ease: EASE }}
-          className="absolute right-0 bottom-0 text-right font-oblique text-xl tracking-tight text-foreground sm:text-2xl md:text-3xl"
+          className="pointer-events-auto absolute right-0 bottom-0 text-right font-oblique text-xl tracking-tight text-foreground sm:text-2xl md:text-3xl"
+          aria-label={`${label}.`}
           aria-live="polite"
         >
-          {label}
+          <AlienText text={label} />
           <span style={{ color: "#FF5800" }}>.</span>
         </motion.div>
       </AnimatePresence>

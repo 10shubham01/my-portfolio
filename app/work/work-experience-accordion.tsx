@@ -3,6 +3,7 @@
 import { CaretDownIcon } from "@phosphor-icons/react/dist/ssr";
 import { useState } from "react";
 
+import { AlienText } from "@/components/alien-text";
 import { AccordionPanel } from "@/components/accordion-panel";
 import { TechChips } from "@/components/about/stack-icon-token";
 import { aboutBodyClass, aboutBulletClass, aboutMetaClass } from "@/components/about/about-section-panel";
@@ -166,8 +167,11 @@ export function WorkExperienceAccordion({
       onMouseEnter={onSectionMouseEnter}
       onMouseLeave={() => onActiveJobChange?.(null)}
     >
-      <p className="mb-3 font-sans text-[10px] font-light uppercase tracking-[0.22em] text-muted-foreground/70 sm:text-[11px]">
-        Experience
+      <p
+        aria-label="Experience"
+        className="mb-3 font-sans text-[10px] font-light uppercase tracking-[0.22em] text-muted-foreground/70 sm:text-[11px]"
+      >
+        <AlienText text="Experience" />
       </p>
       <ul className="space-y-0.5" aria-label="Experience">
         {EXPERIENCE_ENTRIES.map((job) => (

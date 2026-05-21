@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -60,6 +60,7 @@ function HeroWordLayout({
 /** Client-only — motion initial state is never SSR'd. */
 function AnimatedHero({ text, className }: { text: string; className?: string }) {
   const words = text.split(" ").filter(Boolean);
+  const dragConstraintsRef = useRef<HTMLDivElement>(null);
   const [dropY, setDropY] = useState(() => getDropY());
   const [play, setPlay] = useState(false);
 
@@ -78,9 +79,15 @@ function AnimatedHero({ text, className }: { text: string; className?: string })
   let charOffset = 0;
 
   return (
-    <div className={cn("relative isolate w-full overflow-clip", className)}>
+    <>
       <div
-        className="relative flex flex-wrap justify-center font-semibold [contain:paint]"
+        ref={dragConstraintsRef}
+        className="pointer-events-none fixed inset-0"
+        aria-hidden
+      />
+      <div className={cn("relative isolate w-full overflow-visible", className)}>
+      <div
+        className="relative flex flex-wrap justify-center font-semibold"
         aria-label={text}
       >
         {words.map((word, wordIndex) => {
@@ -118,12 +125,10 @@ function AnimatedHero({ text, className }: { text: string; className?: string })
                       },
                     }}
                     drag
-                    dragConstraints={{
-                      top: -300,
-                      left: -300,
-                      right: 300,
-                      bottom: 300,
-                    }}
+                    dragConstraints={dragConstraintsRef}
+                    dragElastic={0.08}
+                    dragMomentum={false}
+                    whileDrag={{ zIndex: 50 }}
                     aria-hidden
                   >
                     {char}
@@ -154,6 +159,7 @@ function AnimatedHero({ text, className }: { text: string; className?: string })
         />
       </div>
     </div>
+    </>
   );
 }
 
@@ -161,7 +167,7 @@ function StaticHero({ text, className }: { text: string; className?: string }) {
   const words = text.split(" ").filter(Boolean);
 
   return (
-    <div className={cn("relative overflow-hidden", className)} aria-label={text}>
+    <div className={cn("relative overflow-visible", className)} aria-label={text}>
       <HeroWordLayout
         words={words}
         renderChar={(char, _index, key) => (

@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useRef } from "react";
 
+import { AlienText } from "@/components/alien-text";
+import { cn } from "@/lib/utils";
+
 /**
  * Section headings displayed above the orange line, right-aligned to the
  * content area. Animates in/out based on the active section index
@@ -145,7 +148,10 @@ export function AboutSectionHeadings({ labels, activeIndex }: AboutSectionHeadin
             <div
               key={label}
               ref={setHeadingRef(i)}
-              className="absolute right-8 bottom-2 max-w-[min(100%,18rem)] text-right font-oblique text-base leading-tight tracking-tight text-foreground sm:right-10 sm:text-lg lg:right-8 md:text-xl"
+              className={cn(
+                "absolute right-8 bottom-2 max-w-[min(100%,18rem)] text-right font-oblique text-base leading-tight tracking-tight text-foreground sm:right-10 sm:text-lg lg:right-8 md:text-xl",
+                i === activeIndex ? "pointer-events-auto" : "pointer-events-none",
+              )}
               style={{
                 transform: "translateY(-28px)",
                 opacity: 0,
@@ -153,7 +159,7 @@ export function AboutSectionHeadings({ labels, activeIndex }: AboutSectionHeadin
                 willChange: "transform, opacity, filter",
               }}
             >
-              {label}
+              <AlienText text={label} />
               <span style={{ color: "#FF5800" }}>.</span>
             </div>
           ))}

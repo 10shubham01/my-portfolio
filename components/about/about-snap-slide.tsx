@@ -33,8 +33,14 @@ export function AboutSnapSlide({ section }: { section: AboutSnapSection }) {
 
     case "contributions":
       return (
-        <div className="flex w-full min-w-0 max-w-[min(100%,52rem)] justify-center rounded-md transition-[background-color,box-shadow] duration-200 hover:bg-foreground/4 hover:shadow-[0_18px_60px_rgba(0,0,0,0.08)] dark:hover:bg-white/4 dark:hover:shadow-none">
-          <GithubCalendar username="10shubham01" colorSchema="orange" variant="default" showTotal />
+        <div className="flex w-full min-w-0 max-w-full justify-center rounded-md px-0">
+          <GithubCalendar
+            className="w-full"
+            username="10shubham01"
+            colorSchema="orange"
+            variant="default"
+            showTotal
+          />
         </div>
       );
 

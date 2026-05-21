@@ -35,6 +35,30 @@ function RemotionIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+/** Simple Icons brand hex — used on token hover (icons render with currentColor). */
+export const TECH_ICON_COLORS: Record<TechId, string> = {
+  react: "#61DAFB",
+  nextjs: "#000000",
+  vue: "#4FC08D",
+  nuxt: "#00DC82",
+  typescript: "#3178C6",
+  javascript: "#F7DF1E",
+  tailwind: "#06B6D4",
+  framer: "#0055FF",
+  node: "#5FA04E",
+  express: "#000000",
+  adonis: "#5A45FF",
+  postgresql: "#4169E1",
+  mysql: "#4479A1",
+  aws: "#FF9900",
+  vite: "#646CFF",
+  webpack: "#8DD6F9",
+  redux: "#764ABC",
+  pinia: "#FFD859",
+  zod: "#3EAF7C",
+  remotion: "#0B84F3",
+};
+
 export const TECH_ICON_MAP: Record<TechId, TechIconComponent> = {
   react: SiReact,
   nextjs: SiNextdotjs,

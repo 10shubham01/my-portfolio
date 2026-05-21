@@ -45,6 +45,15 @@ export interface GithubCalendarProps {
   colorSchema?: "green" | "blue" | "purple" | "orange" | "gray";
 }
 
+/** GitHub returns ~53 week columns for the last year. */
+const CONTRIBUTION_WEEK_COUNT = 53;
+
+/** Column-major grid: 7 rows × N weeks, columns share width equally. */
+const calendarGridClass =
+  "grid w-full min-w-0 max-w-full grid-flow-col grid-rows-[repeat(7,auto)] gap-0.5 pb-1 [grid-auto-columns:minmax(0,1fr)] sm:gap-1 md:gap-1.5";
+
+const calendarCellClass = "aspect-square w-full min-w-0";
+
 function getShapeClass(shape: string) {
   switch (shape) {
     case "circle":
@@ -163,16 +172,12 @@ export function GithubCalendar({
   if (loading) {
     return (
       <div
-        className={cn("flex w-full max-w-full justify-center gap-px overflow-x-hidden", className)}
+        className={cn(calendarGridClass, className)}
         aria-busy
         aria-label="Loading contribution calendar"
       >
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div key={i} className="flex flex-col gap-px sm:gap-0.5 md:gap-px">
-            {Array.from({ length: 7 }).map((_, j) => (
-              <div key={j} className="size-[5px] rounded-[2px] bg-muted sm:size-2 md:size-2.5" />
-            ))}
-          </div>
+        {Array.from({ length: CONTRIBUTION_WEEK_COUNT * 7 }).map((_, i) => (
+          <div key={i} className={cn(calendarCellClass, "rounded-[2px] bg-muted")} />
         ))}
       </div>
     );
@@ -191,40 +196,37 @@ export function GithubCalendar({
         </p>
       )}
 
-      <div className="flex w-full min-w-0 max-w-full justify-center gap-px overflow-x-hidden pb-1 sm:gap-0.5 md:gap-px">
-        {weeks.map((week, weekIndex) => (
-          <div key={weekIndex} className="flex flex-col gap-px sm:gap-0.5 md:gap-px">
-            {week.map((day) => {
-              const isGlowing = variant === "city-lights" && day.contributionCount > 0;
-              const isMinimal = variant === "minimal";
-              const bg = cellBackground(day.contributionLevel, colorSchema);
+      <div className={calendarGridClass}>
+        {weeks.flatMap((week) =>
+          week.map((day) => {
+            const isGlowing = variant === "city-lights" && day.contributionCount > 0;
+            const isMinimal = variant === "minimal";
+            const bg = cellBackground(day.contributionLevel, colorSchema);
 
-              return (
-                <div
-                  key={day.date}
-                  title={`${day.contributionCount} contributions on ${day.date}`}
-                  className={cn(
-                    "aspect-square w-[5px] shrink-0 transition-colors duration-200 sm:w-2 md:w-2.5",
-                    bg.className,
-                    shapeClass,
-                    isMinimal && "scale-75 rounded-full",
-                    isGlowing && "z-10",
-                  )}
-                  style={{
-                    ...bg.style,
-                    ...(isGlowing && day.contributionLevel !== "NONE"
-                      ? {
-                          boxShadow: `0 0 ${
-                            day.contributionCount > 3 ? glowIntensity * 1.5 : glowIntensity
-                          }px ${useBrandOrange ? ACCENT : "#f97316"}`,
-                        }
-                      : undefined),
-                  }}
-                />
-              );
-            })}
-          </div>
-        ))}
+            return (
+              <div
+                key={day.date}
+                className={cn(
+                  calendarCellClass,
+                  bg.className,
+                  shapeClass,
+                  isMinimal && "scale-75 rounded-full",
+                  isGlowing && "z-10",
+                )}
+                style={{
+                  ...bg.style,
+                  ...(isGlowing && day.contributionLevel !== "NONE"
+                    ? {
+                        boxShadow: `0 0 ${
+                          day.contributionCount > 3 ? glowIntensity * 1.5 : glowIntensity
+                        }px ${useBrandOrange ? ACCENT : "#f97316"}`,
+                      }
+                    : undefined),
+                }}
+              />
+            );
+          }),
+        )}
       </div>
     </div>
   );

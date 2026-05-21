@@ -119,14 +119,20 @@ export function WorkProjectList({
   onActiveIndexChange,
   onProjectOpen,
 }: WorkProjectListProps) {
-  const [internalActiveIndex, setInternalActiveIndex] = useState(0);
+  const [internalActiveIndex, setInternalActiveIndex] = useState(-1);
   const [armedIndex, setArmedIndex] = useState<number | null>(null);
   const listRef = useRef<HTMLUListElement | null>(null);
-  const activeIndexRef = useRef(0);
+  const activeIndexRef = useRef(-1);
   const armedIndexRef = useRef<number | null>(null);
   const isControlled = typeof activeIndexProp === "number";
   const maxIndex = Math.max(0, projects.length - 1);
-  const activeIndex = projects.length === 0 ? -1 : Math.max(0, Math.min(activeIndexProp ?? internalActiveIndex, maxIndex));
+  const resolvedIndex = activeIndexProp ?? internalActiveIndex;
+  const activeIndex =
+    projects.length === 0
+      ? -1
+      : resolvedIndex < 0
+        ? -1
+        : Math.min(resolvedIndex, maxIndex);
 
   useEffect(() => {
     if (activeIndex >= 0) {
@@ -194,7 +200,9 @@ export function WorkProjectList({
   const moveActiveBy = useCallback(
     (delta: number) => {
       if (projects.length === 0) return;
-      commitActiveIndex(activeIndexRef.current + delta);
+      const current = activeIndexRef.current;
+      const next = current < 0 ? (delta > 0 ? 0 : -1) : current + delta;
+      commitActiveIndex(next);
     },
     [commitActiveIndex, projects.length],
   );

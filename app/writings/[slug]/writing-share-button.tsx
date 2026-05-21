@@ -3,6 +3,8 @@
 import { Check, Copy, Share2, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
+import { AlienText } from "@/components/alien-text";
+
 type WritingShareButtonProps = {
   title: string;
   shareUrl: string;
@@ -124,8 +126,12 @@ export function WritingShareButton({ title, shareUrl }: WritingShareButtonProps)
             </button>
 
             <div className="pr-10">
-              <h2 id="writing-share-title" className="text-sm font-medium text-foreground">
-                Share this post
+              <h2
+                id="writing-share-title"
+                aria-label="Share this post"
+                className="text-sm font-medium text-foreground"
+              >
+                <AlienText text="Share this post" />
               </h2>
               <p className="mt-1 line-clamp-2 text-sm leading-5 text-muted-foreground">
                 &ldquo;{title}&rdquo;

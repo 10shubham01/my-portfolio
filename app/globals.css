@@ -12,9 +12,6 @@
   --site-max-width: min(100%, 196.5ch);
   /* Shared writing column: matches the Work/Writings list left and right edges. */
   --writing-content-width: 44rem;
-  /* Top dock reserve (pill + safe area). About/Work masks use --site-nav-h alias. */
-  --site-dock-h: 3.25rem;
-  --site-nav-h: var(--site-dock-h);
   --dock-lamp-opacity: 1;
   --expo-out: cubic-bezier(0.16, 1, 0.3, 1);
   --expo-in: cubic-bezier(0.7, 0, 0.84, 0);
@@ -46,6 +43,15 @@
   ::view-transition-group(writing-thumbnail) {
     animation-duration: 1ms;
   }
+}
+
+:root {
+  --page-ruler-size: 11px;
+  --site-dock-below-ruler: 10px;
+  --site-dock-top: calc(var(--page-ruler-size) + var(--site-dock-below-ruler));
+  /* Top dock reserve (ruler clearance + pill + safe area). About/Work masks use --site-nav-h. */
+  --site-dock-h: calc(3.25rem + var(--site-dock-top));
+  --site-nav-h: var(--site-dock-h);
 }
 
 /* Mobile: stable viewport height (not 100vh), reduce sideways pan / elastic overscroll. */
@@ -89,6 +95,29 @@
       backdrop-filter: none !important;
     }
   }
+}
+
+[data-site-dock="true"] {
+  top: var(--site-dock-top) !important;
+}
+
+[data-page-ruler] .page-ruler-strip {
+  border-color: oklch(1 0 0 / 16%);
+  background: oklch(0.145 0 0);
+}
+
+[data-page-ruler] .page-ruler-svg {
+  color: oklch(0.985 0 0 / 72%);
+}
+
+.dark [data-page-ruler] .page-ruler-strip {
+  border-color: color-mix(in oklch, var(--border) 55%, transparent);
+  background: color-mix(in oklch, var(--background) 84%, transparent);
+  backdrop-filter: blur(2px);
+}
+
+.dark [data-page-ruler] .page-ruler-svg {
+  color: color-mix(in oklch, var(--muted-foreground) 72%, transparent);
 }
 
 /* Home: when a social link is hovered, dim + blur the rest of the hero (reference: focus spotlight) */

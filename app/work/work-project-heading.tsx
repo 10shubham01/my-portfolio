@@ -3,6 +3,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
+import { AlienText } from "@/components/alien-text";
+
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 type WorkProjectHeadingProps = {
@@ -32,10 +34,11 @@ export function WorkProjectHeading({ label, activeIndex }: WorkProjectHeadingPro
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           exit={{ opacity: 0, y: direction > 0 ? 28 : -28, filter: "blur(14px)" }}
           transition={{ duration: 0.52, ease: EASE }}
-          className="absolute right-0 bottom-0 max-w-full truncate text-right font-oblique text-[clamp(1rem,5.2vw,1.25rem)] tracking-tight text-foreground sm:text-2xl md:text-3xl"
+          className="pointer-events-auto absolute right-0 bottom-0 max-w-full truncate text-right font-oblique text-[clamp(1rem,5.2vw,1.25rem)] tracking-tight text-foreground sm:text-2xl md:text-3xl"
+          aria-label={`${label}.`}
           aria-live="polite"
         >
-          {label}
+          <AlienText text={label} />
           <span style={{ color: "#FF5800" }}>.</span>
         </motion.div>
       </AnimatePresence>

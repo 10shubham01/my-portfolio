@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 
 import { EXPERIENCE_ENTRIES } from "@/lib/about-content";
+import { AlienText } from "@/components/alien-text";
 import { WorkExperienceAccordion } from "./work-experience-accordion";
 import { WorkProjectList } from "./work-project-list";
 import { WorkProjectSpotlight } from "./work-project-spotlight";
@@ -16,12 +17,13 @@ type WorkPageContentProps = {
 };
 
 export function WorkPageContent({ projects, isScrollable }: WorkPageContentProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const [activeExperienceCompany, setActiveExperienceCompany] = useState(FIRST_EXPERIENCE_COMPANY);
   const [showProjectVideo, setShowProjectVideo] = useState(false);
   const [videoOpenSignal, setVideoOpenSignal] = useState(0);
   const maxIndex = Math.max(0, projects.length - 1);
-  const safeActiveIndex = projects.length === 0 ? -1 : Math.max(0, Math.min(activeIndex, maxIndex));
+  const safeActiveIndex =
+    projects.length === 0 || activeIndex < 0 ? -1 : Math.min(activeIndex, maxIndex);
   const activeExperience =
     activeExperienceCompany === null
       ? null
@@ -79,9 +81,12 @@ export function WorkPageContent({ projects, isScrollable }: WorkPageContentProps
             onSectionMouseEnter={() => setShowProjectVideo(false)}
           />
 
-          <div onMouseEnter={() => setShowProjectVideo(true)}>
-            <p className="mb-3 font-sans text-[10px] font-light uppercase tracking-[0.22em] text-muted-foreground/70 sm:text-[11px]">
-              Personal projects
+          <div>
+            <p
+              aria-label="Personal projects"
+              className="mb-3 font-sans text-[10px] font-light uppercase tracking-[0.22em] text-muted-foreground/70 sm:text-[11px]"
+            >
+              <AlienText text="Personal projects" />
             </p>
             <WorkProjectList
               projects={projects}
