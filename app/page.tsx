@@ -13,7 +13,7 @@ const SOCIAL_ITEMS = [
 
 export default function HomePage() {
   return (
-    <section className="social-hover-focus mx-auto flex min-h-[68vh] w-full max-w-xl flex-col items-center justify-center gap-4 px-3 text-center sm:px-4">
+    <section className="social-hover-focus mx-auto flex min-h-[68dvh] w-full max-w-xl flex-col items-center justify-center gap-4 px-3 text-center sm:px-4">
       <p className="font-sans font-light text-xs uppercase select-none tracking-[0.28em] text-muted-foreground">
         {getLocationAgeEyebrow()}
       </p>

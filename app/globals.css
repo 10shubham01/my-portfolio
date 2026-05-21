@@ -17,13 +17,13 @@
   /* Opaque belt under nav on About / Work (see *-viewport-mask). */
   --about-mask-belt: 14px;
   /* About fixed rule + headings band (lower value = more room for slide content). */
-  --about-fixed-line-top: 26vh;
+  --about-fixed-line-top: 26dvh;
   --about-content-max-h: calc(100dvh - var(--about-fixed-line-top) - 4.5rem);
 }
 
 @media (max-width: 639px) {
   :root {
-    --about-fixed-line-top: 22vh;
+    --about-fixed-line-top: 22dvh;
     --about-content-max-h: calc(100dvh - var(--about-fixed-line-top) - 4rem);
   }
 }
@@ -54,7 +54,7 @@
   --rough-border-inset: 10px;
 }
 
-/* Mobile: stable viewport height (not 100vh), reduce sideways pan / elastic overscroll. */
+/* Mobile: dynamic viewport height (dvh), reduce sideways pan / elastic overscroll. */
 @layer base {
   html {
     overflow-x: hidden;

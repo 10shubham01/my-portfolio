@@ -45,7 +45,7 @@ export function WorkProjectSpotlight({
       className="pointer-events-none fixed inset-x-0 z-[90]"
       style={{
         top: "var(--site-nav-h, 0px)",
-        height: "max(0px, calc(var(--about-fixed-line-top, 20vh) - var(--site-nav-h, 0px)))",
+        height: "max(0px, calc(var(--about-fixed-line-top, 20dvh) - var(--site-nav-h, 0px)))",
       }}
     >
       <div className="absolute inset-0 z-[100]">

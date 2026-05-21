@@ -123,7 +123,7 @@ function WritingsSpotlight({
       className="pointer-events-none fixed inset-x-0"
       style={{
         top: "var(--site-nav-h, 0px)",
-        height: "max(0px, calc(var(--about-fixed-line-top, 20vh) - var(--site-nav-h, 0px)))",
+        height: "max(0px, calc(var(--about-fixed-line-top, 20dvh) - var(--site-nav-h, 0px)))",
       }}
     >
       <div className="absolute inset-0 z-[100]">
@@ -260,7 +260,7 @@ export function WritingsPageContent({ writings }: { writings: WritingPreview[] }
 
       <section
         className="mx-auto h-auto w-full max-w-5xl overflow-visible px-4 pb-16 sm:px-6"
-        style={{ paddingTop: "calc(var(--about-fixed-line-top, 20vh) + 6px)" }}
+        style={{ paddingTop: "calc(var(--about-fixed-line-top, 20dvh) + 6px)" }}
       >
         <h1 className="sr-only">Writings</h1>
         <ul

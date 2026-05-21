@@ -15,7 +15,7 @@ export function OrangeMidLine({ className, style, ...rest }: OrangeMidLineProps)
         "orange-mid-line pointer-events-none fixed inset-x-0 z-[92] h-[5px] overflow-visible",
         className,
       )}
-      style={{ top: "var(--about-fixed-line-top, 20vh)", ...style }}
+      style={{ top: "var(--about-fixed-line-top, 20dvh)", ...style }}
       aria-hidden
       {...rest}
     >

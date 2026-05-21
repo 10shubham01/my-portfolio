@@ -168,7 +168,7 @@ export function WritingProgressToc({ title, sections }: WritingProgressTocProps)
         onClick={() => setIsOpen(false)}
       />
     ) : null}
-    <div className="pointer-events-none fixed bottom-[clamp(2.5rem,7vh,4.5rem)] left-1/2 z-90 flex w-full -translate-x-1/2 justify-center px-4">
+    <div className="pointer-events-none fixed bottom-[clamp(2.5rem,7dvh,4.5rem)] left-1/2 z-90 flex w-full -translate-x-1/2 justify-center px-4">
       <motion.div
         animate={{
           height: isOpen ? OPEN_HEIGHT : CLOSED_HEIGHT,
