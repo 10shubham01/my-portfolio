@@ -1,25 +1,23 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "radix-sera",
+  "style": "new-york",
   "rsc": true,
   "tsx": true,
   "tailwind": {
     "config": "",
-    "css": "app/globals.css",
-    "baseColor": "olive",
-    "cssVariables": true,
-    "prefix": ""
+    "css": "../../packages/ui/src/styles/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true
   },
-  "iconLibrary": "remixicon",
-  "rtl": false,
+  "iconLibrary": "lucide",
   "aliases": {
     "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui",
+    "utils": "@repo/ui/lib/utils",
+    "ui": "@repo/ui/components",
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "menuColor": "default",
-  "menuAccent": "bold",
-  "registries": {}
+  "registries": {
+    "@skiper-ui": "https://skiper-ui.com/registry/{name}.json"
+  }
 }

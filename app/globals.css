@@ -1,132 +1,208 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import "@repo/ui/styles/globals.css";
 
-@custom-variant dark (&:is(.dark *));
-
+/* Site-wide sans: Helvetica Neue (see app/layout.tsx + app/fonts/) */
+/* Display: Basteleur (Moonlight 400 / Bold 700) — use Tailwind `font-display` + font-normal | font-bold */
 @theme inline {
-    --font-heading: var(--font-sans);
-    --font-sans: var(--font-sans);
-    --color-sidebar-ring: var(--sidebar-ring);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar: var(--sidebar);
-    --color-chart-5: var(--chart-5);
-    --color-chart-4: var(--chart-4);
-    --color-chart-3: var(--chart-3);
-    --color-chart-2: var(--chart-2);
-    --color-chart-1: var(--chart-1);
-    --color-ring: var(--ring);
-    --color-input: var(--input);
-    --color-border: var(--border);
-    --color-destructive: var(--destructive);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-accent: var(--accent);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-muted: var(--muted);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-secondary: var(--secondary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-primary: var(--primary);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-popover: var(--popover);
-    --color-card-foreground: var(--card-foreground);
-    --color-card: var(--card);
-    --color-foreground: var(--foreground);
-    --color-background: var(--background);
-    --radius-sm: calc(var(--radius) * 0.6);
-    --radius-md: calc(var(--radius) * 0.8);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) * 1.4);
-    --radius-2xl: calc(var(--radius) * 1.8);
-    --radius-3xl: calc(var(--radius) * 2.2);
-    --radius-4xl: calc(var(--radius) * 2.6);
+  --font-sans: var(--font-helvetica-neue), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-basteleur), var(--font-helvetica-neue), ui-sans-serif, sans-serif;
+  --font-oblique: var(--font-helvetica-oblique), ui-sans-serif, system-ui, sans-serif;
+  /* Whole-site horizontal cap (layout shell): 196.5 character widths, never wider than viewport. */
+  --site-max-width: min(100%, 196.5ch);
+  /* Shared writing column: matches the Work/Writings list left and right edges. */
+  --writing-content-width: 44rem;
+  /* Top dock reserve (pill + safe area). About/Work masks use --site-nav-h alias. */
+  --site-dock-h: 3.25rem;
+  --site-nav-h: var(--site-dock-h);
+  --dock-lamp-opacity: 1;
+  --expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --expo-in: cubic-bezier(0.7, 0, 0.84, 0);
+  /* Opaque belt under nav on About / Work (see *-viewport-mask). */
+  --about-mask-belt: 14px;
+  /* About fixed rule + headings band (lower value = more room for slide content). */
+  --about-fixed-line-top: 26vh;
+  --about-content-max-h: calc(100dvh - var(--about-fixed-line-top) - 4.5rem);
 }
 
-:root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.153 0.006 107.1);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.153 0.006 107.1);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.153 0.006 107.1);
-    --primary: oklch(0.5 0.134 242.749);
-    --primary-foreground: oklch(0.977 0.013 236.62);
-    --secondary: oklch(0.967 0.001 286.375);
-    --secondary-foreground: oklch(0.21 0.006 285.885);
-    --muted: oklch(0.966 0.005 106.5);
-    --muted-foreground: oklch(0.58 0.031 107.3);
-    --accent: oklch(0.5 0.134 242.749);
-    --accent-foreground: oklch(0.977 0.013 236.62);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.93 0.007 106.5);
-    --input: oklch(0.93 0.007 106.5);
-    --ring: oklch(0.737 0.021 106.9);
-    --chart-1: oklch(0.808 0.114 19.571);
-    --chart-2: oklch(0.637 0.237 25.331);
-    --chart-3: oklch(0.577 0.245 27.325);
-    --chart-4: oklch(0.505 0.213 27.518);
-    --chart-5: oklch(0.444 0.177 26.899);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.988 0.003 106.5);
-    --sidebar-foreground: oklch(0.153 0.006 107.1);
-    --sidebar-primary: oklch(0.588 0.158 241.966);
-    --sidebar-primary-foreground: oklch(0.977 0.013 236.62);
-    --sidebar-accent: oklch(0.966 0.005 106.5);
-    --sidebar-accent-foreground: oklch(0.228 0.013 107.4);
-    --sidebar-border: oklch(0.93 0.007 106.5);
-    --sidebar-ring: oklch(0.737 0.021 106.9);
+@media (max-width: 639px) {
+  :root {
+    --about-fixed-line-top: 22vh;
+    --about-content-max-h: calc(100dvh - var(--about-fixed-line-top) - 4rem);
+  }
 }
 
-.dark {
-    --background: oklch(0.153 0.006 107.1);
-    --foreground: oklch(0.988 0.003 106.5);
-    --card: oklch(0.228 0.013 107.4);
-    --card-foreground: oklch(0.988 0.003 106.5);
-    --popover: oklch(0.228 0.013 107.4);
-    --popover-foreground: oklch(0.988 0.003 106.5);
-    --primary: oklch(0.443 0.11 240.79);
-    --primary-foreground: oklch(0.977 0.013 236.62);
-    --secondary: oklch(0.274 0.006 286.033);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.286 0.016 107.4);
-    --muted-foreground: oklch(0.737 0.021 106.9);
-    --accent: oklch(0.443 0.11 240.79);
-    --accent-foreground: oklch(0.977 0.013 236.62);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.58 0.031 107.3);
-    --chart-1: oklch(0.808 0.114 19.571);
-    --chart-2: oklch(0.637 0.237 25.331);
-    --chart-3: oklch(0.577 0.245 27.325);
-    --chart-4: oklch(0.505 0.213 27.518);
-    --chart-5: oklch(0.444 0.177 26.899);
-    --sidebar: oklch(0.228 0.013 107.4);
-    --sidebar-foreground: oklch(0.988 0.003 106.5);
-    --sidebar-primary: oklch(0.685 0.169 237.323);
-    --sidebar-primary-foreground: oklch(0.293 0.066 243.157);
-    --sidebar-accent: oklch(0.286 0.016 107.4);
-    --sidebar-accent-foreground: oklch(0.988 0.003 106.5);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.58 0.031 107.3);
+::view-transition-group(writing-thumbnail) {
+  animation-duration: 640ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+::view-transition-old(writing-thumbnail),
+::view-transition-new(writing-thumbnail) {
+  overflow: clip;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(writing-thumbnail) {
+    animation-duration: 1ms;
+  }
+}
+
+/* Mobile: stable viewport height (not 100vh), reduce sideways pan / elastic overscroll. */
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-    }
-  body {
-    @apply bg-background text-foreground;
-    }
-  button:not(:disabled), [role="button"]:not(:disabled) {
-    cursor: pointer;
-    }
   html {
-    @apply font-sans;
+    overflow-x: hidden;
+    max-width: 100%;
+    -webkit-text-size-adjust: 100%;
+    overscroll-behavior-y: none;
+  }
+
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  @media (pointer: coarse) {
+    body {
+      touch-action: pan-y;
     }
+
+    .writing-progressive-blur {
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+
+    .writing-progress-toc {
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .writing-progressive-blur {
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+
+    .writing-progress-toc {
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+  }
+}
+
+/* Home: when a social link is hovered, dim + blur the rest of the hero (reference: focus spotlight) */
+@layer components {
+  .social-hover-focus > p,
+  .social-hover-focus .hero-title,
+  .social-hover-focus .social-links > a {
+    transition:
+      opacity 300ms ease,
+      filter 300ms ease,
+      transform 300ms ease,
+      color 300ms ease;
+  }
+
+  .social-hover-focus .social-links > a {
+    color: var(--foreground);
+  }
+
+  .social-hover-focus:has(.social-links a:is(:hover, :focus-visible)) > p,
+  .social-hover-focus:has(.social-links a:is(:hover, :focus-visible)) .hero-title {
+    opacity: 0.28;
+    filter: blur(2px);
+  }
+
+  .social-hover-focus:has(.social-links a:is(:hover, :focus-visible))
+    .social-links
+    > a:not(:is(:hover, :focus-visible)) {
+    opacity: 0.28;
+    filter: blur(2px);
+    color: var(--muted-foreground);
+  }
+
+  .social-hover-focus .social-links > a:is(:hover, :focus-visible) {
+    position: relative;
+    z-index: 1;
+    opacity: 1;
+    filter: none;
+    color: #ff5800;
+  }
+
+  /* Dock lamp: spotlight anchored at top dock (rendered outside overflow-hidden shell) */
+  .dock-lamp {
+    opacity: var(--dock-lamp-opacity, 1);
+    background: radial-gradient(
+      ellipse 340px min(75vh, 44rem) at 50% var(--site-dock-h),
+      rgb(255 88 0 / 24%) 0%,
+      rgb(255 140 50 / 11%) 42%,
+      transparent 72%
+    );
+  }
+
+  .dock-lamp--home {
+    background: radial-gradient(
+      ellipse min(92vw, 520px) min(85vh, 50rem) at 50% var(--site-dock-h),
+      rgb(255 88 0 / 34%) 0%,
+      rgb(255 120 40 / 17%) 45%,
+      rgb(255 160 80 / 7%) 62%,
+      transparent 78%
+    );
+  }
+
+  .hero-title--lamp {
+    filter: brightness(1.06);
+  }
+}
+
+/* About page: snap-scroll is handled by GSAP ScrollTrigger in use-snap-scroll.ts.
+   No CSS scroll-snap rules needed — GSAP manages all snapping behaviour. */
+
+/* Hide scrollbars everywhere (unlayered). Scrolling still works via wheel / trackpad / touch. */
+html,
+body {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
+*,
+*::before,
+*::after {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  scrollbar-color: transparent transparent !important;
+}
+
+*::-webkit-scrollbar,
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-corner {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+@layer utilities {
+  .hide-scrollbar {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    scrollbar-color: transparent transparent !important;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
 }
