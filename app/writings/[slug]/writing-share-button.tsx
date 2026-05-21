@@ -4,6 +4,7 @@ import { Check, Copy, Share2, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { AlienText } from "@/components/alien-text";
+import { ROUGH_BORDER } from "@/lib/rough-border";
 
 type WritingShareButtonProps = {
   title: string;
@@ -95,7 +96,7 @@ export function WritingShareButton({ title, shareUrl }: WritingShareButtonProps)
     <>
       <button
         type="button"
-        className="inline-flex items-center gap-1.5 rounded-sm border border-border/60 px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-foreground/25 hover:bg-foreground/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className={`${ROUGH_BORDER} rb-border-60 hover:[--rough-border-color:color-mix(in_oklch,var(--foreground)_25%,transparent)] inline-flex items-center gap-1.5 rounded-sm px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-foreground/5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
         aria-haspopup="dialog"
         aria-expanded={isOpen}
         onClick={openDialog}
@@ -113,13 +114,13 @@ export function WritingShareButton({ title, shareUrl }: WritingShareButtonProps)
           onClick={() => setIsOpen(false)}
         >
           <div
-            className="relative w-full max-w-md rounded-md border border-border/70 bg-background/96 p-4 text-foreground shadow-[0_24px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl dark:border-white/12 dark:bg-[#111111]/96"
+            className={`${ROUGH_BORDER} rb-border-70 dark:rb-white-12 relative w-full max-w-md rounded-md bg-background/96 p-4 text-foreground shadow-[0_24px_90px_rgba(0,0,0,0.34)] backdrop-blur-2xl dark:bg-[#111111]/96`}
             onClick={(event) => event.stopPropagation()}
           >
             <button
               type="button"
               aria-label="Close share dialog"
-              className="absolute right-3 top-3 grid size-8 place-items-center rounded-full border border-border/60 bg-foreground/5 text-muted-foreground transition-colors hover:bg-foreground/10 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className={`${ROUGH_BORDER} rb-border-60 absolute right-3 top-3 grid size-8 place-items-center rounded-full bg-foreground/5 text-muted-foreground transition-colors hover:bg-foreground/10 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring`}
               onClick={() => setIsOpen(false)}
             >
               <X className="size-4" aria-hidden="true" />
@@ -147,12 +148,12 @@ export function WritingShareButton({ title, shareUrl }: WritingShareButtonProps)
                   id="writing-share-url"
                   readOnly
                   value={currentUrl}
-                  className="min-w-0 flex-1 rounded-md border border-border/70 bg-foreground/[0.035] px-3 py-2 text-sm text-foreground outline-none selection:bg-[#FF5800]/25 dark:border-white/12 dark:bg-white/5"
+                  className={`${ROUGH_BORDER} rb-border-70 dark:rb-white-12 min-w-0 flex-1 rounded-md bg-foreground/[0.035] px-3 py-2 text-sm text-foreground outline-none selection:bg-[#FF5800]/25 dark:bg-white/5`}
                   onFocus={(event) => event.currentTarget.select()}
                 />
                 <button
                   type="button"
-                  className="grid size-9 shrink-0 place-items-center rounded-md border border-border/70 bg-foreground/[0.035] text-muted-foreground transition-colors hover:bg-foreground/8 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-white/12 dark:bg-white/5"
+                  className={`${ROUGH_BORDER} rb-border-70 dark:rb-white-12 grid size-9 shrink-0 place-items-center rounded-md bg-foreground/[0.035] text-muted-foreground transition-colors hover:bg-foreground/8 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:bg-white/5`}
                   aria-label={copied ? "Copied link" : "Copy link"}
                   onClick={copyLink}
                 >
@@ -170,7 +171,7 @@ export function WritingShareButton({ title, shareUrl }: WritingShareButtonProps)
               <div className="mt-2 flex flex-wrap gap-2">
                 <button
                   type="button"
-                  className="inline-flex h-9 items-center gap-2 rounded-md border border-border/70 bg-foreground/[0.035] px-3 text-sm font-medium text-foreground transition-colors hover:bg-foreground/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-white/12 dark:bg-white/5"
+                  className={`${ROUGH_BORDER} rb-border-70 dark:rb-white-12 inline-flex h-9 items-center gap-2 rounded-md bg-foreground/[0.035] px-3 text-sm font-medium text-foreground transition-colors hover:bg-foreground/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:bg-white/5`}
                   onClick={() => openIntent(xShareUrl)}
                 >
                   <span className="text-base font-semibold leading-none" aria-hidden="true">
@@ -180,7 +181,7 @@ export function WritingShareButton({ title, shareUrl }: WritingShareButtonProps)
                 </button>
                 <button
                   type="button"
-                  className="inline-flex h-9 items-center gap-2 rounded-md border border-border/70 bg-foreground/[0.035] px-3 text-sm font-medium text-foreground transition-colors hover:bg-foreground/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-white/12 dark:bg-white/5"
+                  className={`${ROUGH_BORDER} rb-border-70 dark:rb-white-12 inline-flex h-9 items-center gap-2 rounded-md bg-foreground/[0.035] px-3 text-sm font-medium text-foreground transition-colors hover:bg-foreground/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:bg-white/5`}
                   onClick={() => openIntent(linkedInShareUrl)}
                 >
                   <span

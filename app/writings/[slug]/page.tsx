@@ -11,6 +11,7 @@ import { WritingMdxContent } from "./writing-mdx-content";
 import { WritingProgressToc } from "./writing-progress-toc";
 import { WritingSectionDot } from "./writing-section-dot";
 import { WritingShareButton } from "./writing-share-button";
+import { ROUGH_DIVIDER_T } from "@/lib/rough-border";
 
 export async function generateStaticParams() {
   return getAllWritings().map((p) => ({ slug: p.slug }));
@@ -180,7 +181,7 @@ export default async function WritingPage({
 
         {(previousWriting || nextWriting) ? (
           <nav
-            className="mt-14 grid grid-cols-2 gap-3 border-t border-border pt-5 text-[11px] text-muted-foreground sm:text-sm"
+            className={`${ROUGH_DIVIDER_T} rb-border-55 mt-14 grid grid-cols-2 gap-3 pt-5 text-[11px] text-muted-foreground sm:text-sm`}
             aria-label="Adjacent writings"
           >
             {previousWriting ? (

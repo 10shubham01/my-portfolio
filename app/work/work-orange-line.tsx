@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { OrangeMidLine } from "@/components/orange-mid-line";
+
 export function WorkOrangeLine() {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
@@ -22,18 +24,11 @@ export function WorkOrangeLine() {
   }, []);
 
   return (
-    <div
+    <OrangeMidLine
       data-work-orange-line="true"
-      className={`pointer-events-none fixed inset-x-0 transition-opacity duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+      className={`transition-opacity duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] ${
         isVideoModalOpen ? "opacity-0" : "opacity-100"
       }`}
-      style={{ top: "var(--about-fixed-line-top, 20vh)", zIndex: 85 }}
-      aria-hidden
-    >
-      <div
-        className="w-full bg-[#FF5800]"
-        style={{ height: "1px", transform: "scaleY(0.5)", transformOrigin: "center" }}
-      />
-    </div>
+    />
   );
 }

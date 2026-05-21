@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AboutSnapSlide } from "@/components/about/about-snap-slide";
 import { InView } from "@/components/core/in-view";
 import GlowingScrollIndicator from "@/components/glowing-scroll-indicator";
+import { OrangeMidLine } from "@/components/orange-mid-line";
 import { buildAboutSnapSections, getAboutSectionLabels } from "@/lib/about-snap-sections";
 
 import { AboutViewportMask } from "./about-viewport-mask";
@@ -104,16 +105,7 @@ export function AboutPageContent() {
         })}
       </div>
 
-      <div
-        className="pointer-events-none fixed inset-x-0"
-        style={{ top: "var(--about-fixed-line-top, 20vh)", zIndex: 80 }}
-        aria-hidden
-      >
-        <div
-          className="w-full bg-[#FF5800]"
-          style={{ height: "1px", transform: "scaleY(0.5)", transformOrigin: "center" }}
-        />
-      </div>
+      <OrangeMidLine />
 
       <AboutViewportMask onHoleRef={setHoleEl} />
       <AboutSectionHeadings labels={SECTION_LABELS} activeIndex={activeIndex} />

@@ -2,6 +2,8 @@
 
 import { useEffect, useId, useState } from "react";
 
+import { ROUGH_BORDER, ROUGH_BORDER_R, ROUGH_BORDER_T } from "@/lib/rough-border";
+
 /** Keep in sync with `--page-ruler-size` in app/globals.css */
 export const PAGE_RULER_SIZE = 11;
 const MINOR_STEP = 10;
@@ -156,17 +158,17 @@ export function PageRuler() {
       data-page-ruler
     >
       <div
-        className="page-ruler-strip absolute top-0 left-0 border-r border-b"
+        className={`page-ruler-strip ${ROUGH_BORDER} rb-ruler absolute top-0 left-0`}
         style={{ width: PAGE_RULER_SIZE, height: PAGE_RULER_SIZE }}
       />
       <div
-        className="page-ruler-strip absolute top-0 right-0 left-0 overflow-hidden border-b"
+        className={`page-ruler-strip ${ROUGH_BORDER_T} rb-ruler absolute top-0 right-0 left-0 overflow-hidden`}
         style={{ height: PAGE_RULER_SIZE, paddingLeft: PAGE_RULER_SIZE }}
       >
         <HorizontalRuler length={horizontalLength} />
       </div>
       <div
-        className="page-ruler-strip absolute top-0 bottom-0 left-0 overflow-hidden border-r"
+        className={`page-ruler-strip ${ROUGH_BORDER_R} rb-ruler absolute top-0 bottom-0 left-0 overflow-hidden`}
         style={{ width: PAGE_RULER_SIZE, paddingTop: PAGE_RULER_SIZE }}
       >
         <VerticalRuler length={verticalLength} />

@@ -4,6 +4,7 @@ import { AnimatePresence, motion, type MotionValue, useMotionValueEvent, useScro
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLenisInstance } from "@/components/lenis-provider";
 import type { WritingSection } from "@/lib/writing-headings";
+import { ROUGH_BORDER, ROUGH_DIVIDER_T } from "@/lib/rough-border";
 
 type WritingProgressTocProps = {
   title: string;
@@ -173,7 +174,7 @@ export function WritingProgressToc({ title, sections }: WritingProgressTocProps)
           height: isOpen ? OPEN_HEIGHT : CLOSED_HEIGHT,
         }}
         transition={{ duration: 0.46, ease: EASE }}
-        className={`writing-progress-toc pointer-events-auto relative overflow-hidden border border-border/80 bg-background/96 text-foreground shadow-[0_18px_70px_rgba(0,0,0,0.18)] backdrop-blur-2xl dark:border-white/12 dark:bg-[#171717]/96 dark:shadow-[0_18px_80px_rgba(0,0,0,0.48)] ${
+        className={`${ROUGH_BORDER} rb-border-80 dark:rb-white-12 writing-progress-toc pointer-events-auto relative overflow-hidden bg-background/96 text-foreground shadow-[0_18px_70px_rgba(0,0,0,0.18)] backdrop-blur-2xl dark:bg-[#171717]/96 dark:shadow-[0_18px_80px_rgba(0,0,0,0.48)] ${
           isOpen
             ? "w-[min(calc(100vw-2rem),35rem)] rounded-[1.75rem]"
             : "w-[min(calc(100vw-3rem),21.75rem)] rounded-full"
@@ -227,7 +228,7 @@ export function WritingProgressToc({ title, sections }: WritingProgressTocProps)
       <button
         type="button"
         className={`group absolute inset-x-0 bottom-0 flex h-13 w-full items-center gap-3 px-4 text-foreground transition-colors hover:bg-foreground/5 dark:hover:bg-white/7 ${
-          isOpen ? "border-t border-border/60 dark:border-white/8" : ""
+          isOpen ? `${ROUGH_DIVIDER_T} rb-border-60 dark:rb-white-8` : ""
         }`}
         aria-expanded={isOpen}
         aria-label="Open table of contents"

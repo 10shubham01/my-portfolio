@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { AlienText } from "@/components/alien-text";
+import { ROUGH_BORDER } from "@/lib/rough-border";
 import { cn } from "@repo/ui/lib/utils";
 
 const DOCK_ITEMS = [
@@ -25,9 +26,8 @@ export function SiteDock() {
         role="navigation"
         aria-label="Site"
         className={cn(
-          "dock-bar pointer-events-auto relative flex items-center gap-0.5 overflow-visible rounded-full border border-border/45 px-1 py-0.5",
-          "bg-background/82 shadow-sm backdrop-blur-md",
-          "dark:border-white/10 dark:bg-background/62",
+          `${ROUGH_BORDER} rb-border-45 dark:rb-white-10 dock-bar pointer-events-auto relative flex items-center gap-0.5 overflow-visible rounded-full px-1 py-0.5`,
+          "bg-background/82 shadow-sm backdrop-blur-md dark:bg-background/62",
         )}
       >
         {DOCK_ITEMS.map(({ href, label }) => {

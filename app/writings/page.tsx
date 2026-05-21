@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { absoluteUrl, SITE_AUTHOR, SITE_TWITTER_HANDLE, siteImages } from "@/lib/site";
 import { getWritingPreviews } from "@/lib/writings";
+import { OrangeMidLine } from "@/components/orange-mid-line";
 import { WritingsPageContent } from "./writings-page-content";
 
 const description = `Notes by ${SITE_AUTHOR.name} on interface design, frontend craft, product work, and building smoother web experiences.`;
@@ -40,16 +41,7 @@ export default function WritingsPage() {
     <>
       <WritingsPageContent writings={writings} />
 
-      <div
-        className="pointer-events-none fixed inset-x-0"
-        style={{ top: "var(--about-fixed-line-top, 20vh)", zIndex: 80 }}
-        aria-hidden
-      >
-        <div
-          className="w-full bg-[#FF5800]"
-          style={{ height: "1px", transform: "scaleY(0.5)", transformOrigin: "center" }}
-        />
-      </div>
+      <OrangeMidLine />
     </>
   );
 }

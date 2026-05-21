@@ -3,8 +3,9 @@ import type { TechId } from "@/lib/about-content";
 import { TECH_LABELS } from "@/lib/about-content";
 import type { CSSProperties } from "react";
 
-const tokenClass =
-  "group/token inline-flex h-[1.65em] shrink-0 translate-y-[0.32em] items-center gap-[0.38em] rounded-md border border-dotted border-foreground/25 bg-foreground/[0.025] px-[0.32em] text-foreground/72 transition-[border-color,background-color] duration-200 hover:border-foreground/35 hover:bg-foreground/[0.04] dark:border-white/20 dark:bg-white/[0.035] dark:hover:border-white/28 dark:hover:bg-white/[0.05]";
+import { ROUGH_BORDER } from "@/lib/rough-border";
+
+const tokenClass = `${ROUGH_BORDER} rough-border-dotted rb-fg-20 dark:rb-white-20 group/token inline-flex h-[1.65em] shrink-0 translate-y-[0.32em] items-center gap-[0.38em] rounded-md bg-foreground/[0.025] px-[0.32em] text-foreground/72 transition-[background-color] duration-200 hover:bg-foreground/[0.04] dark:bg-white/[0.035] dark:hover:bg-white/[0.05] hover:[--rough-border-color:color-mix(in_oklch,var(--foreground)_35%,transparent)] dark:hover:[--rough-border-color:oklch(1_0_0/28%)]`;
 
 const iconClass =
   "size-[1em] shrink-0 opacity-50 grayscale transition-[filter,opacity,color] duration-200 ease-out group-hover/token:opacity-100 group-hover/token:grayscale-0 group-hover/token:text-[var(--tech-icon-color)]";

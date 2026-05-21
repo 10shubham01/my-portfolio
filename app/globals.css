@@ -51,6 +51,7 @@
   /* Top dock reserve (ruler clearance + pill + safe area). About/Work masks use --site-nav-h. */
   --site-dock-h: calc(3.25rem + var(--site-dock-top));
   --site-nav-h: var(--site-dock-h);
+  --rough-border-inset: 10px;
 }
 
 /* Mobile: stable viewport height (not 100vh), reduce sideways pan / elastic overscroll. */
@@ -117,6 +118,269 @@
 
 .dark [data-page-ruler] .page-ruler-svg {
   color: color-mix(in oklch, var(--muted-foreground) 72%, transparent);
+}
+
+/* Sketchy borders — filters in rough-border-defs.tsx */
+@layer components {
+  .rough-border {
+    position: relative;
+    border-color: transparent !important;
+  }
+
+  .rough-border::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    border-radius: inherit;
+    border: 1.25px solid var(--rough-border-color, color-mix(in oklch, var(--foreground) 36%, transparent));
+    filter: url(#site-rough-border-a);
+    pointer-events: none;
+    transition: border-color 200ms ease;
+  }
+
+  .dark .rough-border::after {
+    border-width: 1px;
+  }
+
+  .rough-border-dotted::after {
+    border-style: dotted;
+    filter: url(#site-rough-border-b);
+  }
+
+  .rough-border-t {
+    position: relative;
+    border-top-color: transparent !important;
+  }
+
+  .rough-border-t::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    border-top: 1.25px dotted var(--rough-border-color, color-mix(in oklch, var(--foreground) 30%, transparent));
+    filter: url(#site-rough-border-b);
+    pointer-events: none;
+    transition: border-color 200ms ease;
+  }
+
+  .dark .rough-border-t::before {
+    border-top-width: 1px;
+  }
+
+  .rough-border-l {
+    position: relative;
+    border-left-color: transparent !important;
+  }
+
+  .rough-border-l::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    border-left: 1px solid var(--rough-border-color, color-mix(in oklch, var(--border) 100%, transparent));
+    filter: url(#site-rough-border-a);
+    pointer-events: none;
+  }
+
+  .rough-border-r {
+    position: relative;
+    border-right-color: transparent !important;
+  }
+
+  .rough-border-r::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    border-right: 1px solid var(--rough-border-color, color-mix(in oklch, var(--border) 45%, transparent));
+    filter: url(#site-rough-border-a);
+    pointer-events: none;
+  }
+
+  /* Orange mid rule (Work / About / Writings) */
+  .orange-mid-line__base {
+    background: #ff5800;
+    opacity: 0.5;
+  }
+
+  .orange-mid-line__glow {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgb(255 88 0 / 32%) 45%,
+      rgb(255 88 0 / 32%) 55%,
+      transparent 100%
+    );
+    filter: blur(1px);
+  }
+
+  .orange-mid-line__svg {
+    height: 5px;
+  }
+
+  /* Tone presets — light mode uses foreground for contrast on white */
+  .rb-transparent {
+    --rough-border-color: transparent;
+  }
+
+  .rb-border-45 {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  }
+
+  .rb-border-55 {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 44%, transparent);
+  }
+
+  .rb-border-60 {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 48%, transparent);
+  }
+
+  .rb-border-70 {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 52%, transparent);
+  }
+
+  .rb-border-80 {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 56%, transparent);
+  }
+
+  .rb-fg-8 {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 24%, transparent);
+  }
+
+  .rb-fg-12 {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 32%, transparent);
+  }
+
+  .rb-fg-20 {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 40%, transparent);
+  }
+
+  .rb-fg-25 {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 44%, transparent);
+  }
+
+  .rb-accent-40 {
+    --rough-border-color: rgb(255 88 0 / 55%);
+  }
+
+  .rb-row-idle:hover {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 30%, transparent);
+  }
+
+  .rb-row-active {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 36%, transparent);
+  }
+
+  .rb-ruler {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 28%, transparent);
+  }
+
+  .dark .rb-border-45 {
+    --rough-border-color: color-mix(in oklch, var(--border) 45%, transparent);
+  }
+
+  .dark .rb-border-55 {
+    --rough-border-color: color-mix(in oklch, var(--border) 55%, transparent);
+  }
+
+  .dark .rb-border-60 {
+    --rough-border-color: color-mix(in oklch, var(--border) 60%, transparent);
+  }
+
+  .dark .rb-border-70 {
+    --rough-border-color: color-mix(in oklch, var(--border) 70%, transparent);
+  }
+
+  .dark .rb-border-80 {
+    --rough-border-color: color-mix(in oklch, var(--border) 80%, transparent);
+  }
+
+  .dark .rb-fg-8 {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 8%, transparent);
+  }
+
+  .dark .rb-fg-12 {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 12%, transparent);
+  }
+
+  .dark .rb-fg-20 {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 20%, transparent);
+  }
+
+  .dark .rb-fg-25 {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 25%, transparent);
+  }
+
+  .dark .rb-row-idle:hover {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 10%, transparent);
+  }
+
+  .dark .rb-row-active {
+    --rough-border-color: color-mix(in oklch, var(--foreground) 12%, transparent);
+  }
+
+  .dark .rb-white-8 {
+    --rough-border-color: oklch(1 0 0 / 8%);
+  }
+
+  .dark .rb-white-10 {
+    --rough-border-color: oklch(1 0 0 / 10%);
+  }
+
+  .dark .rb-white-12 {
+    --rough-border-color: oklch(1 0 0 / 12%);
+  }
+
+  .dark .rb-white-15 {
+    --rough-border-color: oklch(1 0 0 / 15%);
+  }
+
+  .dark .rb-white-20 {
+    --rough-border-color: oklch(1 0 0 / 20%);
+  }
+
+  .dark .rb-row-idle:hover {
+    --rough-border-color: oklch(1 0 0 / 8%);
+  }
+
+  .dark .rb-row-active {
+    --rough-border-color: oklch(1 0 0 / 10%);
+  }
+
+  .dark .rb-ruler {
+    --rough-border-color: color-mix(in oklch, var(--border) 55%, transparent);
+  }
+
+  .rough-viewport-border {
+    padding: var(--rough-border-inset);
+    box-sizing: border-box;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rough-border::after,
+    .rough-border-t::before,
+    .rough-border-l::before,
+    .rough-border-r::before,
+    .rough-viewport-border__stroke {
+      filter: none;
+    }
+
+    .orange-mid-line__stroke {
+      filter: none;
+    }
+
+    .orange-mid-line__stroke--ghost {
+      display: none;
+    }
+
+    .orange-mid-line__base {
+      opacity: 0.65;
+    }
+  }
 }
 
 /* Home: when a social link is hovered, dim + blur the rest of the hero (reference: focus spotlight) */

@@ -1,6 +1,8 @@
 import Image from "next/image";
 import type { CSSProperties } from "react";
 
+import { ROUGH_BORDER } from "@/lib/rough-border";
+
 type WritingThumbnailProps = {
   title: string;
   thumbnail?: string;
@@ -23,7 +25,7 @@ export function WritingThumbnail({
 
   return (
     <div
-      className={`relative aspect-video w-full overflow-hidden rounded-sm border border-white/10 bg-[#171717] shadow-[0_10px_40px_rgba(0,0,0,0.32)] ${className}`}
+      className={`${ROUGH_BORDER} dark:rb-white-10 relative aspect-video w-full overflow-hidden rounded-sm bg-[#171717] shadow-[0_10px_40px_rgba(0,0,0,0.32)] [--rough-border-color:oklch(1_0_0/10%)] ${className}`}
       style={style}
     >
       {hasThumbnail ? (

@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { ROUGH_BORDER } from "@/lib/rough-border";
+
 /** Scrollable panel for dense About sections (experience, projects, etc.). */
 export function AboutSectionPanel({
   children,
@@ -18,8 +20,7 @@ export function AboutSectionPanel({
   );
 }
 
-export const aboutCardClass =
-  "rounded-md border border-dotted border-foreground/20 bg-foreground/[0.02] px-3 py-2.5 dark:border-white/15 dark:bg-white/[0.03]";
+export const aboutCardClass = `${ROUGH_BORDER} rough-border-dotted rb-fg-20 dark:rb-white-15 rounded-md bg-foreground/[0.02] px-3 py-2.5 dark:bg-white/[0.03]`;
 
 export const aboutMetaClass =
   "font-sans text-[11px] font-light uppercase tracking-[0.18em] text-[#FF5800] sm:text-xs";

@@ -9,19 +9,27 @@ import { TechChips } from "@/components/about/stack-icon-token";
 import { aboutBodyClass, aboutBulletClass, aboutMetaClass } from "@/components/about/about-section-panel";
 import type { ExperienceEntry, ProjectEntry } from "@/lib/about-content";
 import { EXPERIENCE_ENTRIES } from "@/lib/about-content";
+import {
+  ROUGH_BORDER,
+  ROUGH_BORDER_T,
+  ROUGH_ROW_ACTIVE,
+  ROUGH_ROW_IDLE,
+} from "@/lib/rough-border";
 
-const rowClass =
-  "group flex min-h-11 w-full cursor-pointer select-none items-center gap-1.5 rounded-xl border px-1 py-0.5 text-left text-[16px] leading-6 transition-[background-color,border-color,color,box-shadow] duration-200";
+const rowBase =
+  "group flex min-h-11 w-full cursor-pointer select-none items-center gap-1.5 rounded-xl px-1 py-0.5 text-left text-[16px] leading-6 transition-[background-color,color,box-shadow] duration-200";
+
+const rowClass = `${ROUGH_BORDER} ${rowBase}`;
 
 function activeRowClass(isActive: boolean) {
   return isActive
-    ? "border-foreground/12 bg-foreground/7 text-foreground shadow-[0_12px_32px_rgba(0,0,0,0.06)] dark:border-white/10 dark:bg-white/10 dark:shadow-none"
-    : "border-transparent text-foreground/70 hover:border-foreground/10 hover:bg-foreground/5 hover:text-foreground dark:hover:border-white/8 dark:hover:bg-white/5";
+    ? `${ROUGH_ROW_ACTIVE} bg-foreground/7 text-foreground shadow-[0_12px_32px_rgba(0,0,0,0.06)] dark:bg-white/10 dark:shadow-none`
+    : `${ROUGH_ROW_IDLE} text-foreground/70 hover:bg-foreground/5 hover:text-foreground dark:hover:bg-white/5`;
 }
 
 function KeyProjectPanel({ project }: { project: ProjectEntry }) {
   return (
-    <div className="border-t border-dotted border-foreground/12 px-3 pb-3 pt-2.5 dark:border-white/12">
+    <div className={`${ROUGH_BORDER_T} rough-border-dotted rb-fg-12 dark:rb-white-12 px-3 pb-3 pt-2.5`}>
       <p className={`${aboutBodyClass} text-sm md:text-[15px]`}>{project.summary}</p>
       <p className="mt-2 text-sm font-bold leading-snug text-foreground/75 md:text-[15px]">
         <span className="text-muted-foreground/80">Role — </span>
@@ -46,10 +54,10 @@ function KeyProjectRow({
   onToggle: () => void;
 }) {
   return (
-    <li className="overflow-hidden rounded-lg border border-foreground/8 dark:border-white/8">
+    <li className={`${ROUGH_BORDER} rb-fg-8 dark:rb-white-8 overflow-hidden rounded-lg`}>
       <button
         type="button"
-        className={`${rowClass} ${activeRowClass(isOpen)} min-h-9 text-[15px]`}
+        className={`${rowBase} ${activeRowClass(isOpen)} min-h-9 w-full text-[15px]`}
         aria-expanded={isOpen}
         onClick={onToggle}
       >
@@ -76,7 +84,7 @@ function ExperienceJobPanel({ job }: { job: ExperienceEntry }) {
   );
 
   return (
-    <div className="space-y-2 border-t border-dotted border-foreground/12 px-2 pb-3 pt-2 dark:border-white/12">
+    <div className={`${ROUGH_BORDER_T} rough-border-dotted rb-fg-12 dark:rb-white-12 space-y-2 px-2 pb-3 pt-2`}>
       <p className="px-0.5 text-sm font-medium text-foreground/90 md:text-[15px]">{job.company}</p>
       <ul className={aboutBulletClass}>
         {job.highlights.map((item) => (

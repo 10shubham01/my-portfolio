@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { GithubLogoIcon, GlobeHemisphereWestIcon } from "@phosphor-icons/react/dist/ssr";
 import type { WorkProject } from "./work-project-types";
+import { ROUGH_BORDER, ROUGH_ROW_ACTIVE, ROUGH_ROW_IDLE } from "@/lib/rough-border";
 
 type WorkProjectListProps = {
   projects: WorkProject[];
@@ -85,10 +86,10 @@ function WorkProjectRow({
       tabIndex={0}
       aria-current={isActive ? "true" : undefined}
       aria-label={`${isArmed ? "Open video for" : "Select"} ${project.title}`}
-      className={`group flex min-h-11 cursor-pointer select-none items-center gap-1.5 rounded-xl border px-1 py-0.5 text-[16px] leading-6 transition-[background-color,border-color,color,box-shadow] duration-200 ${
+      className={`${ROUGH_BORDER} group flex min-h-11 cursor-pointer select-none items-center gap-1.5 rounded-xl px-1 py-0.5 text-[16px] leading-6 transition-[background-color,color,box-shadow] duration-200 ${
         isActive
-          ? "border-foreground/12 bg-foreground/7 text-foreground shadow-[0_12px_32px_rgba(0,0,0,0.06)] dark:border-white/10 dark:bg-white/10 dark:shadow-none"
-          : "border-transparent text-foreground/70 hover:border-foreground/10 hover:bg-foreground/5 hover:text-foreground dark:hover:border-white/8 dark:hover:bg-white/5"
+          ? `${ROUGH_ROW_ACTIVE} bg-foreground/7 text-foreground shadow-[0_12px_32px_rgba(0,0,0,0.06)] dark:bg-white/10 dark:shadow-none`
+          : `${ROUGH_ROW_IDLE} text-foreground/70 hover:bg-foreground/5 hover:text-foreground dark:hover:bg-white/5`
       }`}
       onMouseEnter={onMouseEnter}
       onClick={handleClick}

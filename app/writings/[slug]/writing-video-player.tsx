@@ -3,6 +3,8 @@
 import { Maximize2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
+import { ROUGH_BORDER, ROUGH_MEDIA } from "@/lib/rough-border";
+
 export type WritingVideoSource = {
   src: string;
   type: string;
@@ -82,7 +84,7 @@ export function WritingVideoPlayer({
         type="button"
         aria-label={alt ? `Open video larger: ${alt}` : "Open video larger"}
         onClick={() => setIsExpanded(true)}
-        className="group relative block aspect-video w-full overflow-hidden rounded-md border border-border/55 bg-black text-left shadow-[0_16px_50px_rgba(0,0,0,0.14)] transition-transform duration-300 hover:scale-[1.006] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5800] focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-white/8"
+        className={`${ROUGH_MEDIA} group relative block aspect-video w-full overflow-hidden rounded-md bg-black text-left shadow-[0_16px_50px_rgba(0,0,0,0.14)] transition-transform duration-300 hover:scale-[1.006] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5800] focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
       >
         <video
           autoPlay={autoPlay}
@@ -97,7 +99,7 @@ export function WritingVideoPlayer({
         >
           <VideoSources sources={sources} />
         </video>
-        <span className="pointer-events-none absolute right-2 top-2 grid size-8 place-items-center rounded-full border border-white/20 bg-black/45 text-white shadow-[0_10px_30px_rgba(0,0,0,0.28)] backdrop-blur-md transition-colors group-hover:bg-black/65">
+        <span className={`${ROUGH_BORDER} dark:rb-white-20 pointer-events-none absolute right-2 top-2 grid size-8 place-items-center rounded-full bg-black/45 text-white shadow-[0_10px_30px_rgba(0,0,0,0.28)] backdrop-blur-md transition-colors group-hover:bg-black/65 [--rough-border-color:oklch(1_0_0/20%)]`}>
           <Maximize2 className="size-3.5" aria-hidden="true" />
         </span>
       </button>
@@ -114,7 +116,7 @@ export function WritingVideoPlayer({
             type="button"
             aria-label="Close video"
             onClick={() => setIsExpanded(false)}
-            className="absolute right-3 top-3 z-10 grid size-9 place-items-center rounded-full border border-border/60 bg-background/85 text-foreground shadow-[0_12px_36px_rgba(0,0,0,0.22)] backdrop-blur-md transition-colors hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5800]"
+            className={`${ROUGH_BORDER} rb-border-60 absolute right-3 top-3 z-10 grid size-9 place-items-center rounded-full bg-background/85 text-foreground shadow-[0_12px_36px_rgba(0,0,0,0.22)] backdrop-blur-md transition-colors hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5800]`}
           >
             <X className="size-4" aria-hidden="true" />
           </button>

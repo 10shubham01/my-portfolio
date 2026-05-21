@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { AlienText } from "@/components/alien-text";
 import { createHeadingIdFactory } from "@/lib/writing-headings";
+import { ROUGH_BORDER_L, ROUGH_DIVIDER_T, ROUGH_MEDIA } from "@/lib/rough-border";
 import { WritingCopyButton } from "./writing-copy-button";
 import { WritingVideoPlayer, type WritingVideoSource } from "./writing-video-player";
 
@@ -492,7 +493,7 @@ function CodeBlock({ language, code }: { language: string; code: string }) {
   const lines = code.split("\n");
 
   return (
-    <figure className="relative my-7 overflow-hidden rounded-md border border-border/55 bg-foreground/4 shadow-[0_16px_50px_rgba(0,0,0,0.10)] dark:border-white/8 dark:bg-white/4.5">
+    <figure className={`${ROUGH_MEDIA} relative my-7 overflow-hidden rounded-md bg-foreground/4 shadow-[0_16px_50px_rgba(0,0,0,0.10)] dark:bg-white/4.5`}>
       <WritingCopyButton value={code} />
       <pre className="hide-scrollbar overflow-x-auto px-5 py-5 pr-14 text-[13px] leading-6 sm:px-6 sm:pr-16">
         <code className="font-mono" data-language={language}>
@@ -509,10 +510,10 @@ function CodeBlock({ language, code }: { language: string; code: string }) {
 
 function WritingTableBlock({ headers, rows }: { headers: string[]; rows: string[][] }) {
   return (
-    <div className="hide-scrollbar my-7 overflow-x-auto rounded-md border border-border/55 bg-foreground/[0.025] dark:border-white/8 dark:bg-white/[0.035]">
+    <div className={`${ROUGH_MEDIA} hide-scrollbar my-7 overflow-x-auto rounded-md bg-foreground/[0.025] dark:bg-white/[0.035]`}>
       <table className="min-w-[34rem] w-full border-collapse text-left text-sm leading-6">
         <thead>
-          <tr className="border-b border-border/55 bg-foreground/[0.035] dark:border-white/8 dark:bg-white/[0.045]">
+          <tr className={`${ROUGH_DIVIDER_T} bg-foreground/[0.035] dark:bg-white/[0.045]`}>
             {headers.map((header, headerIndex) => (
               <th
                 key={`${header}-${headerIndex}`}
@@ -528,7 +529,7 @@ function WritingTableBlock({ headers, rows }: { headers: string[]; rows: string[
           {rows.map((row, rowIndex) => (
             <tr
               key={rowIndex}
-              className="border-b border-border/45 last:border-b-0 dark:border-white/8"
+              className={`${ROUGH_DIVIDER_T} last:before:content-none [--rough-border-color:color-mix(in_oklch,var(--border)_45%,transparent)] dark:[--rough-border-color:oklch(1_0_0/8%)]`}
             >
               {headers.map((_, cellIndex) => (
                 <td key={cellIndex} className="px-4 py-3 align-top text-foreground/76">
@@ -558,8 +559,8 @@ function WritingImageBlock({
   const { shouldUseNativeImage, shouldSkipOptimization } = getImageLoadingStrategy(src);
   const isFullWidth = isFullWidthMedia(attrs);
   const containerClassName = isFullWidth
-    ? "relative w-full overflow-hidden rounded-md border border-border/55 bg-foreground/[0.035] shadow-[0_16px_50px_rgba(0,0,0,0.10)] dark:border-white/8 dark:bg-white/[0.045]"
-    : "relative aspect-video overflow-hidden rounded-md border border-border/55 bg-foreground/[0.035] shadow-[0_16px_50px_rgba(0,0,0,0.10)] dark:border-white/8 dark:bg-white/[0.045]";
+    ? `${ROUGH_MEDIA} relative w-full overflow-hidden rounded-md bg-foreground/[0.035] shadow-[0_16px_50px_rgba(0,0,0,0.10)] dark:bg-white/[0.045]`
+    : `${ROUGH_MEDIA} relative aspect-video overflow-hidden rounded-md bg-foreground/[0.035] shadow-[0_16px_50px_rgba(0,0,0,0.10)] dark:bg-white/[0.045]`;
   const imageClassName = isFullWidth ? "h-auto w-full" : "h-full w-full object-contain";
   const imageSizes = isFullWidth ? "100vw" : "(min-width: 768px) 44rem, calc(100vw - 2rem)";
 
@@ -729,13 +730,18 @@ export function WritingMdxContent({ content }: { content: string }) {
 
         if (block.type === "quote") {
           return (
-            <blockquote key={index} className="my-6 border-l border-border pl-4 text-foreground/72">
+            <blockquote key={index} className={`${ROUGH_BORDER_L} rb-border-55 my-6 pl-4 text-foreground/72`}>
               {renderInline(block.text)}
             </blockquote>
           );
         }
 
-        return <hr key={index} className="my-8 border-0 border-t border-white/10" />;
+        return (
+          <hr
+            key={index}
+            className={`${ROUGH_DIVIDER_T} my-8 border-0 [--rough-border-color:oklch(1_0_0/10%)]`}
+          />
+        );
       })}
     </div>
   );

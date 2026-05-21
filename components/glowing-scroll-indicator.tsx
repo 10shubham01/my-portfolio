@@ -17,6 +17,7 @@ function useHydrated() {
 }
 
 import { useLenisInstance } from "@/components/lenis-provider";
+import { ROUGH_BORDER, ROUGH_BORDER_T } from "@/lib/rough-border";
 
 const ACCENT = "#FF5800";
 const TICK_COUNT = 15;
@@ -172,7 +173,7 @@ const ScrollIndicatorBars = ({
         aria-valuetext={draggable ? `${scrollPercent}%` : undefined}
       >
         <div
-          className={`flex flex-col gap-3 rounded-2xl px-5 py-3.5 backdrop-blur-md transition-colors duration-200 sm:gap-3.5 sm:px-6 sm:py-4 md:px-7 md:py-4.5 ${
+          className={`${ROUGH_BORDER} rb-border-55 dark:rb-white-10 flex flex-col gap-3 rounded-2xl px-5 py-3.5 backdrop-blur-md transition-colors duration-200 sm:gap-3.5 sm:px-6 sm:py-4 md:px-7 md:py-4.5 ${
             isDragging
               ? "bg-background/90 dark:bg-background/75"
               : "bg-background/82 dark:bg-background/62"
@@ -230,7 +231,7 @@ const ScrollIndicatorBars = ({
             <div className="relative h-5 flex-1 min-w-[14rem] sm:min-w-[18rem] md:min-w-[20rem]">
               {/* Secondary dashed rail */}
               <div
-                className="absolute top-[18%] right-0 left-0 border-t border-dashed border-foreground/12 dark:border-white/14"
+                className={`${ROUGH_BORDER_T} rough-border-dotted rb-fg-12 dark:rb-white-12 absolute top-[18%] right-0 left-0 [--rough-border-color:color-mix(in_oklch,var(--foreground)_12%,transparent)] dark:[--rough-border-color:oklch(1_0_0/14%)]`}
                 aria-hidden
               />
               <div
@@ -238,7 +239,7 @@ const ScrollIndicatorBars = ({
                 aria-hidden
               />
               <div
-                className="absolute bottom-[18%] right-0 left-0 border-t border-dashed border-foreground/8 dark:border-white/10"
+                className={`${ROUGH_BORDER_T} rough-border-dotted rb-fg-8 dark:rb-white-10 absolute bottom-[18%] right-0 left-0`}
                 aria-hidden
               />
 
@@ -274,7 +275,7 @@ const ScrollIndicatorBars = ({
                   >
                     <div className="relative flex size-5 items-center justify-center rounded-full sm:size-6">
                       <span
-                        className="absolute inset-0 rounded-full border border-[#FF5800]/40 bg-background/92 dark:bg-background/78"
+                        className={`${ROUGH_BORDER} rb-accent-40 absolute inset-0 rounded-full bg-background/92 dark:bg-background/78`}
                         aria-hidden
                       />
                       <span className="relative flex gap-0.5" aria-hidden>
@@ -297,7 +298,7 @@ const ScrollIndicatorBars = ({
                   >
                     <div className="relative flex size-5 items-center justify-center rounded-full sm:size-6">
                       <span
-                        className="absolute inset-0 rounded-full border border-[#FF5800]/40 bg-background/92 dark:bg-background/78"
+                        className={`${ROUGH_BORDER} rb-accent-40 absolute inset-0 rounded-full bg-background/92 dark:bg-background/78`}
                         aria-hidden
                       />
                       <span className="relative flex gap-0.5" aria-hidden>

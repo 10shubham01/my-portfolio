@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Geist_Mono } from "next/font/google";
 import { FloatingThemeToggle } from "@/components/floating-theme-toggle";
 import { PageRuler } from "@/components/page-ruler";
+import { RoughBorderDefs } from "@/components/rough-border-defs";
+import { RoughViewportBorder } from "@/components/rough-viewport-border";
 import { LenisProvider } from "@/components/lenis-provider";
 import { SiteDock } from "@/components/site-dock";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -130,8 +132,10 @@ export default function RootLayout({
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <LenisProvider>
+            <RoughBorderDefs />
             <PageRuler />
             <SiteDock />
+            <RoughViewportBorder />
             <div className="flex min-h-dvh w-full min-w-0 flex-col overflow-x-hidden">
               <div className="h-(--site-dock-h) shrink-0" aria-hidden />
               <div className="site-shell relative z-[2] mx-auto flex w-full min-w-0 max-w-(--site-max-width) flex-1 flex-col px-4 pb-16 sm:px-6">
