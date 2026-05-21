@@ -27,7 +27,7 @@ export function SiteDock() {
         aria-label="Site"
         className={cn(
           `${ROUGH_BORDER} rb-border-45 dark:rb-white-10 dock-bar pointer-events-auto relative flex items-center gap-0.5 overflow-visible rounded-full px-1 py-0.5`,
-          "bg-background/82 shadow-sm backdrop-blur-md dark:bg-background/62",
+          "bg-background/82 backdrop-blur-md dark:bg-background/62",
         )}
       >
         {DOCK_ITEMS.map(({ href, label }) => {

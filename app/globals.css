@@ -222,6 +222,13 @@
     height: 5px;
   }
 
+  /* GitHub contribution cells */
+  .github-calendar-cell--rough {
+    filter: url(#site-rough-block);
+    transform-origin: center;
+    border-radius: 1px;
+  }
+
   /* Tone presets — light mode uses foreground for contrast on white */
   .rb-transparent {
     --rough-border-color: transparent;
@@ -379,6 +386,10 @@
 
     .orange-mid-line__base {
       opacity: 0.65;
+    }
+
+    .github-calendar-cell--rough {
+      filter: none;
     }
   }
 }

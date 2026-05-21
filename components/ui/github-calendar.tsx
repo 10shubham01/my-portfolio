@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 
 import { cn } from "@repo/ui/lib/utils";
 
@@ -39,10 +40,47 @@ export interface GithubCalendarProps {
   username: string;
   variant?: "default" | "city-lights" | "minimal";
   shape?: "square" | "rounded" | "circle" | "squircle";
+  /** Wobbly, hand-drawn cell edges (uses site-rough-block filter). */
+  roughBlocks?: boolean;
   glowIntensity?: number;
   className?: string;
   showTotal?: boolean;
   colorSchema?: "green" | "blue" | "purple" | "orange" | "gray";
+}
+
+function formatContributionTooltip(date: string, count: number): string {
+  const parsed = new Date(`${date}T12:00:00`);
+  const label = Number.isNaN(parsed.getTime())
+    ? date
+    : parsed.toLocaleDateString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+
+  if (count === 0) return `No contributions on ${label}`;
+  return `${count} contribution${count === 1 ? "" : "s"} on ${label}`;
+}
+
+type ContributionTooltipState = {
+  date: string;
+  count: number;
+  x: number;
+  y: number;
+};
+
+/** Stable per-date jitter so cells look sketched, not grid-perfect. */
+function cellJitter(date: string): React.CSSProperties {
+  let hash = 0;
+  for (let i = 0; i < date.length; i++) hash = (hash * 31 + date.charCodeAt(i)) | 0;
+  const rot = ((hash % 23) - 11) * 0.75;
+  const scale = 0.88 + (Math.abs(hash >> 3) % 11) * 0.014;
+  const dx = ((hash >> 5) % 7) - 3;
+  const dy = ((hash >> 8) % 7) - 3;
+  return {
+    transform: `translate(${dx * 0.12}px, ${dy * 0.12}px) rotate(${rot}deg) scale(${scale})`,
+  };
 }
 
 /** GitHub returns ~53 week columns for the last year. */
@@ -52,7 +90,8 @@ const CONTRIBUTION_WEEK_COUNT = 53;
 const calendarGridClass =
   "grid w-full min-w-0 max-w-full grid-flow-col grid-rows-[repeat(7,auto)] gap-0.5 pb-1 [grid-auto-columns:minmax(0,1fr)] sm:gap-1 md:gap-1.5";
 
-const calendarCellClass = "aspect-square w-full min-w-0";
+const calendarCellHitClass = "relative aspect-square w-full min-w-0 cursor-default";
+const calendarCellVisualClass = "absolute inset-0 size-full min-w-0";
 
 function getShapeClass(shape: string) {
   switch (shape) {
@@ -130,6 +169,7 @@ export function GithubCalendar({
   username,
   variant = "default",
   shape = "rounded",
+  roughBlocks = true,
   glowIntensity = 5,
   className,
   showTotal = true,
@@ -138,6 +178,22 @@ export function GithubCalendar({
   const [data, setData] = React.useState<GithubContributionData | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
+  const [tooltip, setTooltip] = React.useState<ContributionTooltipState | null>(null);
+
+  const showTooltip = React.useCallback(
+    (event: React.SyntheticEvent<HTMLDivElement>, day: ContributionDay) => {
+      const rect = event.currentTarget.getBoundingClientRect();
+      setTooltip({
+        date: day.date,
+        count: day.contributionCount,
+        x: rect.left + rect.width / 2,
+        y: rect.top,
+      });
+    },
+    [],
+  );
+
+  const hideTooltip = React.useCallback(() => setTooltip(null), []);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -172,12 +228,23 @@ export function GithubCalendar({
   if (loading) {
     return (
       <div
-        className={cn(calendarGridClass, className)}
+        className={cn(
+          calendarGridClass,
+          roughBlocks && "gap-1 sm:gap-1.5 md:gap-2",
+          className,
+        )}
         aria-busy
         aria-label="Loading contribution calendar"
       >
         {Array.from({ length: CONTRIBUTION_WEEK_COUNT * 7 }).map((_, i) => (
-          <div key={i} className={cn(calendarCellClass, "rounded-[2px] bg-muted")} />
+          <div
+            key={i}
+            className={cn(
+              calendarCellHitClass,
+              roughBlocks ? "github-calendar-cell--rough rounded-[1px]" : "rounded-[2px]",
+              "bg-muted",
+            )}
+          />
         ))}
       </div>
     );
@@ -185,7 +252,7 @@ export function GithubCalendar({
 
   const weeks = data?.contributions ?? [];
   const useBrandOrange = colorSchema === "orange";
-  const shapeClass = getShapeClass(shape);
+  const shapeClass = roughBlocks ? "rounded-[1px]" : getShapeClass(shape);
 
   return (
     <div className={cn("flex w-full min-w-0 max-w-full flex-col gap-3", className)}>
@@ -196,38 +263,70 @@ export function GithubCalendar({
         </p>
       )}
 
-      <div className={calendarGridClass}>
+      <div
+        className={cn(
+          calendarGridClass,
+          roughBlocks && "gap-1 sm:gap-1.5 md:gap-2",
+        )}
+      >
         {weeks.flatMap((week) =>
           week.map((day) => {
             const isGlowing = variant === "city-lights" && day.contributionCount > 0;
             const isMinimal = variant === "minimal";
             const bg = cellBackground(day.contributionLevel, colorSchema);
 
+            const tooltipLabel = formatContributionTooltip(day.date, day.contributionCount);
+
             return (
               <div
                 key={day.date}
-                className={cn(
-                  calendarCellClass,
-                  bg.className,
-                  shapeClass,
-                  isMinimal && "scale-75 rounded-full",
-                  isGlowing && "z-10",
-                )}
-                style={{
-                  ...bg.style,
-                  ...(isGlowing && day.contributionLevel !== "NONE"
-                    ? {
-                        boxShadow: `0 0 ${
-                          day.contributionCount > 3 ? glowIntensity * 1.5 : glowIntensity
-                        }px ${useBrandOrange ? ACCENT : "#f97316"}`,
-                      }
-                    : undefined),
-                }}
-              />
+                className={calendarCellHitClass}
+                title={tooltipLabel}
+                aria-label={tooltipLabel}
+                onMouseEnter={(event) => showTooltip(event, day)}
+                onMouseLeave={hideTooltip}
+                onFocus={(event) => showTooltip(event, day)}
+                onBlur={hideTooltip}
+              >
+                <div
+                  className={cn(
+                    calendarCellVisualClass,
+                    bg.className,
+                    shapeClass,
+                    roughBlocks && "github-calendar-cell--rough",
+                    isMinimal && !roughBlocks && "scale-75 rounded-full",
+                    isGlowing && "z-10",
+                  )}
+                  style={{
+                    ...bg.style,
+                    ...(roughBlocks ? cellJitter(day.date) : undefined),
+                    ...(isGlowing && day.contributionLevel !== "NONE"
+                      ? {
+                          boxShadow: `0 0 ${
+                            day.contributionCount > 3 ? glowIntensity * 1.5 : glowIntensity
+                          }px ${useBrandOrange ? ACCENT : "#f97316"}`,
+                        }
+                      : undefined),
+                  }}
+                />
+              </div>
             );
           }),
         )}
       </div>
+
+      {tooltip && typeof document !== "undefined"
+        ? createPortal(
+            <div
+              role="tooltip"
+              className="pointer-events-none fixed z-[200] max-w-[16rem] -translate-x-1/2 -translate-y-[calc(100%+6px)] rounded-md border border-border/70 bg-background/98 px-2.5 py-1.5 text-center text-xs font-medium text-foreground shadow-[0_8px_28px_rgba(0,0,0,0.14)] backdrop-blur-sm dark:border-white/12 dark:bg-[#171717]/98"
+              style={{ left: tooltip.x, top: tooltip.y }}
+            >
+              {formatContributionTooltip(tooltip.date, tooltip.count)}
+            </div>,
+            document.body,
+          )
+        : null}
     </div>
   );
 }

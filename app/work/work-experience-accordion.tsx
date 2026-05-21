@@ -9,12 +9,7 @@ import { TechChips } from "@/components/about/stack-icon-token";
 import { aboutBodyClass, aboutBulletClass, aboutMetaClass } from "@/components/about/about-section-panel";
 import type { ExperienceEntry, ProjectEntry } from "@/lib/about-content";
 import { EXPERIENCE_ENTRIES } from "@/lib/about-content";
-import {
-  ROUGH_BORDER,
-  ROUGH_BORDER_T,
-  ROUGH_ROW_ACTIVE,
-  ROUGH_ROW_IDLE,
-} from "@/lib/rough-border";
+import { ROUGH_BORDER, ROUGH_ROW_ACTIVE, ROUGH_ROW_IDLE } from "@/lib/rough-border";
 
 const rowBase =
   "group flex min-h-11 w-full cursor-pointer select-none items-center gap-1.5 rounded-xl px-1 py-0.5 text-left text-[16px] leading-6 transition-[background-color,color,box-shadow] duration-200";
@@ -29,7 +24,7 @@ function activeRowClass(isActive: boolean) {
 
 function KeyProjectPanel({ project }: { project: ProjectEntry }) {
   return (
-    <div className={`${ROUGH_BORDER_T} rough-border-dotted rb-fg-12 dark:rb-white-12 px-3 pb-3 pt-2.5`}>
+    <div className="px-3 pb-3 pt-2.5">
       <p className={`${aboutBodyClass} text-sm md:text-[15px]`}>{project.summary}</p>
       <p className="mt-2 text-sm font-bold leading-snug text-foreground/75 md:text-[15px]">
         <span className="text-muted-foreground/80">Role — </span>
@@ -84,7 +79,7 @@ function ExperienceJobPanel({ job }: { job: ExperienceEntry }) {
   );
 
   return (
-    <div className={`${ROUGH_BORDER_T} rough-border-dotted rb-fg-12 dark:rb-white-12 space-y-2 px-2 pb-3 pt-2`}>
+    <div className="space-y-2 px-2 pb-3 pt-2">
       <p className="px-0.5 text-sm font-medium text-foreground/90 md:text-[15px]">{job.company}</p>
       <ul className={aboutBulletClass}>
         {job.highlights.map((item) => (

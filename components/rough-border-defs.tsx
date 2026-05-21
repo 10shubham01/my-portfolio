@@ -75,6 +75,23 @@ export function RoughBorderDefs() {
           />
           <feDisplacementMap in="SourceGraphic" in2="noise" scale={3.8} />
         </filter>
+        <filter
+          id="site-rough-block"
+          x="-28%"
+          y="-28%"
+          width="156%"
+          height="156%"
+          colorInterpolationFilters="sRGB"
+        >
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.2 0.2"
+            numOctaves={3}
+            seed={6}
+            result="noise"
+          />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale={5.2} />
+        </filter>
       </defs>
     </svg>
   );
