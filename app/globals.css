@@ -12,7 +12,6 @@
   --site-max-width: min(100%, 196.5ch);
   /* Shared writing column: matches the Work/Writings list left and right edges. */
   --writing-content-width: 44rem;
-  --dock-lamp-opacity: 1;
   --expo-out: cubic-bezier(0.16, 1, 0.3, 1);
   --expo-in: cubic-bezier(0.7, 0, 0.84, 0);
   /* Opaque belt under nav on About / Work (see *-viewport-mask). */
@@ -158,30 +157,6 @@
     color: #ff5800;
   }
 
-  /* Dock lamp: spotlight anchored at top dock (rendered outside overflow-hidden shell) */
-  .dock-lamp {
-    opacity: var(--dock-lamp-opacity, 1);
-    background: radial-gradient(
-      ellipse 340px min(75vh, 44rem) at 50% var(--site-dock-h),
-      rgb(255 88 0 / 24%) 0%,
-      rgb(255 140 50 / 11%) 42%,
-      transparent 72%
-    );
-  }
-
-  .dock-lamp--home {
-    background: radial-gradient(
-      ellipse min(92vw, 520px) min(85vh, 50rem) at 50% var(--site-dock-h),
-      rgb(255 88 0 / 34%) 0%,
-      rgb(255 120 40 / 17%) 45%,
-      rgb(255 160 80 / 7%) 62%,
-      transparent 78%
-    );
-  }
-
-  .hero-title--lamp {
-    filter: brightness(1.06);
-  }
 }
 
 /* About page: snap-scroll is handled by GSAP ScrollTrigger in use-snap-scroll.ts.

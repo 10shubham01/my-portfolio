@@ -17,7 +17,7 @@ export default function HomePage() {
       <p className="font-sans font-light text-xs uppercase select-none tracking-[0.28em] text-muted-foreground">
         {getLocationAgeEyebrow()}
       </p>
-      <div className="hero-title hero-title--lamp relative z-10 w-full max-w-[min(100%,36rem)] overflow-visible selection:bg-[#FF5800] selection:text-white">
+      <div className="hero-title relative z-10 w-full max-w-[min(100%,36rem)] overflow-visible selection:bg-[#FF5800] selection:text-white">
         <HeroText
           text="Yo, I'm Shubham and I build web experiences."
           className={`${basteleur.className} text-3xl font-bold uppercase leading-[1.12] tracking-tight sm:text-4xl sm:leading-[1.08] md:text-5xl md:leading-[1.05] lg:text-6xl`}

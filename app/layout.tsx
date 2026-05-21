@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Geist_Mono } from "next/font/google";
-import { DockLamp } from "@/components/dock-lamp";
 import { FloatingThemeToggle } from "@/components/floating-theme-toggle";
 import { PageRuler } from "@/components/page-ruler";
 import { LenisProvider } from "@/components/lenis-provider";
@@ -133,7 +132,6 @@ export default function RootLayout({
           <LenisProvider>
             <PageRuler />
             <SiteDock />
-            <DockLamp />
             <div className="flex min-h-dvh w-full min-w-0 flex-col overflow-x-hidden">
               <div className="h-(--site-dock-h) shrink-0" aria-hidden />
               <div className="site-shell relative z-[2] mx-auto flex w-full min-w-0 max-w-(--site-max-width) flex-1 flex-col px-4 pb-16 sm:px-6">
