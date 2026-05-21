@@ -76,6 +76,7 @@ function ExperienceJobPanel({ job }: { job: ExperienceEntry }) {
 
   return (
     <div className="space-y-2 border-t border-dotted border-foreground/12 px-2 pb-3 pt-2 dark:border-white/12">
+      <p className="px-0.5 text-sm font-medium text-foreground/90 md:text-[15px]">{job.company}</p>
       <ul className={aboutBulletClass}>
         {job.highlights.map((item) => (
           <li key={item} className="list-none before:mr-1.5 before:content-['–']">
