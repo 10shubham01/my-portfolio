@@ -1,13 +1,14 @@
 import { HeroText } from "@/components/hero-text";
-import { CVLogoIcon, Github, Linkedin } from "@/components/icons";
+import { CVLogoIcon, Github, Linkedin, Mail } from "@/components/icons";
 import { getLocationAgeEyebrow } from "@/lib/birthday";
 import { basteleur } from "@/lib/fonts";
 import { SOCIAL_LINKS } from "@/lib/social-links";
 
 const SOCIAL_ITEMS = [
-  { href: SOCIAL_LINKS.linkedin, label: "LinkedIn", Icon: Linkedin },
-  { href: SOCIAL_LINKS.github, label: "GitHub", Icon: Github },
-  { href: SOCIAL_LINKS.resume, label: "Resume", Icon: CVLogoIcon },
+  { href: SOCIAL_LINKS.linkedin, label: "LinkedIn", Icon: Linkedin, external: true },
+  { href: SOCIAL_LINKS.github, label: "GitHub", Icon: Github, external: true },
+  { href: SOCIAL_LINKS.email, label: "Email", Icon: Mail, external: true },
+  { href: SOCIAL_LINKS.resume, label: "Resume", Icon: CVLogoIcon, external: true },
 ] as const;
 
 export default function HomePage() {
@@ -23,12 +24,13 @@ export default function HomePage() {
         />
       </div>
       <div className="social-links font-sans font-light flex max-w-md flex-wrap items-center justify-center gap-3 text-muted-foreground md:gap-5">
-        {SOCIAL_ITEMS.map(({ href, label, Icon }) => (
+        {SOCIAL_ITEMS.map(({ href, label, Icon, external }) => (
           <a
             key={label}
             href={href}
-            target="_blank"
-            rel="noopener noreferrer"
+            {...(external
+              ? { target: "_blank", rel: "noopener noreferrer" }
+              : {})}
             aria-label={label}
             className={`${basteleur.className} inline-flex origin-center cursor-pointer items-center gap-0.5 rounded-sm text-xl font-bold transition-transform duration-300 ease-out hover:scale-[1.5] focus-visible:scale-[1.5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
           >
