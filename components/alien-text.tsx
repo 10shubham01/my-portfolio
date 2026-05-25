@@ -7,6 +7,7 @@ import {
   getHeroLetterTiming,
   HERO_SCRAMBLE_TICK_MS,
 } from "@/lib/hero-text-timing";
+import { usePrefersLightMotion } from "@/lib/motion-capability";
 import { cn } from "@/lib/utils";
 
 const KATAKANA = [
@@ -229,6 +230,7 @@ export function AlienText({
   indexOffset = 0,
 }: AlienTextProps) {
   const reducedMotion = useReducedMotion();
+  const lightMotion = usePrefersLightMotion();
   const [mounted, setMounted] = useState(false);
   const [heroPlay, setHeroPlay] = useState(false);
 
@@ -243,7 +245,7 @@ export function AlienText({
     return () => cancelAnimationFrame(frame);
   }, [syncHeroTiming, mounted]);
 
-  if (reducedMotion || !mounted) {
+  if (reducedMotion || lightMotion || !mounted) {
     return <span className={cn(wrap && "break-words", className)}>{text}</span>;
   }
 

@@ -4,27 +4,19 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 
+import { prefersLightMotion } from "@/lib/motion-capability";
+
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollToPlugin);
 }
 
+const SECTION_SELECTOR = ".about-snap-section";
+
 /**
  * Full-page snap scroll hook powered by GSAP ScrollToPlugin.
  *
- * Hijacks wheel / touch / keyboard events and smoothly animates between
- * full-viewport sections using GSAP's ScrollToPlugin for buttery-smooth,
- * physics-based scroll animations with configurable easing.
- *
- * Unlike CSS scroll-snap or plain framer-motion animate, GSAP delivers:
- * - Precise, configurable easing curves (power2, elastic, expo, etc.)
- * - Consistent cross-browser behavior
- * - No gaps or dead zones between sections
- * - Clean cancellation and overwrite of in-flight animations
- *
- * @param sectionCount    Total number of full-height sections.
- * @param duration        Scroll animation duration in seconds.
- * @param ease            GSAP ease string for the scroll animation.
- * @param swipeThreshold  Min vertical swipe distance (px) to trigger snap on touch.
+ * On touch-primary devices uses native scroll + IntersectionObserver so touch
+ * is not blocked by `preventDefault` and long GSAP tweens do not fight momentum.
  */
 export function useSnapScroll({
   sectionCount,
@@ -48,13 +40,20 @@ export function useSnapScroll({
       const clamped = Math.min(Math.max(index, 0), sectionCount - 1);
       if (clamped === activeRef.current && !animatingRef.current) return;
 
-      animatingRef.current = true;
       activeRef.current = clamped;
       setActiveIndex(clamped);
 
+      const target = document.querySelectorAll<HTMLElement>(SECTION_SELECTOR)[clamped];
+      if (!target) return;
+
+      if (prefersLightMotion()) {
+        target.scrollIntoView({ block: "start", behavior: "auto" });
+        return;
+      }
+
+      animatingRef.current = true;
       const targetY = clamped * window.innerHeight;
 
-      // Kill any in-flight scroll tweens before starting a new one
       gsap.killTweensOf(window, "scrollTo");
 
       gsap.to(window, {
@@ -64,7 +63,6 @@ export function useSnapScroll({
         overwrite: true,
         onComplete: () => {
           animatingRef.current = false;
-          // Small cooldown to prevent rapid-fire micro-scrolls (trackpad inertia)
           cooldownRef.current = true;
           setTimeout(() => {
             cooldownRef.current = false;
@@ -76,6 +74,56 @@ export function useSnapScroll({
   );
 
   useEffect(() => {
+    const nativeScroll = prefersLightMotion();
+    const html = document.documentElement;
+
+    if (nativeScroll) {
+      html.dataset.aboutNativeScroll = "true";
+
+      const sections = Array.from(
+        document.querySelectorAll<HTMLElement>(SECTION_SELECTOR),
+      );
+      if (sections.length === 0) return;
+
+      const ratios = new Map<Element, number>();
+
+      const pickActive = () => {
+        let bestIndex = 0;
+        let bestRatio = -1;
+
+        sections.forEach((section, index) => {
+          const ratio = ratios.get(section) ?? 0;
+          if (ratio > bestRatio) {
+            bestRatio = ratio;
+            bestIndex = index;
+          }
+        });
+
+        if (bestIndex !== activeRef.current) {
+          activeRef.current = bestIndex;
+          setActiveIndex(bestIndex);
+        }
+      };
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            ratios.set(entry.target, entry.intersectionRatio);
+          }
+          pickActive();
+        },
+        { threshold: [0, 0.25, 0.5, 0.75, 1] },
+      );
+
+      sections.forEach((section) => observer.observe(section));
+      pickActive();
+
+      return () => {
+        delete html.dataset.aboutNativeScroll;
+        observer.disconnect();
+      };
+    }
+
     function getScrollablePanel(target: EventTarget | null): HTMLElement | null {
       if (!(target instanceof Element)) return null;
       const panel = target.closest(".about-section-panel");
@@ -91,20 +139,17 @@ export function useSnapScroll({
       return false;
     }
 
-    /* ── Wheel (desktop) ── */
     function handleWheel(e: WheelEvent) {
       const panel = getScrollablePanel(e.target);
       if (panel && panelConsumesWheel(panel, e.deltaY)) return;
 
       e.preventDefault();
       if (animatingRef.current || cooldownRef.current) return;
-      // Ignore micro-scrolls from trackpads
       if (Math.abs(e.deltaY) < 5) return;
       const dir = e.deltaY > 0 ? 1 : -1;
       scrollToSection(activeRef.current + dir);
     }
 
-    /* ── Touch (mobile) ── */
     function handleTouchStart(e: TouchEvent) {
       touchStartRef.current = {
         x: e.touches[0].clientX,
@@ -113,7 +158,6 @@ export function useSnapScroll({
     }
 
     function handleTouchMove(e: TouchEvent) {
-      // Prevent native vertical scroll when swipe is primarily vertical
       const dx = Math.abs(e.touches[0].clientX - touchStartRef.current.x);
       const dy = Math.abs(e.touches[0].clientY - touchStartRef.current.y);
       if (dy > dx && dy > 10) {
@@ -129,7 +173,6 @@ export function useSnapScroll({
       scrollToSection(activeRef.current + dir);
     }
 
-    /* ── Keyboard ── */
     function handleKeyDown(e: KeyboardEvent) {
       if (animatingRef.current || cooldownRef.current) return;
       switch (e.key) {
@@ -161,7 +204,6 @@ export function useSnapScroll({
     window.addEventListener("touchend", handleTouchEnd, { passive: true });
     window.addEventListener("keydown", handleKeyDown);
 
-    // Ensure we start at section 0
     window.scrollTo(0, 0);
 
     return () => {

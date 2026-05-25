@@ -17,11 +17,12 @@ function useHydrated() {
 }
 
 import { useLenisInstance } from "@/components/lenis-provider";
+import { usePrefersLightMotion } from "@/lib/motion-capability";
 import { ROUGH_BORDER, ROUGH_BORDER_T } from "@/lib/rough-border";
 
 const ACCENT = "#FF5800";
 const TICK_COUNT = 15;
-const AMBIENT_BARS = 28;
+const AMBIENT_BARS_DESKTOP = 28;
 
 function AmbientBar({
   index,
@@ -30,7 +31,7 @@ function AmbientBar({
   index: number;
   scrollProgress: MotionValue<number>;
 }) {
-  const position = index / (AMBIENT_BARS - 1);
+  const position = index / (AMBIENT_BARS_DESKTOP - 1);
   const pre = Math.max(0, position - 0.08);
   const post = Math.min(1, position + 0.08);
   const height = useTransform(scrollProgress, [0, pre, position, post, 1], [3, 8, 18, 8, 3]);
@@ -64,7 +65,11 @@ const ScrollIndicatorBars = ({
   const [isDragging, setIsDragging] = React.useState(false);
   const [scrollPercent, setScrollPercent] = React.useState(0);
   const hydrated = useHydrated();
+  const lightMotion = usePrefersLightMotion();
+  const ambientBars = lightMotion ? 0 : AMBIENT_BARS_DESKTOP;
   const lenis = useLenisInstance();
+  const percentRafRef = React.useRef<number | null>(null);
+  const pendingPercentRef = React.useRef(0);
 
   React.useEffect(() => {
     ref.current = containerElement;
@@ -83,10 +88,30 @@ const ScrollIndicatorBars = ({
     setScrollPercent(Math.round(scrollProgress.get() * 100));
   }, [hydrated, scrollProgress]);
 
+  const schedulePercentUpdate = React.useCallback((v: number) => {
+    pendingPercentRef.current = Math.round(v * 100);
+    if (percentRafRef.current !== null) return;
+    percentRafRef.current = window.requestAnimationFrame(() => {
+      percentRafRef.current = null;
+      setScrollPercent((current) =>
+        current === pendingPercentRef.current ? current : pendingPercentRef.current,
+      );
+    });
+  }, []);
+
   useMotionValueEvent(scrollProgress, "change", (v) => {
     if (!hydrated) return;
-    setScrollPercent(Math.round(v * 100));
+    schedulePercentUpdate(v);
   });
+
+  React.useEffect(
+    () => () => {
+      if (percentRafRef.current !== null) {
+        window.cancelAnimationFrame(percentRafRef.current);
+      }
+    },
+    [],
+  );
 
   const applyScrollFromClientX = useCallback(
     (clientX: number) => {
@@ -173,10 +198,14 @@ const ScrollIndicatorBars = ({
         aria-valuetext={draggable ? `${scrollPercent}%` : undefined}
       >
         <div
-          className={`${ROUGH_BORDER} rb-border-55 dark:rb-white-10 flex flex-col gap-3 rounded-2xl px-5 py-3.5 backdrop-blur-md transition-colors duration-200 sm:gap-3.5 sm:px-6 sm:py-4 md:px-7 md:py-4.5 ${
-            isDragging
-              ? "bg-background/90 dark:bg-background/75"
-              : "bg-background/82 dark:bg-background/62"
+          className={`${ROUGH_BORDER} rb-border-55 dark:rb-white-10 flex flex-col gap-3 rounded-2xl px-5 py-3.5 transition-colors duration-200 sm:gap-3.5 sm:px-6 sm:py-4 md:px-7 md:py-4.5 ${
+            lightMotion
+              ? isDragging
+                ? "bg-background/98 dark:bg-background/92"
+                : "bg-background/95 dark:bg-background/88"
+              : isDragging
+                ? "bg-background/90 backdrop-blur-md dark:bg-background/75"
+                : "bg-background/82 backdrop-blur-md dark:bg-background/62"
           }`}
         >
           {/* Top row: labels + ambient waveform */}
@@ -191,16 +220,11 @@ const ScrollIndicatorBars = ({
               className="flex h-6 flex-1 items-end justify-center gap-[3px] sm:h-7 sm:gap-1"
               aria-hidden
             >
-              {hydrated
-                ? Array.from({ length: AMBIENT_BARS }).map((_, i) => (
+              {ambientBars > 0 && hydrated
+                ? Array.from({ length: ambientBars }).map((_, i) => (
                     <AmbientBar key={i} index={i} scrollProgress={scrollProgress} />
                   ))
-                : Array.from({ length: AMBIENT_BARS }).map((_, i) => (
-                    <span
-                      key={i}
-                      className="h-2 w-[2.5px] shrink-0 rounded-full bg-foreground/25 sm:w-[3px]"
-                    />
-                  ))}
+                : null}
             </div>
             <span
               className={`min-w-[2.5rem] text-right font-sans text-[11px] font-light tabular-nums tracking-wide sm:text-xs ${

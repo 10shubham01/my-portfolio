@@ -4,9 +4,28 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 import { AlienText } from "@/components/alien-text";
+import { usePrefersLightMotion } from "@/lib/motion-capability";
 import { cn } from "@/lib/utils";
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+const HEAVY_VARIANT = {
+  initial: (direction: number) => ({
+    opacity: 0,
+    y: direction > 0 ? -28 : 28,
+    filter: "blur(14px)",
+  }),
+  animate: { opacity: 1, y: 0, filter: "blur(0px)" },
+  exit: (direction: number) => ({
+    opacity: 0,
+    y: direction > 0 ? 28 : -28,
+    filter: "blur(14px)",
+  }),
+};
+const LIGHT_VARIANT = {
+  initial: (direction: number) => ({ opacity: 0, y: direction > 0 ? -14 : 14 }),
+  animate: { opacity: 1, y: 0 },
+  exit: (direction: number) => ({ opacity: 0, y: direction > 0 ? 14 : -14 }),
+};
 
 type WorkProjectHeadingProps = {
   label: string;
@@ -15,6 +34,8 @@ type WorkProjectHeadingProps = {
 };
 
 export function WorkProjectHeading({ label, activeIndex, wrap = false }: WorkProjectHeadingProps) {
+  const lightMotion = usePrefersLightMotion();
+  const variant = lightMotion ? LIGHT_VARIANT : HEAVY_VARIANT;
   const [direction, setDirection] = useState(1);
   const prevIndexRef = useRef(activeIndex);
 
@@ -32,10 +53,12 @@ export function WorkProjectHeading({ label, activeIndex, wrap = false }: WorkPro
       <AnimatePresence mode="wait">
         <motion.div
           key={`${activeIndex}-${label}`}
-          initial={{ opacity: 0, y: direction > 0 ? -28 : 28, filter: "blur(14px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          exit={{ opacity: 0, y: direction > 0 ? 28 : -28, filter: "blur(14px)" }}
-          transition={{ duration: 0.52, ease: EASE }}
+          custom={direction}
+          variants={variant}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          transition={{ duration: lightMotion ? 0.32 : 0.52, ease: EASE }}
           className={cn(
             "pointer-events-auto absolute right-0 bottom-0 max-w-full text-right font-oblique tracking-tight text-foreground",
             wrap

@@ -73,6 +73,22 @@
       touch-action: pan-y;
     }
 
+    .rough-border::after,
+    .rough-border-t::before,
+    .rough-border-l::before,
+    .rough-border-r::before {
+      filter: none;
+    }
+
+    .github-calendar-cell--rough {
+      filter: none;
+    }
+
+    .page-inner-scroll {
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+    }
+
     .writing-progressive-blur {
       -webkit-backdrop-filter: none !important;
       backdrop-filter: none !important;
@@ -443,8 +459,15 @@
 
 }
 
-/* About page: snap-scroll is handled by GSAP ScrollTrigger in use-snap-scroll.ts.
-   No CSS scroll-snap rules needed — GSAP manages all snapping behaviour. */
+/* About: native scroll on touch devices (see use-snap-scroll.ts). */
+html[data-about-native-scroll="true"] {
+  scroll-snap-type: y proximity;
+}
+
+html[data-about-native-scroll="true"] .about-snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+}
 
 /* Hide scrollbars everywhere (unlayered). Scrolling still works via wheel / trackpad / touch. */
 html,

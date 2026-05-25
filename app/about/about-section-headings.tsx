@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { AlienText } from "@/components/alien-text";
+import { usePrefersLightMotion } from "@/lib/motion-capability";
 import { cn } from "@/lib/utils";
 
 /**
@@ -28,60 +29,86 @@ interface AboutSectionHeadingsProps {
 }
 
 const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
-const ENTER = `transform 0.85s ${EASE}, opacity 0.85s ${EASE}, filter 0.85s ${EASE}`;
-const EXIT = `transform 0.6s ${EASE}, opacity 0.4s ease-out, filter 0.6s ${EASE}`;
 
-const DOT_ENTER_DELAY = `transform 0.85s ${EASE} 1s, opacity 0.85s ${EASE} 1s`;
-const DOT_ENTER_IMMEDIATE = `transform 0.85s ${EASE}, opacity 0.85s ${EASE}`;
-const DOT_EXIT = `transform 0.6s ${EASE}, opacity 0.4s ease-out`;
-
-function applyHidden(el: HTMLElement) {
-  el.style.transition = "none";
-  el.style.transform = "translateY(-28px)";
-  el.style.opacity = "0";
-  el.style.filter = "blur(14px)";
+function motionTokens(light: boolean) {
+  const enterDur = light ? "0.45s" : "0.85s";
+  const exitDur = light ? "0.35s" : "0.6s";
+  const filterPart = light ? "" : `, filter ${enterDur} ${EASE}`;
+  const filterExit = light ? "" : `, filter ${exitDur} ${EASE}`;
+  return {
+    enter: `transform ${enterDur} ${EASE}, opacity ${enterDur} ${EASE}${filterPart}`,
+    exit: `transform ${exitDur} ${EASE}, opacity 0.35s ease-out${filterExit}`,
+    dotEnterDelay: `transform ${enterDur} ${EASE} ${light ? "0s" : "1s"}, opacity ${enterDur} ${EASE} ${light ? "0s" : "1s"}`,
+    dotEnterImmediate: `transform ${enterDur} ${EASE}, opacity ${enterDur} ${EASE}`,
+    dotExit: `transform ${exitDur} ${EASE}, opacity 0.35s ease-out`,
+    yHidden: light ? -16 : -28,
+    yExit: light ? 16 : 28,
+    dotHidden: light ? -24 : -40,
+    dotTravel: light ? 24 : 40,
+    useBlur: !light,
+  };
 }
 
-function applyEnter(el: HTMLElement) {
-  applyHidden(el);
-  el.getBoundingClientRect(); // force reflow
-  el.style.transition = ENTER;
+function applyHidden(el: HTMLElement, tokens: ReturnType<typeof motionTokens>) {
+  el.style.transition = "none";
+  el.style.transform = `translateY(${tokens.yHidden}px)`;
+  el.style.opacity = "0";
+  el.style.filter = tokens.useBlur ? "blur(14px)" : "none";
+}
+
+function applyEnter(el: HTMLElement, tokens: ReturnType<typeof motionTokens>) {
+  applyHidden(el, tokens);
+  el.getBoundingClientRect();
+  el.style.transition = tokens.enter;
   el.style.transform = "translateY(0)";
   el.style.opacity = "1";
-  el.style.filter = "blur(0px)";
+  el.style.filter = tokens.useBlur ? "blur(0px)" : "none";
 }
 
-function applyExit(el: HTMLElement, goingDown: boolean) {
-  el.style.transition = EXIT;
-  el.style.transform = goingDown ? "translateY(28px)" : "translateY(-28px)";
+function applyExit(el: HTMLElement, goingDown: boolean, tokens: ReturnType<typeof motionTokens>) {
+  el.style.transition = tokens.exit;
+  el.style.transform = goingDown
+    ? `translateY(${tokens.yExit}px)`
+    : `translateY(${-tokens.yExit}px)`;
   el.style.opacity = "0";
-  el.style.filter = "blur(14px)";
+  el.style.filter = tokens.useBlur ? "blur(14px)" : "none";
 }
 
-function applyDotHidden(el: HTMLElement) {
+function applyDotHidden(el: HTMLElement, tokens: ReturnType<typeof motionTokens>) {
   el.style.transition = "none";
-  el.style.transform = "translateY(-40px)";
+  el.style.transform = `translateY(${-tokens.dotHidden}px)`;
   el.style.opacity = "0";
 }
 
-function applyDotEnter(el: HTMLElement, fromTop: boolean, isInitial: boolean) {
+function applyDotEnter(
+  el: HTMLElement,
+  fromTop: boolean,
+  isInitial: boolean,
+  tokens: ReturnType<typeof motionTokens>,
+) {
   el.style.transition = "none";
-  el.style.transform = fromTop ? "translateY(-40px)" : "translateY(40px)";
+  el.style.transform = fromTop
+    ? `translateY(${-tokens.dotTravel}px)`
+    : `translateY(${tokens.dotTravel}px)`;
   el.style.opacity = "0";
-  el.getBoundingClientRect(); // force reflow
+  el.getBoundingClientRect();
 
-  el.style.transition = isInitial ? DOT_ENTER_IMMEDIATE : DOT_ENTER_DELAY;
+  el.style.transition = isInitial ? tokens.dotEnterImmediate : tokens.dotEnterDelay;
   el.style.transform = "translateY(0)";
   el.style.opacity = "1";
 }
 
-function applyDotExit(el: HTMLElement, exitDown: boolean) {
-  el.style.transition = DOT_EXIT;
-  el.style.transform = exitDown ? "translateY(40px)" : "translateY(-40px)";
+function applyDotExit(el: HTMLElement, exitDown: boolean, tokens: ReturnType<typeof motionTokens>) {
+  el.style.transition = tokens.dotExit;
+  el.style.transform = exitDown
+    ? `translateY(${tokens.dotTravel}px)`
+    : `translateY(${-tokens.dotTravel}px)`;
   el.style.opacity = "0";
 }
 
 export function AboutSectionHeadings({ labels, activeIndex }: AboutSectionHeadingsProps) {
+  const lightMotion = usePrefersLightMotion();
+  const tokens = useMemo(() => motionTokens(lightMotion), [lightMotion]);
   const headingRefs = useRef<(HTMLDivElement | null)[]>([]);
   const dotRefs = useRef<(HTMLDivElement | null)[]>([]);
   const prevRef = useRef(-1);
@@ -111,11 +138,11 @@ export function AboutSectionHeadings({ labels, activeIndex }: AboutSectionHeadin
       if (!el) return;
 
       if (i === activeIndex) {
-        applyEnter(el);
+        applyEnter(el, tokens);
       } else if (i === prev && prev >= 0) {
-        applyExit(el, goingDown);
+        applyExit(el, goingDown, tokens);
       } else {
-        applyHidden(el);
+        applyHidden(el, tokens);
       }
     });
 
@@ -123,14 +150,14 @@ export function AboutSectionHeadings({ labels, activeIndex }: AboutSectionHeadin
       if (!el) return;
 
       if (i === activeIndex) {
-        applyDotEnter(el, goingDown, isInitial);
+        applyDotEnter(el, goingDown, isInitial, tokens);
       } else if (i === prev && prev >= 0) {
-        applyDotExit(el, goingDown);
+        applyDotExit(el, goingDown, tokens);
       } else {
-        applyDotHidden(el);
+        applyDotHidden(el, tokens);
       }
     });
-  }, [activeIndex]);
+  }, [activeIndex, tokens]);
 
   return (
     <div
@@ -153,10 +180,10 @@ export function AboutSectionHeadings({ labels, activeIndex }: AboutSectionHeadin
                 i === activeIndex ? "pointer-events-auto" : "pointer-events-none",
               )}
               style={{
-                transform: "translateY(-28px)",
+                transform: `translateY(${tokens.yHidden}px)`,
                 opacity: 0,
-                filter: "blur(14px)",
-                willChange: "transform, opacity, filter",
+                filter: tokens.useBlur ? "blur(14px)" : "none",
+                willChange: tokens.useBlur ? "transform, opacity, filter" : "transform, opacity",
               }}
             >
               <AlienText text={label} />

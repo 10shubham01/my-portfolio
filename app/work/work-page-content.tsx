@@ -73,7 +73,7 @@ export function WorkPageContent({ projects, isScrollable }: WorkPageContentProps
       />
 
       <section
-        className={`hide-scrollbar relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 sm:px-6 ${isScrollable ? "h-dvh overflow-y-auto" : "h-auto overflow-visible"}`}
+        className={`page-inner-scroll hide-scrollbar relative z-10 mx-auto w-full max-w-5xl px-4 pb-16 sm:px-6 ${isScrollable ? "h-dvh overflow-y-auto" : "h-auto overflow-visible"}`}
         style={{ paddingTop: "calc(var(--about-fixed-line-top, 20dvh) + 6px)" }}
       >
         <h1 className="sr-only">Work</h1>

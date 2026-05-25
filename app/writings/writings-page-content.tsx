@@ -149,15 +149,30 @@ export function WritingsPageContent({
     activeUtilIndexRef.current = safeUtilIndex;
   }, [safeUtilIndex]);
 
-  const scrollToWriting = useCallback((index: number) => {
-    const target = writingsListRef.current?.querySelector<HTMLLIElement>(`[data-writing-index="${index}"]`);
-    target?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  const listScrollBehavior = useCallback((): ScrollBehavior => {
+    if (typeof window === "undefined") return "auto";
+    return window.matchMedia("(pointer: coarse)").matches ? "auto" : "smooth";
   }, []);
 
-  const scrollToUtil = useCallback((index: number) => {
-    const target = utilsListRef.current?.querySelector<HTMLLIElement>(`[data-util-index="${index}"]`);
-    target?.scrollIntoView({ block: "nearest", behavior: "smooth" });
-  }, []);
+  const scrollToWriting = useCallback(
+    (index: number) => {
+      const target = writingsListRef.current?.querySelector<HTMLLIElement>(
+        `[data-writing-index="${index}"]`,
+      );
+      target?.scrollIntoView({ block: "nearest", behavior: listScrollBehavior() });
+    },
+    [listScrollBehavior],
+  );
+
+  const scrollToUtil = useCallback(
+    (index: number) => {
+      const target = utilsListRef.current?.querySelector<HTMLLIElement>(
+        `[data-util-index="${index}"]`,
+      );
+      target?.scrollIntoView({ block: "nearest", behavior: listScrollBehavior() });
+    },
+    [listScrollBehavior],
+  );
 
   const commitWritingIndex = useCallback(
     (nextIndex: number) => {
@@ -250,7 +265,7 @@ export function WritingsPageContent({
       />
 
       <section
-        className="hide-scrollbar relative z-10 mx-auto h-dvh w-full max-w-5xl overflow-y-auto px-4 pb-16 sm:px-6"
+        className="page-inner-scroll hide-scrollbar relative z-10 mx-auto h-dvh w-full max-w-5xl overflow-y-auto px-4 pb-16 sm:px-6"
         style={{ paddingTop: "calc(var(--about-fixed-line-top, 20dvh) + 6px)" }}
       >
         <h1 className="sr-only">Writings</h1>
