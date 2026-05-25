@@ -1,6 +1,3 @@
-"use client";
-
-import { HeroText } from "@/components/hero-text";
 import { ABOUT_HELLO } from "@/lib/about-content";
 import { getLocationAgeEyebrow } from "@/lib/birthday";
 import { basteleur } from "@/lib/fonts";
@@ -12,12 +9,11 @@ export function AboutProfileSection() {
         {getLocationAgeEyebrow()}
       </p>
 
-      <div className="w-full max-w-[min(100%,32rem)]">
-        <HeroText
-          text={ABOUT_HELLO.headline}
-          className={`${basteleur.className} text-[clamp(1.65rem,6vw,2.5rem)] font-bold uppercase leading-[1.1] tracking-tight text-foreground`}
-        />
-      </div>
+      <h2
+        className={`${basteleur.className} w-full max-w-[min(100%,32rem)] text-[clamp(1.65rem,6vw,2.5rem)] font-bold uppercase leading-[1.1] tracking-tight text-foreground`}
+      >
+        {ABOUT_HELLO.headline}
+      </h2>
 
       <p className="max-w-lg font-sans text-base font-bold leading-relaxed text-foreground/90 md:text-lg md:leading-[1.65]">
         {ABOUT_HELLO.summary}
