@@ -151,7 +151,10 @@ export function WritingsPageContent({
 
   const listScrollBehavior = useCallback((): ScrollBehavior => {
     if (typeof window === "undefined") return "auto";
-    return window.matchMedia("(pointer: coarse)").matches ? "auto" : "smooth";
+    return window.matchMedia("(max-width: 767px) and (hover: none) and (pointer: coarse)")
+      .matches
+      ? "auto"
+      : "smooth";
   }, []);
 
   const scrollToWriting = useCallback(

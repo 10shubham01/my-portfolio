@@ -1,114 +1,70 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { AlienText } from "@/components/alien-text";
-import { usePrefersLightMotion } from "@/lib/motion-capability";
 import { cn } from "@/lib/utils";
 
-/**
- * Section headings displayed above the orange line, right-aligned to the
- * content area. Animates in/out based on the active section index
- * (driven by the snap-scroll hook).
- *
- * Animation mirrors the descriptions' framer-motion reveal:
- *   - Fades in from `opacity: 0` → `1`
- *   - Slides from `translateY(-28px)` → `0`
- *   - Unblurs from `blur(14px)` → `blur(0px)`
- *   - Duration ~0.85s with cubic-bezier(0.16, 1, 0.3, 1)
- *
- * @example
- * <AboutSectionHeadings labels={["HELLO", "STACK", "CONTRI"]} activeIndex={0} />
- */
-
 interface AboutSectionHeadingsProps {
-  /** Labels for each section. */
   labels: string[];
-  /** Currently active section index (from useSnapScroll). */
   activeIndex: number;
 }
 
 const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
+const ENTER = `transform 0.85s ${EASE}, opacity 0.85s ${EASE}, filter 0.85s ${EASE}`;
+const EXIT = `transform 0.6s ${EASE}, opacity 0.4s ease-out, filter 0.6s ${EASE}`;
 
-function motionTokens(light: boolean) {
-  const enterDur = light ? "0.45s" : "0.85s";
-  const exitDur = light ? "0.35s" : "0.6s";
-  const filterPart = light ? "" : `, filter ${enterDur} ${EASE}`;
-  const filterExit = light ? "" : `, filter ${exitDur} ${EASE}`;
-  return {
-    enter: `transform ${enterDur} ${EASE}, opacity ${enterDur} ${EASE}${filterPart}`,
-    exit: `transform ${exitDur} ${EASE}, opacity 0.35s ease-out${filterExit}`,
-    dotEnterDelay: `transform ${enterDur} ${EASE} ${light ? "0s" : "1s"}, opacity ${enterDur} ${EASE} ${light ? "0s" : "1s"}`,
-    dotEnterImmediate: `transform ${enterDur} ${EASE}, opacity ${enterDur} ${EASE}`,
-    dotExit: `transform ${exitDur} ${EASE}, opacity 0.35s ease-out`,
-    yHidden: light ? -16 : -28,
-    yExit: light ? 16 : 28,
-    dotHidden: light ? -24 : -40,
-    dotTravel: light ? 24 : 40,
-    useBlur: !light,
-  };
-}
+const DOT_ENTER_DELAY = `transform 0.85s ${EASE} 1s, opacity 0.85s ${EASE} 1s`;
+const DOT_ENTER_IMMEDIATE = `transform 0.85s ${EASE}, opacity 0.85s ${EASE}`;
+const DOT_EXIT = `transform 0.6s ${EASE}, opacity 0.4s ease-out`;
 
-function applyHidden(el: HTMLElement, tokens: ReturnType<typeof motionTokens>) {
+function applyHidden(el: HTMLElement) {
   el.style.transition = "none";
-  el.style.transform = `translateY(${tokens.yHidden}px)`;
+  el.style.transform = "translateY(-28px)";
   el.style.opacity = "0";
-  el.style.filter = tokens.useBlur ? "blur(14px)" : "none";
+  el.style.filter = "blur(14px)";
 }
 
-function applyEnter(el: HTMLElement, tokens: ReturnType<typeof motionTokens>) {
-  applyHidden(el, tokens);
+function applyEnter(el: HTMLElement) {
+  applyHidden(el);
   el.getBoundingClientRect();
-  el.style.transition = tokens.enter;
+  el.style.transition = ENTER;
   el.style.transform = "translateY(0)";
   el.style.opacity = "1";
-  el.style.filter = tokens.useBlur ? "blur(0px)" : "none";
+  el.style.filter = "blur(0px)";
 }
 
-function applyExit(el: HTMLElement, goingDown: boolean, tokens: ReturnType<typeof motionTokens>) {
-  el.style.transition = tokens.exit;
-  el.style.transform = goingDown
-    ? `translateY(${tokens.yExit}px)`
-    : `translateY(${-tokens.yExit}px)`;
+function applyExit(el: HTMLElement, goingDown: boolean) {
+  el.style.transition = EXIT;
+  el.style.transform = goingDown ? "translateY(28px)" : "translateY(-28px)";
   el.style.opacity = "0";
-  el.style.filter = tokens.useBlur ? "blur(14px)" : "none";
+  el.style.filter = "blur(14px)";
 }
 
-function applyDotHidden(el: HTMLElement, tokens: ReturnType<typeof motionTokens>) {
+function applyDotHidden(el: HTMLElement) {
   el.style.transition = "none";
-  el.style.transform = `translateY(${-tokens.dotHidden}px)`;
+  el.style.transform = "translateY(-40px)";
   el.style.opacity = "0";
 }
 
-function applyDotEnter(
-  el: HTMLElement,
-  fromTop: boolean,
-  isInitial: boolean,
-  tokens: ReturnType<typeof motionTokens>,
-) {
+function applyDotEnter(el: HTMLElement, fromTop: boolean, isInitial: boolean) {
   el.style.transition = "none";
-  el.style.transform = fromTop
-    ? `translateY(${-tokens.dotTravel}px)`
-    : `translateY(${tokens.dotTravel}px)`;
+  el.style.transform = fromTop ? "translateY(-40px)" : "translateY(40px)";
   el.style.opacity = "0";
   el.getBoundingClientRect();
 
-  el.style.transition = isInitial ? tokens.dotEnterImmediate : tokens.dotEnterDelay;
+  el.style.transition = isInitial ? DOT_ENTER_IMMEDIATE : DOT_ENTER_DELAY;
   el.style.transform = "translateY(0)";
   el.style.opacity = "1";
 }
 
-function applyDotExit(el: HTMLElement, exitDown: boolean, tokens: ReturnType<typeof motionTokens>) {
-  el.style.transition = tokens.dotExit;
-  el.style.transform = exitDown
-    ? `translateY(${tokens.dotTravel}px)`
-    : `translateY(${-tokens.dotTravel}px)`;
+function applyDotExit(el: HTMLElement, exitDown: boolean) {
+  el.style.transition = DOT_EXIT;
+  el.style.transform = exitDown ? "translateY(40px)" : "translateY(-40px)";
   el.style.opacity = "0";
 }
 
 export function AboutSectionHeadings({ labels, activeIndex }: AboutSectionHeadingsProps) {
-  const lightMotion = usePrefersLightMotion();
-  const tokens = useMemo(() => motionTokens(lightMotion), [lightMotion]);
   const headingRefs = useRef<(HTMLDivElement | null)[]>([]);
   const dotRefs = useRef<(HTMLDivElement | null)[]>([]);
   const prevRef = useRef(-1);
@@ -127,7 +83,6 @@ export function AboutSectionHeadings({ labels, activeIndex }: AboutSectionHeadin
     [],
   );
 
-  /* Animate headings and dots whenever activeIndex changes */
   useEffect(() => {
     const prev = prevRef.current;
     const goingDown = activeIndex > prev;
@@ -138,11 +93,11 @@ export function AboutSectionHeadings({ labels, activeIndex }: AboutSectionHeadin
       if (!el) return;
 
       if (i === activeIndex) {
-        applyEnter(el, tokens);
+        applyEnter(el);
       } else if (i === prev && prev >= 0) {
-        applyExit(el, goingDown, tokens);
+        applyExit(el, goingDown);
       } else {
-        applyHidden(el, tokens);
+        applyHidden(el);
       }
     });
 
@@ -150,14 +105,14 @@ export function AboutSectionHeadings({ labels, activeIndex }: AboutSectionHeadin
       if (!el) return;
 
       if (i === activeIndex) {
-        applyDotEnter(el, goingDown, isInitial, tokens);
+        applyDotEnter(el, goingDown, isInitial);
       } else if (i === prev && prev >= 0) {
-        applyDotExit(el, goingDown, tokens);
+        applyDotExit(el, goingDown);
       } else {
-        applyDotHidden(el, tokens);
+        applyDotHidden(el);
       }
     });
-  }, [activeIndex, tokens]);
+  }, [activeIndex]);
 
   return (
     <div
@@ -168,7 +123,6 @@ export function AboutSectionHeadings({ labels, activeIndex }: AboutSectionHeadin
       }}
       aria-hidden
     >
-      {/* Headings layer - clipped with overflow-hidden */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="relative mx-auto flex h-full w-full max-w-2xl items-end justify-end px-4 pb-2 sm:px-6">
           {labels.map((label, i) => (
@@ -180,10 +134,10 @@ export function AboutSectionHeadings({ labels, activeIndex }: AboutSectionHeadin
                 i === activeIndex ? "pointer-events-auto" : "pointer-events-none",
               )}
               style={{
-                transform: `translateY(${tokens.yHidden}px)`,
+                transform: "translateY(-28px)",
                 opacity: 0,
-                filter: tokens.useBlur ? "blur(14px)" : "none",
-                willChange: tokens.useBlur ? "transform, opacity, filter" : "transform, opacity",
+                filter: "blur(14px)",
+                willChange: "transform, opacity, filter",
               }}
             >
               <AlienText text={label} />
@@ -193,7 +147,6 @@ export function AboutSectionHeadings({ labels, activeIndex }: AboutSectionHeadin
         </div>
       </div>
 
-      {/* Dots layer - no overflow-hidden so dots can span the line */}
       <div className="absolute inset-0">
         <div className="relative mx-auto h-full w-full max-w-2xl">
           {labels.map((label, i) => (

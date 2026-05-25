@@ -7,17 +7,20 @@ import { InView } from "@/components/core/in-view";
 import GlowingScrollIndicator from "@/components/glowing-scroll-indicator";
 import { OrangeMidLine } from "@/components/orange-mid-line";
 import { buildAboutSnapSections, getAboutSectionLabels } from "@/lib/about-snap-sections";
-import { usePrefersLightMotion } from "@/lib/motion-capability";
-import {
-  inViewTransitionHeavy,
-  inViewTransitionLight,
-  scrollRevealHeavy,
-  scrollRevealLight,
-} from "@/lib/scroll-reveal";
 
 import { AboutViewportMask } from "./about-viewport-mask";
 import { AboutSectionHeadings } from "./about-section-headings";
 import { useSnapScroll } from "./use-snap-scroll";
+
+const scrollReveal = {
+  hidden: { opacity: 0, y: 28, filter: "blur(14px)" },
+  visible: { opacity: 1, y: 0, filter: "blur(0px)" },
+} as const;
+
+const inViewTransition = {
+  duration: 0.85,
+  ease: [0.16, 1, 0.3, 1] as const,
+};
 
 const snapSectionClass =
   "about-snap-section mx-auto box-border flex min-h-dvh w-full flex-col items-center justify-start px-4 pb-20 text-center sm:px-6";
@@ -32,10 +35,6 @@ const SECTION_LABELS = getAboutSectionLabels(ABOUT_SNAP_SECTIONS);
 export function AboutPageContent() {
   const [holeEl, setHoleEl] = useState<HTMLDivElement | null>(null);
   const holeRootRef = useRef<HTMLDivElement | null>(null);
-  const lightMotion = usePrefersLightMotion();
-  const scrollReveal = lightMotion ? scrollRevealLight : scrollRevealHeavy;
-  const inViewTransition = lightMotion ? inViewTransitionLight : inViewTransitionHeavy;
-
   const { activeIndex } = useSnapScroll({
     sectionCount: ABOUT_SNAP_SECTIONS.length,
     duration: 0.85,
@@ -97,7 +96,6 @@ export function AboutPageContent() {
               variants={scrollReveal}
               viewOptions={inViewOptions}
               transition={inViewTransition}
-              once={lightMotion}
             >
               <h2 className="sr-only">{section.label}</h2>
               {slide}

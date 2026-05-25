@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AlienText } from "@/components/alien-text";
 import { HeroText } from "@/components/hero-text";
+import { WavyDoodles } from "@/components/wavy-doodles";
 import { CVLogoIcon, Github, Instagram, Linkedin, PeerlistSolid } from "@/components/icons";
 import type { ComponentType, SVGProps } from "react";
 import { getLocationAgeEyebrow } from "@/lib/birthday";
@@ -68,6 +69,7 @@ export default function HomePage() {
       <h1 className="sr-only">
         {SITE_AUTHOR.name} — {SITE_JOB_TITLE} at {SITE_ORGANIZATION}
       </h1>
+      <WavyDoodles className="mb-1" size={64} />
       <p className="font-sans font-light text-xs uppercase select-none tracking-[0.28em] text-muted-foreground">
         <span className="sr-only">{locationEyebrow}</span>
         <AlienText text={locationEyebrow} syncHeroTiming />

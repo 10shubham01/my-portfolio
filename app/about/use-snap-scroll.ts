@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
 
-import { prefersLightMotion } from "@/lib/motion-capability";
+import { prefersMobilePerf } from "@/lib/motion-capability";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollToPlugin);
@@ -46,7 +46,7 @@ export function useSnapScroll({
       const target = document.querySelectorAll<HTMLElement>(SECTION_SELECTOR)[clamped];
       if (!target) return;
 
-      if (prefersLightMotion()) {
+      if (prefersMobilePerf()) {
         target.scrollIntoView({ block: "start", behavior: "auto" });
         return;
       }
@@ -74,7 +74,7 @@ export function useSnapScroll({
   );
 
   useEffect(() => {
-    const nativeScroll = prefersLightMotion();
+    const nativeScroll = prefersMobilePerf();
     const html = document.documentElement;
 
     if (nativeScroll) {

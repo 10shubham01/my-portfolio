@@ -73,6 +73,18 @@
       touch-action: pan-y;
     }
 
+    .writing-progressive-blur {
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+
+    .writing-progress-toc {
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+  }
+
+  @media (max-width: 767px) and (hover: none) and (pointer: coarse) {
     .rough-border::after,
     .rough-border-t::before,
     .rough-border-l::before,
@@ -87,16 +99,6 @@
     .page-inner-scroll {
       overscroll-behavior: contain;
       -webkit-overflow-scrolling: touch;
-    }
-
-    .writing-progressive-blur {
-      -webkit-backdrop-filter: none !important;
-      backdrop-filter: none !important;
-    }
-
-    .writing-progress-toc {
-      -webkit-backdrop-filter: none !important;
-      backdrop-filter: none !important;
     }
   }
 
@@ -124,6 +126,10 @@
 
 [data-page-ruler] .page-ruler-svg {
   color: oklch(0.985 0 0 / 72%);
+}
+
+[data-page-ruler] .page-ruler-label {
+  fill: #ff5800;
 }
 
 .dark [data-page-ruler] .page-ruler-strip {

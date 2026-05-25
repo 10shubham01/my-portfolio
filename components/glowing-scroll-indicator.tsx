@@ -17,7 +17,7 @@ function useHydrated() {
 }
 
 import { useLenisInstance } from "@/components/lenis-provider";
-import { usePrefersLightMotion } from "@/lib/motion-capability";
+import { usePrefersMobilePerf } from "@/lib/motion-capability";
 import { ROUGH_BORDER, ROUGH_BORDER_T } from "@/lib/rough-border";
 
 const ACCENT = "#FF5800";
@@ -65,8 +65,8 @@ const ScrollIndicatorBars = ({
   const [isDragging, setIsDragging] = React.useState(false);
   const [scrollPercent, setScrollPercent] = React.useState(0);
   const hydrated = useHydrated();
-  const lightMotion = usePrefersLightMotion();
-  const ambientBars = lightMotion ? 0 : AMBIENT_BARS_DESKTOP;
+  const mobilePerf = usePrefersMobilePerf();
+  const ambientBars = mobilePerf ? 0 : AMBIENT_BARS_DESKTOP;
   const lenis = useLenisInstance();
   const percentRafRef = React.useRef<number | null>(null);
   const pendingPercentRef = React.useRef(0);
@@ -199,7 +199,7 @@ const ScrollIndicatorBars = ({
       >
         <div
           className={`${ROUGH_BORDER} rb-border-55 dark:rb-white-10 flex flex-col gap-3 rounded-2xl px-5 py-3.5 transition-colors duration-200 sm:gap-3.5 sm:px-6 sm:py-4 md:px-7 md:py-4.5 ${
-            lightMotion
+            mobilePerf
               ? isDragging
                 ? "bg-background/98 dark:bg-background/92"
                 : "bg-background/95 dark:bg-background/88"

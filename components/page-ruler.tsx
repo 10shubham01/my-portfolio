@@ -79,10 +79,9 @@ function HorizontalRuler({ length }: { length: number }) {
             <text
               x={pos + 2}
               y={7}
-              fill="currentColor"
               fontSize={7}
               fontFamily="var(--font-geist-mono), ui-monospace, monospace"
-              className="select-none"
+              className="page-ruler-label select-none"
             >
               {label}
             </text>
@@ -128,10 +127,9 @@ function VerticalRuler({ length }: { length: number }) {
             <text
               x={PAGE_RULER_SIZE - 2}
               y={pos}
-              fill="currentColor"
               fontSize={7}
               fontFamily="var(--font-geist-mono), ui-monospace, monospace"
-              className="select-none"
+              className="page-ruler-label select-none"
               textAnchor="end"
               transform={`rotate(-90 ${PAGE_RULER_SIZE - 2} ${pos})`}
             >
