@@ -23,7 +23,7 @@ export function WavyDoodles({ className, size = 64 }: WavyDoodlesProps) {
       height={height}
       unoptimized
       priority
-      title="Wavy Doodles"
+      title="Shubham"
       className={cn(
         "block h-auto w-auto invert [image-rendering:pixelated] dark:invert-0",
         className,

@@ -433,29 +433,29 @@
     color: var(--foreground);
   }
 
-  .social-hover-focus:has(.social-links a:is(:hover, :focus-visible)) > p {
+  .social-hover-focus:has(.social-links[data-social-hover-active="true"]) > p {
     opacity: 0.28;
     filter: blur(2px);
   }
 
   /* Opacity only on hero — blur on the wrapper smears dragged letters + ghost stroke together */
-  .social-hover-focus:has(.social-links a:is(:hover, :focus-visible)) .hero-title {
+  .social-hover-focus:has(.social-links[data-social-hover-active="true"]) .hero-title {
     opacity: 0.28;
   }
 
-  .social-hover-focus:has(.social-links a:is(:hover, :focus-visible)) .hero-text-ghost {
+  .social-hover-focus:has(.social-links[data-social-hover-active="true"]) .hero-text-ghost {
     opacity: 0;
   }
 
-  .social-hover-focus:has(.social-links a:is(:hover, :focus-visible))
+  .social-hover-focus:has(.social-links[data-social-hover-active="true"])
     .social-links
-    > a:not(:is(:hover, :focus-visible)) {
+    > a[data-social-active="false"] {
     opacity: 0.28;
     filter: blur(2px);
     color: var(--muted-foreground);
   }
 
-  .social-hover-focus .social-links > a:is(:hover, :focus-visible) {
+  .social-hover-focus .social-links > a[data-social-active="true"] {
     position: relative;
     z-index: 1;
     opacity: 1;
