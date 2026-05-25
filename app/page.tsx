@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AlienText } from "@/components/alien-text";
 import { HeroText } from "@/components/hero-text";
 import { CVLogoIcon, Github, Instagram, Linkedin, PeerlistSolid } from "@/components/icons";
 import type { ComponentType, SVGProps } from "react";
@@ -53,42 +54,29 @@ const SOCIAL_ITEMS = [
   { href: SOCIAL_LINKS.peerlist, label: "Peerlist", Icon: PeerlistSolid, external: true },
   { href: SOCIAL_LINKS.instagram, label: "Instagram", Icon: Instagram, external: true },
   { href: SOCIAL_LINKS.resume, label: "Resume", Icon: CVLogoIcon, external: true },
-  {
-    href: SOCIAL_LINKS.email,
-    label: "Get in touch",
-    text: "GET IN TOUCH",
-    external: true,
-    contact: true,
-  },
+  { href: SOCIAL_LINKS.email, label: "Get in touch", text: "GET IN TOUCH", external: true },
 ] as const satisfies ReadonlyArray<
   | { href: string; label: string; Icon: SocialIcon; external: boolean }
-  | { href: string; label: string; text: string; external: boolean; contact: true }
+  | { href: string; label: string; text: string; external: boolean }
 >;
 
-const HERO_INTRO_TEXT = "Yo, I'm Shubham and I build web experiences.";
-const HERO_CONTACT_TEXT = "Let's build something crazy together.";
-
-const heroTitleClassName = `${basteleur.className} text-3xl font-bold uppercase leading-[1.12] tracking-tight sm:text-4xl sm:leading-[1.08] md:text-5xl md:leading-[1.05] lg:text-6xl`;
-
 export default function HomePage() {
+  const locationEyebrow = getLocationAgeEyebrow();
+
   return (
     <section className="social-hover-focus mx-auto flex min-h-[68dvh] w-full max-w-xl flex-col items-center justify-center gap-4 px-3 text-center sm:px-4">
       <h1 className="sr-only">
         {SITE_AUTHOR.name} — {SITE_JOB_TITLE} at {SITE_ORGANIZATION}
       </h1>
       <p className="font-sans font-light text-xs uppercase select-none tracking-[0.28em] text-muted-foreground">
-        {getLocationAgeEyebrow()}
+        <span className="sr-only">{locationEyebrow}</span>
+        <AlienText text={locationEyebrow} syncHeroTiming />
       </p>
       <div className="hero-title relative z-10 w-full max-w-[min(100%,36rem)] overflow-visible selection:bg-[#FF5800] selection:text-white">
-        <div className="hero-text-default">
-          <HeroText text={HERO_INTRO_TEXT} className={heroTitleClassName} />
-        </div>
-        <p
-          className={`hero-text-contact ${heroTitleClassName} pointer-events-none text-center`}
-          aria-hidden="true"
-        >
-          {HERO_CONTACT_TEXT}
-        </p>
+        <HeroText
+          text="Yo, I'm Shubham and I build web experiences."
+          className={`${basteleur.className} text-3xl font-bold uppercase leading-[1.12] tracking-tight sm:text-4xl sm:leading-[1.08] md:text-5xl md:leading-[1.05] lg:text-6xl`}
+        />
       </div>
       <div className="social-links relative z-20 font-sans font-light flex max-w-md flex-wrap items-center justify-center gap-3 text-muted-foreground md:gap-5">
         {SOCIAL_ITEMS.map((item) => (
@@ -98,19 +86,19 @@ export default function HomePage() {
             {...(item.external
               ? { target: "_blank", rel: "noopener noreferrer" }
               : {})}
-            {...("contact" in item && item.contact ? { "data-contact-link": true } : {})}
             aria-label={item.label}
             className={`${basteleur.className} inline-flex origin-center cursor-pointer items-center gap-0.5 rounded-sm text-xl font-bold transition-transform duration-300 ease-out hover:scale-[1.5] focus-visible:scale-[1.5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
           >
-            <span aria-hidden="true">[</span>
+            <AlienText text="[" />
             {"text" in item ? (
-              <span className="shrink-0 text-sm tracking-wide sm:text-base" aria-hidden>
-                {item.text}
-              </span>
+              <AlienText
+                text={item.text}
+                className="shrink-0 text-sm tracking-wide sm:text-base"
+              />
             ) : (
               <item.Icon className="size-5 shrink-0" aria-hidden />
             )}
-            <span aria-hidden="true">]</span>
+            <AlienText text="]" />
           </a>
         ))}
       </div>

@@ -3,16 +3,14 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
+import {
+  HERO_Y_DELAY_MAX_S,
+  HERO_Y_DURATION_MIN_S,
+  HERO_Y_DURATION_RANGE_S,
+  seeded,
+} from "@/lib/hero-text-timing";
 import { cn } from "@/lib/utils";
 
-function seeded(index: number, salt: number) {
-  const x = Math.sin(index * 12.9898 + salt * 78.233) * 43758.5453;
-  return x - Math.floor(x);
-}
-
-const Y_DELAY_MAX = 0.12;
-const Y_DURATION_MIN = 1.4;
-const Y_DURATION_RANGE = 1.2;
 const ROTATE_DELAY_MAX = 0.35;
 const ROTATE_DURATION_MIN = 1.8;
 const ROTATE_DURATION_RANGE = 1.6;
@@ -98,8 +96,9 @@ function AnimatedHero({ text, className }: { text: string; className?: string })
             <span key={`${word}-${wordIndex}`} className="inline-block whitespace-nowrap">
               {word.split("").map((char, charIndex) => {
                 const index = wordStartIndex + charIndex;
-                const yDelay = seeded(index, 1) * Y_DELAY_MAX;
-                const yDuration = Y_DURATION_MIN + seeded(index, 2) * Y_DURATION_RANGE;
+                const yDelay = seeded(index, 1) * HERO_Y_DELAY_MAX_S;
+                const yDuration =
+                  HERO_Y_DURATION_MIN_S + seeded(index, 2) * HERO_Y_DURATION_RANGE_S;
                 const rotateDelay = seeded(index, 3) * ROTATE_DELAY_MAX;
                 const rotateDuration = ROTATE_DURATION_MIN + seeded(index, 4) * ROTATE_DURATION_RANGE;
                 const rotateInitial = Math.round((seeded(index, 5) * 150 - 50) * 100) / 100;

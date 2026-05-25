@@ -3,6 +3,10 @@
 import { useInView, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
+import {
+  getHeroLetterTiming,
+  HERO_SCRAMBLE_TICK_MS,
+} from "@/lib/hero-text-timing";
 import { cn } from "@/lib/utils";
 
 const KATAKANA = [
@@ -94,14 +98,27 @@ type HoverableLetterProps = {
   letter: string;
   index: number;
   className?: string;
+  syncHeroTiming?: boolean;
+  heroPlay?: boolean;
 };
 
-function HoverableLetter({ letter, index, className }: HoverableLetterProps) {
+function HoverableLetter({
+  letter,
+  index,
+  className,
+  syncHeroTiming = false,
+  heroPlay = false,
+}: HoverableLetterProps) {
   const [display, setDisplay] = useState(letter);
   const [initialDone, setInitialDone] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
   const hoverIntervalRef = useRef<number | null>(null);
   const isInView = useInView(ref, { once: true });
+  const shouldAnimate = syncHeroTiming ? heroPlay : isInView;
+  const { delayMs, durationMs } = syncHeroTiming
+    ? getHeroLetterTiming(index)
+    : { delayMs: index * LETTER_STAGGER_MS, durationMs: SCRAMBLE_DURATION_MS };
+  const scrambleTickMs = syncHeroTiming ? HERO_SCRAMBLE_TICK_MS : SCRAMBLE_TICK_MS;
 
   useEffect(() => {
     return () => {
@@ -110,7 +127,7 @@ function HoverableLetter({ letter, index, className }: HoverableLetterProps) {
   }, []);
 
   useEffect(() => {
-    if (!isInView || initialDone) return;
+    if (!shouldAnimate || initialDone) return;
 
     let scrambleInterval: number | undefined;
     let settleTimeout: number | undefined;
@@ -118,21 +135,21 @@ function HoverableLetter({ letter, index, className }: HoverableLetterProps) {
     const startTimeout = window.setTimeout(() => {
       scrambleInterval = window.setInterval(() => {
         setDisplay(randomKatakana());
-      }, SCRAMBLE_TICK_MS);
+      }, scrambleTickMs);
 
       settleTimeout = window.setTimeout(() => {
         if (scrambleInterval) clearInterval(scrambleInterval);
         setDisplay(letter);
         setInitialDone(true);
-      }, SCRAMBLE_DURATION_MS);
-    }, index * LETTER_STAGGER_MS);
+      }, durationMs);
+    }, delayMs);
 
     return () => {
       clearTimeout(startTimeout);
       if (scrambleInterval) clearInterval(scrambleInterval);
       if (settleTimeout) clearTimeout(settleTimeout);
     };
-  }, [isInView, initialDone, index, letter]);
+  }, [shouldAnimate, initialDone, letter, delayMs, durationMs, scrambleTickMs]);
 
   const handleMouseEnter = () => {
     if (hoverIntervalRef.current) clearInterval(hoverIntervalRef.current);
@@ -164,10 +181,19 @@ function HoverableLetter({ letter, index, className }: HoverableLetterProps) {
 type AlienWordGroupProps = {
   word: string;
   wordIndex: number;
+  syncHeroTiming?: boolean;
+  heroPlay?: boolean;
+  indexOffset?: number;
 };
 
-function AlienWordGroup({ word, wordIndex }: AlienWordGroupProps) {
-  const baseIndex = wordIndex * 48;
+function AlienWordGroup({
+  word,
+  wordIndex,
+  syncHeroTiming,
+  heroPlay,
+  indexOffset = 0,
+}: AlienWordGroupProps) {
+  const baseIndex = indexOffset + wordIndex * 48;
 
   return (
     <span className="inline-flex gap-px">
@@ -176,6 +202,8 @@ function AlienWordGroup({ word, wordIndex }: AlienWordGroupProps) {
           key={`${wordIndex}-${index}-${letter}`}
           letter={letter}
           index={baseIndex + index}
+          syncHeroTiming={syncHeroTiming}
+          heroPlay={heroPlay}
         />
       ))}
     </span>
@@ -187,15 +215,33 @@ export type AlienTextProps = {
   className?: string;
   /** Break at word boundaries so long headings wrap instead of overflowing. */
   wrap?: boolean;
+  /** Match hero rise delays/durations (home page only). */
+  syncHeroTiming?: boolean;
+  /** Global char index offset when multiple AlienText blocks share hero timing. */
+  indexOffset?: number;
 };
 
-export function AlienText({ text, className, wrap = false }: AlienTextProps) {
+export function AlienText({
+  text,
+  className,
+  wrap = false,
+  syncHeroTiming = false,
+  indexOffset = 0,
+}: AlienTextProps) {
   const reducedMotion = useReducedMotion();
   const [mounted, setMounted] = useState(false);
+  const [heroPlay, setHeroPlay] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (!syncHeroTiming || !mounted) return;
+
+    const frame = requestAnimationFrame(() => setHeroPlay(true));
+    return () => cancelAnimationFrame(frame);
+  }, [syncHeroTiming, mounted]);
 
   if (reducedMotion || !mounted) {
     return <span className={cn(wrap && "break-words", className)}>{text}</span>;
@@ -210,7 +256,14 @@ export function AlienText({ text, className, wrap = false }: AlienTextProps) {
         aria-hidden
       >
         {words.map((word, wordIndex) => (
-          <AlienWordGroup key={`${word}-${wordIndex}`} word={word} wordIndex={wordIndex} />
+          <AlienWordGroup
+            key={`${word}-${wordIndex}`}
+            word={word}
+            wordIndex={wordIndex}
+            syncHeroTiming={syncHeroTiming}
+            heroPlay={heroPlay}
+            indexOffset={indexOffset}
+          />
         ))}
       </span>
     );
@@ -219,7 +272,13 @@ export function AlienText({ text, className, wrap = false }: AlienTextProps) {
   return (
     <span className={cn("inline-flex gap-px", className)} aria-hidden>
       {text.split("").map((letter, index) => (
-        <HoverableLetter key={`${letter}-${index}`} letter={letter} index={index} />
+        <HoverableLetter
+          key={`${letter}-${index}`}
+          letter={letter}
+          index={indexOffset + index}
+          syncHeroTiming={syncHeroTiming}
+          heroPlay={heroPlay}
+        />
       ))}
     </span>
   );

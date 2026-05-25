@@ -398,8 +398,6 @@
 @layer components {
   .social-hover-focus > p,
   .social-hover-focus .hero-title,
-  .social-hover-focus .hero-text-default,
-  .social-hover-focus .hero-text-contact,
   .social-hover-focus .hero-text-ghost,
   .social-hover-focus .social-links > a {
     transition:
@@ -413,18 +411,6 @@
     color: var(--foreground);
   }
 
-  .social-hover-focus .hero-text-contact {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
   .social-hover-focus:has(.social-links a:is(:hover, :focus-visible)) > p {
     opacity: 0.28;
     filter: blur(2px);
@@ -433,20 +419,6 @@
   /* Opacity only on hero — blur on the wrapper smears dragged letters + ghost stroke together */
   .social-hover-focus:has(.social-links a:is(:hover, :focus-visible)) .hero-title {
     opacity: 0.28;
-  }
-
-  .social-hover-focus:has(.social-links a[data-contact-link]:is(:hover, :focus-visible))
-    .hero-text-default {
-    visibility: hidden;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .social-hover-focus:has(.social-links a[data-contact-link]:is(:hover, :focus-visible))
-    .hero-text-contact {
-    visibility: visible;
-    opacity: 1;
-    filter: blur(2px);
   }
 
   .social-hover-focus:has(.social-links a:is(:hover, :focus-visible)) .hero-text-ghost {
