@@ -55,7 +55,7 @@ export function WorkProjectSpotlight({
               showProjectSpotlight ? "opacity-100" : "pointer-events-none opacity-0"
             }`}
           >
-            {showProjectSpotlight && currentProject ? (
+            {showProjectSpotlight && currentProject?.video ? (
               <WorkProjectVideoPlayer video={currentProject.video} openSignal={openSignal} />
             ) : (
               <div className="w-full max-w-[12rem] self-end md:max-w-[13rem]" aria-hidden />

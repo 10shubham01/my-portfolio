@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { absoluteUrl, SITE_AUTHOR, SITE_TWITTER_HANDLE, siteImages } from "@/lib/site";
+import { DEV_UTILS, DEV_UTILS_REPO } from "@/lib/dev-utils-data";
 import { getWritingPreviews } from "@/lib/writings";
 import { OrangeMidLine } from "@/components/orange-mid-line";
+import { PageViewportMask } from "@/components/page-viewport-mask";
 import { WritingsPageContent } from "./writings-page-content";
 
 const description = `Notes by ${SITE_AUTHOR.name} on interface design, frontend craft, product work, and building smoother web experiences.`;
@@ -39,8 +41,8 @@ export default function WritingsPage() {
 
   return (
     <>
-      <WritingsPageContent writings={writings} />
-
+      <WritingsPageContent writings={writings} utils={DEV_UTILS} utilsRepoUrl={DEV_UTILS_REPO} />
+      <PageViewportMask />
       <OrangeMidLine />
     </>
   );

@@ -1,0 +1,104 @@
+---
+title: "How to Prevent Direct Pushes to the main Branch in Git"
+subtitle: "Set up a pre-push hook that blocks accidental pushes to production until you confirm intentionally."
+summary: "Walk through a Git pre-push hook that stops direct pushes to main unless you type a confirmation phrase—an extra guardrail for teams and solo developers alike."
+date: 2025-05-07
+label: "GIT"
+---
+
+## Introduction
+
+In this post, we'll walk through setting up a Git pre-push hook that prevents direct pushes to the `main` branch. This extra layer of protection ensures that no one accidentally pushes code to the production branch, helping to avoid mistakes. You'll need to type a special confirmation before the push goes through.
+
+## Why use a pre-push hook?
+
+A pre-push hook is a Git feature that allows you to run a script before a push operation completes. This script can validate certain conditions—such as blocking direct pushes to `main`, which is common practice for ensuring proper code review and CI/CD processes.
+
+## Step-by-step guide
+
+### Navigate to your repository
+
+Open your terminal and navigate to your project directory:
+
+```bash
+cd /path/to/your/repo
+```
+
+### Create the pre-push hook
+
+Create the `pre-push` hook inside `.git/hooks/`:
+
+```bash
+touch .git/hooks/pre-push
+```
+
+### Add the hook script
+
+Edit the file and paste the following script. It asks for confirmation before pushing to `main`:
+
+```sh
+#!/bin/sh
+
+protected_branch="main"
+current_branch=$(git symbolic-ref --short HEAD)
+
+if [ "$current_branch" = "$protected_branch" ]; then
+  echo "🚨 WARNING: You are pushing directly to '$protected_branch'."
+  echo "Type 'PUSH IT TO MAIN' to confirm:"
+  read -r confirmation < /dev/tty
+  if [ "$confirmation" != "PUSH IT TO MAIN" ]; then
+    echo "❌ Push aborted."
+    exit 1
+  fi
+  echo "✅ Confirmation received. Proceeding with push..."
+fi
+
+exit 0
+```
+
+You can also create the file in one step:
+
+```bash
+cat > .git/hooks/pre-push << 'EOF'
+#!/bin/sh
+
+protected_branch="main"
+current_branch=$(git symbolic-ref --short HEAD)
+
+if [ "$current_branch" = "$protected_branch" ]; then
+  echo "🚨 WARNING: You are pushing directly to '$protected_branch'."
+  echo "Type 'PUSH IT TO MAIN' to confirm:"
+  read -r confirmation < /dev/tty
+  if [ "$confirmation" != "PUSH IT TO MAIN" ]; then
+    echo "❌ Push aborted."
+    exit 1
+  fi
+  echo "✅ Confirmation received. Proceeding with push..."
+fi
+
+exit 0
+EOF
+```
+
+### Make the hook executable
+
+Give execute permission to the hook:
+
+```bash
+chmod +x .git/hooks/pre-push
+```
+
+### Test the hook
+
+Try pushing to `main`:
+
+```bash
+git checkout main
+git push
+```
+
+You'll be prompted to type `PUSH IT TO MAIN` to confirm. If you don't, the push will be aborted.
+
+## Conclusion
+
+With this simple pre-push hook, you can prevent mistakes by adding an extra layer of confirmation before pushing to `main`. It's an effective way to maintain control over your codebase, especially in collaborative environments.

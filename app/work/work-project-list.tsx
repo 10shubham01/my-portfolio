@@ -85,7 +85,7 @@ function WorkProjectRow({
       role="button"
       tabIndex={0}
       aria-current={isActive ? "true" : undefined}
-      aria-label={`${isArmed ? "Open video for" : "Select"} ${project.title}`}
+      aria-label={`${isArmed && project.video ? "Open video for" : "Select"} ${project.title}`}
       className={`${ROUGH_BORDER} group flex min-h-11 cursor-pointer select-none items-center gap-1.5 rounded-xl px-1 py-0.5 text-[16px] leading-6 transition-[background-color,color,box-shadow] duration-200 ${
         isActive
           ? `${ROUGH_ROW_ACTIVE} bg-foreground/7 text-foreground shadow-[0_12px_32px_rgba(0,0,0,0.06)] dark:bg-white/10 dark:shadow-none`

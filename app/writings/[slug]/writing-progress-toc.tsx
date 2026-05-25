@@ -235,7 +235,7 @@ export function WritingProgressToc({ title, sections }: WritingProgressTocProps)
         onClick={() => setIsOpen((value) => !value)}
       >
         <motion.span layoutId="writing-progress-dot" className="h-2.5 w-2.5 shrink-0 rounded-full bg-foreground" />
-        <motion.span layout="position" className="min-w-0 flex-1 truncate text-left text-sm font-medium">
+        <motion.span layout="position" className="min-w-0 flex-1 text-left text-sm leading-snug font-medium break-words line-clamp-2">
           {activeLabel}
           <span className="sr-only"> {progressPercent}% read</span>
         </motion.span>

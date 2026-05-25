@@ -161,12 +161,35 @@ function HoverableLetter({ letter, index, className }: HoverableLetterProps) {
   );
 }
 
+type AlienWordGroupProps = {
+  word: string;
+  wordIndex: number;
+};
+
+function AlienWordGroup({ word, wordIndex }: AlienWordGroupProps) {
+  const baseIndex = wordIndex * 48;
+
+  return (
+    <span className="inline-flex gap-px">
+      {word.split("").map((letter, index) => (
+        <HoverableLetter
+          key={`${wordIndex}-${index}-${letter}`}
+          letter={letter}
+          index={baseIndex + index}
+        />
+      ))}
+    </span>
+  );
+}
+
 export type AlienTextProps = {
   text: string;
   className?: string;
+  /** Break at word boundaries so long headings wrap instead of overflowing. */
+  wrap?: boolean;
 };
 
-export function AlienText({ text, className }: AlienTextProps) {
+export function AlienText({ text, className, wrap = false }: AlienTextProps) {
   const reducedMotion = useReducedMotion();
   const [mounted, setMounted] = useState(false);
 
@@ -175,7 +198,22 @@ export function AlienText({ text, className }: AlienTextProps) {
   }, []);
 
   if (reducedMotion || !mounted) {
-    return <span className={className}>{text}</span>;
+    return <span className={cn(wrap && "break-words", className)}>{text}</span>;
+  }
+
+  if (wrap) {
+    const words = text.split(/\s+/).filter(Boolean);
+
+    return (
+      <span
+        className={cn("flex max-w-full flex-wrap items-baseline gap-x-[0.35em] gap-y-1", className)}
+        aria-hidden
+      >
+        {words.map((word, wordIndex) => (
+          <AlienWordGroup key={`${word}-${wordIndex}`} word={word} wordIndex={wordIndex} />
+        ))}
+      </span>
+    );
   }
 
   return (

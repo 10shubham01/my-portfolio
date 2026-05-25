@@ -5,42 +5,17 @@ import type { WorkProject } from "./work-project-types";
 // and remote URLs (e.g. "https://cdn.example.com/demo.mp4").
 export const WORK_PROJECTS: WorkProject[] = [
   {
-    title: "Composter",
-    description: "Component vault for React teams.",
-    githubUrl: "https://github.com/10shubham01/Composter",
-    liveUrl: "https://composter.vercel.app",
-    spotlightLabel: "COMPOSTER",
-    video: {
-      src: "/videos/work/composter.mp4",
-      mobileSrc: "/videos/work/mobile/composter.mp4",
-      type: "video/mp4",
-      poster: "/images/work/composter.jpg",
-    },
+    title: "dbspin",
+    description: "CLI to connect to PostgreSQL via pgcli or psql.",
+    githubUrl: "https://github.com/10shubham01/dbspin",
+    spotlightLabel: "DBSPIN",
   },
   {
-    title: "Hackersquare",
-    description: "Hackathon discovery and tracking app.",
-    githubUrl: "https://github.com/10shubham01/hackersquare",
-    liveUrl: "https://hackersquare.vercel.app",
-    spotlightLabel: "HACKERSQUARE",
-    video: {
-      src: "/videos/work/hackerquare.mp4",
-      mobileSrc: "/videos/work/mobile/hackersquare.mp4",
-      type: "video/mp4",
-      poster: "/images/work/hackersquare.jpg",
-    },
-  },
-  {
-    title: "Munshi",
-    description: "AI assistant for local shop workflows.",
-    githubUrl: "https://github.com/10shubham01/munshi",
-    liveUrl: "https://github.com/10shubham01/munshi",
-    spotlightLabel: "MUNSHI",
-    video: {
-      src: "/videos/work/munshi.mp4",
-      mobileSrc: "/videos/work/mobile/munshi.mp4",
-      type: "video/mp4",
-      poster: "/images/work/munshi.jpg",
-    },
+    title: "Text Command Palette",
+    description: "Browser extension for VS Code-style text transforms.",
+    githubUrl: "https://github.com/10shubham01/Text-Command-Palette",
+    liveUrl:
+      "https://chromewebstore.google.com/detail/text-command-palette/gdlldblnpmbnjeildgidppdnoefapajo",
+    spotlightLabel: "TEXT COMMAND PALETTE",
   },
 ];

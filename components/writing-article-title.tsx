@@ -17,11 +17,11 @@ export function WritingArticleTitle({ title, className, id }: WritingArticleTitl
       data-writing-section-heading="true"
       data-writing-section-id="top"
       className={cn(
-        "font-display text-4xl leading-[1.05] tracking-normal text-foreground sm:text-5xl",
+        "min-w-0 max-w-full font-display text-4xl leading-[1.15] tracking-normal text-foreground sm:text-5xl",
         className,
       )}
     >
-      <AlienText text={title} />
+      <AlienText text={title} wrap />
     </h1>
   );
 }

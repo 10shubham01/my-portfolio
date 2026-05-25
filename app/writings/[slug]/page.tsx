@@ -164,7 +164,7 @@ export default async function WritingPage({
             viewTransitionName="writing-thumbnail"
           />
 
-          <div className="mt-7 flex flex-col gap-3">
+          <div className="mt-7 flex min-w-0 flex-col gap-3">
             {formattedDate ? (
               <time className="text-xs font-medium tracking-[0.12em] text-[#FF5800]/85 uppercase">{formattedDate}</time>
             ) : null}
@@ -191,7 +191,7 @@ export default async function WritingPage({
                 aria-label={`Previous blog: ${previousWriting.frontmatter.title}`}
               >
                 <span className="block text-[9px] uppercase tracking-[0.1em] text-muted-foreground/70 sm:text-xs sm:tracking-[0.12em]">Previous blog</span>
-                <span className="mt-1 block truncate text-[11px] text-foreground/85 group-hover:text-foreground sm:text-sm">
+                <span className="mt-1 block break-words text-[11px] text-foreground/85 group-hover:text-foreground sm:text-sm">
                   {previousWriting.frontmatter.title}
                 </span>
               </Link>
@@ -205,7 +205,7 @@ export default async function WritingPage({
                 aria-label={`Next blog: ${nextWriting.frontmatter.title}`}
               >
                 <span className="block text-[9px] uppercase tracking-[0.1em] text-muted-foreground/70 sm:text-xs sm:tracking-[0.12em]">Next blog</span>
-                <span className="mt-1 block truncate text-[11px] text-foreground/85 group-hover:text-foreground sm:text-sm">
+                <span className="mt-1 block break-words text-[11px] text-foreground/85 group-hover:text-foreground sm:text-sm">
                   {nextWriting.frontmatter.title}
                 </span>
               </Link>

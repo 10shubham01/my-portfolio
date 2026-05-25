@@ -3,14 +3,15 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowSquareOutIcon } from "@phosphor-icons/react/dist/ssr";
-import { AnimatePresence, motion } from "framer-motion";
 import { type MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import { AlienText } from "@/components/alien-text";
+import type { DevUtil } from "@/lib/dev-utils-data";
 import type { WritingPreview } from "@/lib/writings";
 import { ROUGH_BORDER, ROUGH_ROW_ACTIVE, ROUGH_ROW_IDLE } from "@/lib/rough-border";
-import { WritingThumbnail } from "./writing-thumbnail";
+import { WritingsSpotlight } from "./writings-spotlight";
+import { WritingsUtilsSection } from "./writings-utils-section";
 
-const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+type SpotlightMode = "writing" | "util";
 
 type ViewTransitionDocument = Document & {
   startViewTransition?: (callback: () => void | Promise<void>) => {
@@ -74,86 +75,6 @@ function WritingTransitionLink({
   );
 }
 
-function WritingHeading({ label, activeIndex }: { label: string; activeIndex: number }) {
-  const [direction, setDirection] = useState(1);
-  const prevIndexRef = useRef(activeIndex);
-
-  useEffect(() => {
-    const previous = prevIndexRef.current;
-    setDirection(activeIndex >= previous ? 1 : -1);
-    prevIndexRef.current = activeIndex;
-  }, [activeIndex]);
-
-  return (
-    <div className="relative flex h-full w-full items-end justify-end pb-3 pr-1 md:pb-4 md:pr-2">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={`${activeIndex}-${label}`}
-          initial={{ opacity: 0, y: direction > 0 ? -28 : 28, filter: "blur(14px)" }}
-          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-          exit={{ opacity: 0, y: direction > 0 ? 28 : -28, filter: "blur(14px)" }}
-          transition={{ duration: 0.52, ease: EASE }}
-          className="pointer-events-auto absolute right-0 bottom-0 text-right font-oblique text-xl tracking-tight text-foreground sm:text-2xl md:text-3xl"
-          aria-label={`${label}.`}
-          aria-live="polite"
-        >
-          <AlienText text={label} />
-          <span style={{ color: "#FF5800" }}>.</span>
-        </motion.div>
-      </AnimatePresence>
-    </div>
-  );
-}
-
-function WritingsSpotlight({
-  writings,
-  activeIndex,
-}: {
-  writings: WritingPreview[];
-  activeIndex: number;
-}) {
-  if (writings.length === 0) return null;
-
-  const currentWriting = writings[Math.max(0, Math.min(activeIndex, writings.length - 1))];
-  const spotlightGridClassName =
-    "mx-auto grid h-full w-full max-w-3xl grid-cols-[minmax(0,11rem)_1fr] items-end gap-3 px-4 pb-4 sm:px-6 md:grid-cols-[minmax(0,12rem)_1fr] md:gap-4 md:pb-5";
-
-  return (
-    <div
-      className="pointer-events-none fixed inset-x-0"
-      style={{
-        top: "var(--site-nav-h, 0px)",
-        height: "max(0px, calc(var(--about-fixed-line-top, 20dvh) - var(--site-nav-h, 0px)))",
-      }}
-    >
-      <div className="absolute inset-0 z-[100]">
-        <div className={spotlightGridClassName}>
-          <WritingTransitionLink
-            href={currentWriting.href}
-            ariaLabel={`Open ${currentWriting.title}`}
-            className="pointer-events-auto relative z-10 block"
-          >
-            <WritingThumbnail
-              title={currentWriting.title}
-              thumbnail={currentWriting.thumbnail}
-              index={activeIndex}
-              viewTransitionName="writing-thumbnail"
-            />
-          </WritingTransitionLink>
-          <div aria-hidden />
-        </div>
-      </div>
-
-      <div className="absolute inset-0 z-[90]">
-        <div className={spotlightGridClassName}>
-          <div aria-hidden />
-          <WritingHeading activeIndex={activeIndex} label={currentWriting.label} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function WritingRow({
   writing,
   isActive,
@@ -171,20 +92,21 @@ function WritingRow({
         href={writing.href}
         ariaLabel={`Open ${writing.title}`}
         onIntent={onIntent}
-        className={`${ROUGH_BORDER} group flex min-h-11 cursor-pointer select-none items-center gap-1.5 rounded-xl px-1 py-0.5 text-[16px] leading-6 transition-[background-color,color,box-shadow] duration-200 ${
+        className={`${ROUGH_BORDER} group flex min-h-11 cursor-pointer select-none items-center gap-1.5 rounded-xl px-1 py-1.5 text-[16px] leading-6 transition-[background-color,color,box-shadow] duration-200 ${
           isActive
             ? `${ROUGH_ROW_ACTIVE} bg-foreground/7 text-foreground shadow-[0_12px_32px_rgba(0,0,0,0.06)] dark:bg-white/10 dark:shadow-none`
             : `${ROUGH_ROW_IDLE} text-foreground/70 hover:bg-foreground/5 hover:text-foreground dark:hover:bg-white/5`
         }`}
       >
-        <p className="min-w-0 shrink pl-2.5 truncate whitespace-nowrap leading-6">
-          <span className={isActive ? "font-medium text-foreground" : "font-medium text-foreground/90"}>
-            {writing.title}
-          </span>
-          <span className="hidden text-foreground/40 md:inline"> {writing.description}</span>
-        </p>
+        <span
+          className={`min-w-0 flex-1 basis-0 break-words pl-2.5 leading-snug ${
+            isActive ? "font-medium text-foreground" : "font-medium text-foreground/90"
+          }`}
+        >
+          {writing.title}
+        </span>
         <span className="h-px min-w-24 flex-1 bg-foreground/10 dark:bg-white/12" aria-hidden />
-        <span className="ml-auto inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-foreground/45 transition-colors group-hover:bg-foreground/8 group-hover:text-foreground/85 dark:group-hover:bg-white/8">
+        <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-foreground/45 transition-colors group-hover:bg-foreground/8 group-hover:text-foreground/85 dark:group-hover:bg-white/8">
           <ArrowSquareOutIcon size={16} weight="regular" />
         </span>
       </WritingTransitionLink>
@@ -192,33 +114,95 @@ function WritingRow({
   );
 }
 
-export function WritingsPageContent({ writings }: { writings: WritingPreview[] }) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const listRef = useRef<HTMLUListElement | null>(null);
-  const activeIndexRef = useRef(0);
-  const maxIndex = Math.max(0, writings.length - 1);
-  const safeActiveIndex = Math.max(0, Math.min(activeIndex, maxIndex));
+export function WritingsPageContent({
+  writings,
+  utils,
+  utilsRepoUrl,
+}: {
+  writings: WritingPreview[];
+  utils: DevUtil[];
+  utilsRepoUrl: string;
+}) {
+  const [spotlightMode, setSpotlightMode] = useState<SpotlightMode>("writing");
+  const [activeWritingIndex, setActiveWritingIndex] = useState(0);
+  const [activeUtilIndex, setActiveUtilIndex] = useState(0);
+  const writingsListRef = useRef<HTMLUListElement | null>(null);
+  const utilsListRef = useRef<HTMLUListElement | null>(null);
+  const spotlightModeRef = useRef<SpotlightMode>("writing");
+  const activeWritingIndexRef = useRef(0);
+  const activeUtilIndexRef = useRef(0);
+
+  const writingMaxIndex = Math.max(0, writings.length - 1);
+  const utilMaxIndex = Math.max(0, utils.length - 1);
+  const safeWritingIndex = writings.length === 0 ? 0 : Math.max(0, Math.min(activeWritingIndex, writingMaxIndex));
+  const safeUtilIndex = utils.length === 0 ? 0 : Math.max(0, Math.min(activeUtilIndex, utilMaxIndex));
 
   useEffect(() => {
-    activeIndexRef.current = safeActiveIndex;
-  }, [safeActiveIndex]);
+    spotlightModeRef.current = spotlightMode;
+  }, [spotlightMode]);
 
-  const commitActiveIndex = useCallback(
+  useEffect(() => {
+    activeWritingIndexRef.current = safeWritingIndex;
+  }, [safeWritingIndex]);
+
+  useEffect(() => {
+    activeUtilIndexRef.current = safeUtilIndex;
+  }, [safeUtilIndex]);
+
+  const scrollToWriting = useCallback((index: number) => {
+    const target = writingsListRef.current?.querySelector<HTMLLIElement>(`[data-writing-index="${index}"]`);
+    target?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, []);
+
+  const scrollToUtil = useCallback((index: number) => {
+    const target = utilsListRef.current?.querySelector<HTMLLIElement>(`[data-util-index="${index}"]`);
+    target?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, []);
+
+  const commitWritingIndex = useCallback(
     (nextIndex: number) => {
-      const clamped = Math.max(0, Math.min(nextIndex, maxIndex));
-      setActiveIndex(clamped);
-      const target = listRef.current?.querySelector<HTMLLIElement>(`[data-writing-index="${clamped}"]`);
-      target?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      if (writings.length === 0) return;
+      const clamped = Math.max(0, Math.min(nextIndex, writingMaxIndex));
+      setSpotlightMode("writing");
+      setActiveWritingIndex(clamped);
+      scrollToWriting(clamped);
     },
-    [maxIndex],
+    [scrollToWriting, writingMaxIndex, writings.length],
   );
 
-  const moveActiveBy = useCallback(
-    (delta: number) => {
-      if (writings.length === 0) return;
-      commitActiveIndex(activeIndexRef.current + delta);
+  const commitUtilIndex = useCallback(
+    (nextIndex: number) => {
+      if (utils.length === 0) return;
+      const clamped = Math.max(0, Math.min(nextIndex, utilMaxIndex));
+      setSpotlightMode("util");
+      setActiveUtilIndex(clamped);
+      scrollToUtil(clamped);
     },
-    [commitActiveIndex, writings.length],
+    [scrollToUtil, utilMaxIndex, utils.length],
+  );
+
+  const moveSpotlightBy = useCallback(
+    (delta: number) => {
+      const mode = spotlightModeRef.current;
+
+      if (mode === "util") {
+        if (utils.length === 0) return;
+        commitUtilIndex(activeUtilIndexRef.current + delta);
+        return;
+      }
+
+      if (writings.length === 0) return;
+
+      const nextWriting = activeWritingIndexRef.current + delta;
+      if (nextWriting > writingMaxIndex && utils.length > 0) {
+        commitUtilIndex(0);
+        return;
+      }
+      if (nextWriting < 0) return;
+
+      commitWritingIndex(nextWriting);
+    },
+    [commitUtilIndex, commitWritingIndex, utils.length, writingMaxIndex, writings.length],
   );
 
   useEffect(() => {
@@ -240,31 +224,46 @@ export function WritingsPageContent({ writings }: { writings: WritingPreview[] }
 
       if (event.key === "ArrowDown" || event.key === "ArrowRight") {
         event.preventDefault();
-        moveActiveBy(1);
+        moveSpotlightBy(1);
       } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
         event.preventDefault();
-        moveActiveBy(-1);
+        if (spotlightModeRef.current === "util" && activeUtilIndexRef.current === 0 && writings.length > 0) {
+          commitWritingIndex(writingMaxIndex);
+          return;
+        }
+        moveSpotlightBy(-1);
       }
     };
 
     document.addEventListener("keydown", onDocumentKeyDown, { capture: true });
     return () => document.removeEventListener("keydown", onDocumentKeyDown, { capture: true });
-  }, [moveActiveBy]);
+  }, [commitWritingIndex, moveSpotlightBy, writingMaxIndex, writings.length]);
 
   return (
     <>
       <WritingsSpotlight
         writings={writings}
-        activeIndex={safeActiveIndex}
+        utils={utils}
+        writingIndex={safeWritingIndex}
+        utilIndex={safeUtilIndex}
+        mode={spotlightMode}
       />
 
       <section
-        className="mx-auto h-auto w-full max-w-5xl overflow-visible px-4 pb-16 sm:px-6"
+        className="hide-scrollbar relative z-10 mx-auto h-dvh w-full max-w-5xl overflow-y-auto px-4 pb-16 sm:px-6"
         style={{ paddingTop: "calc(var(--about-fixed-line-top, 20dvh) + 6px)" }}
       >
         <h1 className="sr-only">Writings</h1>
+
+        <p
+          aria-label="Writings"
+          className="mb-3 font-sans text-[10px] font-light uppercase tracking-[0.22em] text-muted-foreground/70 sm:text-[11px]"
+        >
+          <AlienText text="Writings" />
+        </p>
+
         <ul
-          ref={listRef}
+          ref={writingsListRef}
           className="mx-auto w-full max-w-(--writing-content-width) space-y-0.5 outline-none"
           tabIndex={0}
           aria-label="Writings list"
@@ -274,11 +273,20 @@ export function WritingsPageContent({ writings }: { writings: WritingPreview[] }
               key={writing.title}
               writing={writing}
               index={index}
-              isActive={index === safeActiveIndex}
-              onIntent={() => commitActiveIndex(index)}
+              isActive={spotlightMode === "writing" && index === safeWritingIndex}
+              onIntent={() => commitWritingIndex(index)}
             />
           ))}
         </ul>
+
+        <WritingsUtilsSection
+          utils={utils}
+          repoUrl={utilsRepoUrl}
+          listRef={utilsListRef}
+          activeIndex={safeUtilIndex}
+          isActiveSection={spotlightMode === "util"}
+          onActiveIndexChange={commitUtilIndex}
+        />
       </section>
     </>
   );

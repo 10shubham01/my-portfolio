@@ -4,15 +4,17 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 import { AlienText } from "@/components/alien-text";
+import { cn } from "@/lib/utils";
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 type WorkProjectHeadingProps = {
   label: string;
   activeIndex: number;
+  wrap?: boolean;
 };
 
-export function WorkProjectHeading({ label, activeIndex }: WorkProjectHeadingProps) {
+export function WorkProjectHeading({ label, activeIndex, wrap = false }: WorkProjectHeadingProps) {
   const [direction, setDirection] = useState(1);
   const prevIndexRef = useRef(activeIndex);
 
@@ -34,11 +36,16 @@ export function WorkProjectHeading({ label, activeIndex }: WorkProjectHeadingPro
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           exit={{ opacity: 0, y: direction > 0 ? 28 : -28, filter: "blur(14px)" }}
           transition={{ duration: 0.52, ease: EASE }}
-          className="pointer-events-auto absolute right-0 bottom-0 max-w-full truncate text-right font-oblique text-[clamp(1rem,5.2vw,1.25rem)] tracking-tight text-foreground sm:text-2xl md:text-3xl"
+          className={cn(
+            "pointer-events-auto absolute right-0 bottom-0 max-w-full text-right font-oblique tracking-tight text-foreground",
+            wrap
+              ? "leading-[1.1] text-[clamp(0.95rem,3.8vw,1.65rem)] sm:text-xl md:text-2xl"
+              : "truncate text-[clamp(1rem,5.2vw,1.25rem)] sm:text-2xl md:text-3xl",
+          )}
           aria-label={`${label}.`}
           aria-live="polite"
         >
-          <AlienText text={label} />
+          <AlienText text={label} wrap={wrap} />
           <span style={{ color: "#FF5800" }}>.</span>
         </motion.div>
       </AnimatePresence>

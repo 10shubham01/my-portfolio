@@ -11,8 +11,8 @@ type WorkProjectVideoPlayerProps = {
 };
 
 function normalizeVideo(video?: WorkProjectVideoSource) {
-  const fallbackSrc = "/videos/work/composter.mp4";
-  const src = video?.src?.trim() || fallbackSrc;
+  const src = video?.src?.trim();
+  if (!src) return null;
 
   return {
     src,
@@ -24,6 +24,7 @@ function normalizeVideo(video?: WorkProjectVideoSource) {
 
 export function WorkProjectVideoPlayer({ video, className, openSignal }: WorkProjectVideoPlayerProps) {
   const source = normalizeVideo(video);
+  if (!source) return null;
   const wrapperClassName = "w-full max-w-[12rem] self-end md:max-w-[13rem]";
 
   return (

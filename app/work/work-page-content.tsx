@@ -48,8 +48,11 @@ export function WorkPageContent({ projects, isScrollable }: WorkPageContentProps
   );
 
   const handleProjectOpen = useCallback(() => {
+    const project = safeActiveIndex >= 0 ? projects[safeActiveIndex] : null;
+    if (!project?.video) return;
+
     setVideoOpenSignal((current) => current + 1);
-  }, []);
+  }, [projects, safeActiveIndex]);
 
   return (
     <>
