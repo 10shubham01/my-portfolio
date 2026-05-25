@@ -145,7 +145,7 @@ function AnimatedHero({ text, className }: { text: string; className?: string })
         })}
       </div>
       <div
-        className="pointer-events-none absolute inset-0 -z-10 flex flex-wrap justify-center text-transparent"
+        className="hero-text-ghost pointer-events-none absolute inset-0 -z-10 flex flex-wrap justify-center text-transparent"
         style={{ WebkitTextStroke: "1px rgba(255, 88, 0, 0.45)" }}
         aria-hidden
       >
@@ -177,7 +177,7 @@ function StaticHero({ text, className }: { text: string; className?: string }) {
         )}
       />
       <div
-        className="pointer-events-none absolute inset-0 -z-10 text-transparent"
+        className="hero-text-ghost pointer-events-none absolute inset-0 -z-10 text-transparent"
         style={{ WebkitTextStroke: "1px rgba(255, 88, 0, 0.45)" }}
         aria-hidden
       >
