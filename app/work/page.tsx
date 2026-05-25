@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
-import { absoluteUrl, SITE_AUTHOR, SITE_TWITTER_HANDLE, siteImages } from "@/lib/site";
+import {
+  absoluteUrl,
+  SITE_AUTHOR,
+  SITE_JOB_TITLE,
+  SITE_ORGANIZATION,
+  SITE_TWITTER_HANDLE,
+  siteImages,
+} from "@/lib/site";
 import { WorkPageContent } from "./work-page-content";
 import { WorkOrangeLine } from "./work-orange-line";
 import { WorkViewportMask } from "./work-viewport-mask";
 import { WORK_PROJECTS } from "./work-projects";
 
-const description = `Experience and selected projects by ${SITE_AUTHOR.name} — fintech platforms, full-stack delivery, and personal builds.`;
+const description = `Experience and projects by ${SITE_AUTHOR.name}, ${SITE_JOB_TITLE} at ${SITE_ORGANIZATION} — health-tech tooling, Credilio fintech delivery, and personal builds.`;
 
 export const metadata: Metadata = {
   title: "Work",

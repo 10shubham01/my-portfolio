@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
-import { absoluteUrl, SITE_AUTHOR, SITE_TWITTER_HANDLE, siteImages } from "@/lib/site";
+import {
+  absoluteUrl,
+  SITE_AUTHOR,
+  SITE_JOB_TITLE,
+  SITE_ORGANIZATION,
+  SITE_TWITTER_HANDLE,
+  siteImages,
+} from "@/lib/site";
 import { AboutPageContent } from "./about-page-content";
 
-const description = `About ${SITE_AUTHOR.name}, a web developer in Mumbai building polished web experiences.`;
+const description = `About ${SITE_AUTHOR.name} — ${SITE_JOB_TITLE} at ${SITE_ORGANIZATION} in Mumbai. Six years building production web apps with React, Next.js, Vue, TypeScript, and AWS. Previously Credilio Financial Technologies.`;
 
 export const metadata: Metadata = {
   title: "About",

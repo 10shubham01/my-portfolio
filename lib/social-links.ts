@@ -31,9 +31,13 @@ function buildGmailComposeUrl(
   return `https://mail.google.com/mail/?${params.toString()}`;
 }
 
+export const X_USERNAME = "10shubham01";
+
 export const SOCIAL_LINKS = {
   linkedin: "https://www.linkedin.com/in/shubhamgupta001/",
   github: "https://github.com/10shubham01",
+  peerlist: `https://peerlist.io/${X_USERNAME}`,
+  instagram: "https://www.instagram.com/m0re0fme/",
   resume: "/shubham-gupta.pdf",
   email: buildGmailComposeUrl(EMAIL_ADDRESS, EMAIL_COMPOSE),
 } as const;

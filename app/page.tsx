@@ -1,12 +1,54 @@
+import type { Metadata } from "next";
 import { HeroText } from "@/components/hero-text";
-import { CVLogoIcon, Github, Linkedin, Mail } from "@/components/icons";
+import { CVLogoIcon, Github, Instagram, Linkedin, Mail, PeerlistSolid } from "@/components/icons";
 import { getLocationAgeEyebrow } from "@/lib/birthday";
 import { basteleur } from "@/lib/fonts";
 import { SOCIAL_LINKS } from "@/lib/social-links";
+import {
+  absoluteUrl,
+  SITE_AUTHOR,
+  SITE_DESCRIPTION,
+  SITE_JOB_TITLE,
+  SITE_ORGANIZATION,
+  SITE_TITLE,
+  SITE_TWITTER_HANDLE,
+  siteImages,
+} from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  alternates: {
+    canonical: absoluteUrl("/"),
+  },
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: "/",
+    type: "profile",
+    images: [
+      {
+        url: siteImages.og,
+        width: 1200,
+        height: 675,
+        alt: `${SITE_AUTHOR.name} — ${SITE_JOB_TITLE} at ${SITE_ORGANIZATION}`,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [siteImages.og],
+    creator: SITE_TWITTER_HANDLE,
+  },
+};
 
 const SOCIAL_ITEMS = [
   { href: SOCIAL_LINKS.linkedin, label: "LinkedIn", Icon: Linkedin, external: true },
   { href: SOCIAL_LINKS.github, label: "GitHub", Icon: Github, external: true },
+  { href: SOCIAL_LINKS.peerlist, label: "Peerlist", Icon: PeerlistSolid, external: true },
+  { href: SOCIAL_LINKS.instagram, label: "Instagram", Icon: Instagram, external: true },
   { href: SOCIAL_LINKS.email, label: "Email", Icon: Mail, external: true },
   { href: SOCIAL_LINKS.resume, label: "Resume", Icon: CVLogoIcon, external: true },
 ] as const;
@@ -14,6 +56,9 @@ const SOCIAL_ITEMS = [
 export default function HomePage() {
   return (
     <section className="social-hover-focus mx-auto flex min-h-[68dvh] w-full max-w-xl flex-col items-center justify-center gap-4 px-3 text-center sm:px-4">
+      <h1 className="sr-only">
+        {SITE_AUTHOR.name} — {SITE_JOB_TITLE} at {SITE_ORGANIZATION}
+      </h1>
       <p className="font-sans font-light text-xs uppercase select-none tracking-[0.28em] text-muted-foreground">
         {getLocationAgeEyebrow()}
       </p>

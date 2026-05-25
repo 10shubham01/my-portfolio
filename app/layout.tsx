@@ -8,7 +8,20 @@ import { LenisProvider } from "@/components/lenis-provider";
 import { SiteDock } from "@/components/site-dock";
 import { ThemeProvider } from "@/components/theme-provider";
 import { basteleur, helveticaNeue, helveticaOblique } from "@/lib/fonts";
-import { absoluteUrl, getSiteUrl, SITE_AUTHOR, SITE_DESCRIPTION, SITE_KEYWORDS, SITE_NAME, SITE_TITLE, SITE_TWITTER_HANDLE, siteImages } from "@/lib/site";
+import {
+  getPersonJsonLd,
+  getProfilePageJsonLd,
+  getSiteUrl,
+  getWebsiteJsonLd,
+  GOOGLE_SITE_VERIFICATION,
+  SITE_AUTHOR,
+  SITE_DESCRIPTION,
+  SITE_KEYWORDS,
+  SITE_NAME,
+  SITE_TITLE,
+  SITE_TWITTER_HANDLE,
+  siteImages,
+} from "@/lib/site";
 import "./globals.css";
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -19,7 +32,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
     default: SITE_TITLE,
-    template: "%s | Shubham",
+    template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
@@ -72,6 +85,9 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  verification: {
+    google: GOOGLE_SITE_VERIFICATION,
+  },
 };
 
 /** Mobile: pin to device width, avoid accidental mini-viewport quirks; `viewport-fit` for notched screens. */
@@ -86,31 +102,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const websiteJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: SITE_TITLE,
-    url: getSiteUrl(),
-    description: SITE_DESCRIPTION,
-    publisher: {
-      "@type": "Person",
-      name: SITE_AUTHOR.name,
-    },
-  };
-  const personJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: SITE_AUTHOR.name,
-    url: getSiteUrl(),
-    image: absoluteUrl(siteImages.logo),
-    jobTitle: "Web Developer",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Mumbai",
-      addressCountry: "IN",
-    },
-    sameAs: SITE_AUTHOR.sameAs,
-  };
+  const websiteJsonLd = getWebsiteJsonLd();
+  const personJsonLd = getPersonJsonLd();
+  const profilePageJsonLd = getProfilePageJsonLd();
 
   return (
     <html
@@ -129,6 +123,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(profilePageJsonLd) }}
         />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <LenisProvider>

@@ -6,7 +6,7 @@ import { OrangeMidLine } from "@/components/orange-mid-line";
 import { PageViewportMask } from "@/components/page-viewport-mask";
 import { WritingsPageContent } from "./writings-page-content";
 
-const description = `Notes by ${SITE_AUTHOR.name} on interface design, frontend craft, product work, and building smoother web experiences.`;
+const description = `Writings by ${SITE_AUTHOR.name}, software engineer at WebMD — frontend craft, product work, dev utilities, and building polished web experiences.`;
 
 export const metadata: Metadata = {
   title: "Writings",
