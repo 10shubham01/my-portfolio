@@ -53,11 +53,22 @@ const SOCIAL_ITEMS = [
   { href: SOCIAL_LINKS.peerlist, label: "Peerlist", Icon: PeerlistSolid, external: true },
   { href: SOCIAL_LINKS.instagram, label: "Instagram", Icon: Instagram, external: true },
   { href: SOCIAL_LINKS.resume, label: "Resume", Icon: CVLogoIcon, external: true },
-  { href: SOCIAL_LINKS.email, label: "Get in touch", text: "GET IN TOUCH", external: true },
+  {
+    href: SOCIAL_LINKS.email,
+    label: "Get in touch",
+    text: "GET IN TOUCH",
+    external: true,
+    contact: true,
+  },
 ] as const satisfies ReadonlyArray<
   | { href: string; label: string; Icon: SocialIcon; external: boolean }
-  | { href: string; label: string; text: string; external: boolean }
+  | { href: string; label: string; text: string; external: boolean; contact: true }
 >;
+
+const HERO_INTRO_TEXT = "Yo, I'm Shubham and I build web experiences.";
+const HERO_CONTACT_TEXT = "Let's build something crazy together.";
+
+const heroTitleClassName = `${basteleur.className} text-3xl font-bold uppercase leading-[1.12] tracking-tight sm:text-4xl sm:leading-[1.08] md:text-5xl md:leading-[1.05] lg:text-6xl`;
 
 export default function HomePage() {
   return (
@@ -69,10 +80,15 @@ export default function HomePage() {
         {getLocationAgeEyebrow()}
       </p>
       <div className="hero-title relative z-10 w-full max-w-[min(100%,36rem)] overflow-visible selection:bg-[#FF5800] selection:text-white">
-        <HeroText
-          text="Yo, I'm Shubham and I build web experiences."
-          className={`${basteleur.className} text-3xl font-bold uppercase leading-[1.12] tracking-tight sm:text-4xl sm:leading-[1.08] md:text-5xl md:leading-[1.05] lg:text-6xl`}
-        />
+        <div className="hero-text-default">
+          <HeroText text={HERO_INTRO_TEXT} className={heroTitleClassName} />
+        </div>
+        <p
+          className={`hero-text-contact ${heroTitleClassName} pointer-events-none text-center`}
+          aria-hidden="true"
+        >
+          {HERO_CONTACT_TEXT}
+        </p>
       </div>
       <div className="social-links relative z-20 font-sans font-light flex max-w-md flex-wrap items-center justify-center gap-3 text-muted-foreground md:gap-5">
         {SOCIAL_ITEMS.map((item) => (
@@ -82,6 +98,7 @@ export default function HomePage() {
             {...(item.external
               ? { target: "_blank", rel: "noopener noreferrer" }
               : {})}
+            {...("contact" in item && item.contact ? { "data-contact-link": true } : {})}
             aria-label={item.label}
             className={`${basteleur.className} inline-flex origin-center cursor-pointer items-center gap-0.5 rounded-sm text-xl font-bold transition-transform duration-300 ease-out hover:scale-[1.5] focus-visible:scale-[1.5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background`}
           >
