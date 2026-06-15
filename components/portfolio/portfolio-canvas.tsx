@@ -16,10 +16,14 @@ import { CanvasFrame } from "@/components/portfolio/canvas-frame"
 import { RenderCanvasItem } from "@/components/portfolio/render-canvas-item"
 import { CanvasMenu } from "@/components/portfolio/canvas-menu"
 import { CanvasZoomControls } from "@/components/portfolio/canvas-zoom-controls"
+import { CanvasSpotlight } from "@/components/portfolio/canvas-spotlight"
+import { ShortcutsDialog } from "@/components/portfolio/shortcuts-dialog"
 import { SpideyProvider } from "@/components/portfolio/spidey-context"
 import { CanvasSpiderman } from "@/components/portfolio/canvas-spiderman"
 import { getItemIdFromUrl, setItemDeeplink } from "@/lib/canvas-deeplink"
 import { getSpideyHomePosition } from "@/lib/spidey-position"
+import { KONAMI_SEQUENCE } from "@/lib/portfolio-shortcuts"
+import type { SpideyMood } from "@/components/portfolio/spidey-context"
 
 const GRID_SPACING = 20
 const ZOOM_MIN = 0.1
@@ -32,6 +36,8 @@ export function PortfolioCanvas() {
   const [panning, setPanning] = useState(false)
   const [ready, setReady] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
+  const [spotlightOpen, setSpotlightOpen] = useState(false)
+  const [shortcutsOpen, setShortcutsOpen] = useState(false)
   const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null)
   const [zoomLevel, setZoomLevel] = useState(1)
   const [positions, setPositions] = useState(() =>
@@ -52,9 +58,11 @@ export function PortfolioCanvas() {
   const pinchZoomStart = useRef(1)
   const clickedFrameId = useRef<string | null>(null)
   const boundsRef = useRef(getContentBounds(positions, sizes))
-  const spideyApiRef = useRef<{ setPosition: (position: { x: number; y: number }) => void } | null>(
-    null
-  )
+  const spideyApiRef = useRef<{
+    setPosition: (position: { x: number; y: number }) => void
+    setMood: (mood: SpideyMood) => void
+  } | null>(null)
+  const konamiIndexRef = useRef(0)
   const deeplinkFocusPending = useRef(
     typeof window !== "undefined" && !!getItemIdFromUrl(window.location.search)
   )
@@ -185,6 +193,35 @@ export function PortfolioCanvas() {
     applyTransform(clamped.x, clamped.y, zoom, true)
   }, [applyTransform, clampPan, clampZoom])
 
+  const setSpideyMoodForItem = useCallback((item: CanvasItem) => {
+    if (item.type === "github" || item.type === "project" || item.type === "work") {
+      spideyApiRef.current?.setMood("peek")
+      return
+    }
+    spideyApiRef.current?.setMood("idle")
+  }, [])
+
+  const summonSpideyToSelection = useCallback(() => {
+    if (!selectedId) return
+    const pos = positions[selectedId]
+    const size = sizes[selectedId]
+    if (!pos || !size) return
+
+    spideyApiRef.current?.setPosition({
+      x: pos.x + size.w / 2,
+      y: pos.y + size.h / 2,
+    })
+    spideyApiRef.current?.setMood("peek")
+  }, [positions, selectedId, sizes])
+
+  const triggerKonamiEasterEgg = useCallback(() => {
+    spideyApiRef.current?.setMood("excited")
+    const centerX = (boundsRef.current.minX + boundsRef.current.maxX) / 2
+    const centerY = (boundsRef.current.minY + boundsRef.current.maxY) / 2
+    spideyApiRef.current?.setPosition({ x: centerX, y: centerY })
+    window.setTimeout(() => spideyApiRef.current?.setMood("idle"), 4000)
+  }, [])
+
   const focusItem = useCallback(
     (
       item: CanvasItem,
@@ -222,8 +259,10 @@ export function PortfolioCanvas() {
       if (options?.updateUrl !== false) {
         setItemDeeplink(item.id, options?.replaceUrl ?? false)
       }
+
+      setSpideyMoodForItem(item)
     },
-    [applyTransform, positions, sizes]
+    [applyTransform, positions, sizes, setSpideyMoodForItem]
   )
 
   const resetView = useCallback(
@@ -367,7 +406,15 @@ export function PortfolioCanvas() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (document.activeElement?.tagName === "INPUT") return
+      const tag = document.activeElement?.tagName
+      if (tag === "INPUT" || tag === "TEXTAREA") return
+
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault()
+        setSpotlightOpen(true)
+        return
+      }
+
       if (event.metaKey || event.ctrlKey || event.altKey) return
 
       const key = event.key.toLowerCase()
@@ -375,12 +422,24 @@ export function PortfolioCanvas() {
         resetCanvasLayout()
       } else if (key === "d") {
         toggleTheme()
+      } else if (key === "s") {
+        summonSpideyToSelection()
+      } else if (key === "?") {
+        setShortcutsOpen(true)
+      } else if (KONAMI_SEQUENCE[konamiIndexRef.current] === event.key) {
+        konamiIndexRef.current += 1
+        if (konamiIndexRef.current === KONAMI_SEQUENCE.length) {
+          konamiIndexRef.current = 0
+          triggerKonamiEasterEgg()
+        }
+      } else {
+        konamiIndexRef.current = event.key === KONAMI_SEQUENCE[0] ? 1 : 0
       }
     }
 
     window.addEventListener("keydown", onKeyDown)
     return () => window.removeEventListener("keydown", onKeyDown)
-  }, [resetCanvasLayout, toggleTheme])
+  }, [resetCanvasLayout, toggleTheme, summonSpideyToSelection, triggerKonamiEasterEgg])
 
   useEffect(() => {
     if (!ready) return
@@ -403,9 +462,20 @@ export function PortfolioCanvas() {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        if (spotlightOpen) {
+          setSpotlightOpen(false)
+          return
+        }
+        if (shortcutsOpen) {
+          setShortcutsOpen(false)
+          return
+        }
+        if (infoOpen) return
         resetView()
         return
       }
+
+      if (spotlightOpen || shortcutsOpen) return
 
       if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
         event.preventDefault()
@@ -421,7 +491,7 @@ export function PortfolioCanvas() {
 
     window.addEventListener("keydown", onKeyDown)
     return () => window.removeEventListener("keydown", onKeyDown)
-  }, [focusItem, resetView, selectedId])
+  }, [focusItem, resetView, selectedId, spotlightOpen, shortcutsOpen, infoOpen])
 
   useEffect(() => {
     const container = containerRef.current
@@ -460,6 +530,8 @@ export function PortfolioCanvas() {
   }, [ready, applyTransform, clampPan, clampZoom, beginInteraction, endInteractionSoon])
 
   const onPointerDown = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    if (spotlightOpen || shortcutsOpen || infoOpen) return
+
     pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY })
 
     const target = event.target as HTMLElement
@@ -493,7 +565,7 @@ export function PortfolioCanvas() {
       canvasRef.current && (canvasRef.current.style.transition = "none")
       beginInteraction()
     }
-  }, [beginInteraction])
+  }, [beginInteraction, spotlightOpen, shortcutsOpen, infoOpen])
 
   const onPointerMove = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
@@ -661,9 +733,9 @@ export function PortfolioCanvas() {
 
       <CanvasMenu
         open={infoOpen}
-        onOpenChange={(open, source) => {
+        onOpenChange={(open) => {
           setInfoOpen(open)
-          if (!open || source === "button") setMenuAnchor(null)
+          if (!open) setMenuAnchor(null)
         }}
         anchor={menuAnchor}
         selectedId={selectedId}
@@ -683,8 +755,23 @@ export function PortfolioCanvas() {
         onZoomOut={zoomOut}
         onZoomReset={zoomTo100}
         onFitAll={fitAll}
+        onOpenSpotlight={() => setSpotlightOpen(true)}
       />
     </div>
+
+    <CanvasSpotlight
+      open={spotlightOpen}
+      onOpenChange={setSpotlightOpen}
+      onNavigate={(id) => {
+        const item = CANVAS_ITEMS.find((entry) => entry.id === id)
+        if (item) focusItem(item)
+      }}
+      onFitAll={fitAll}
+      onResetLayout={resetCanvasLayout}
+      onShowShortcuts={() => setShortcutsOpen(true)}
+    />
+
+    <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
     </SpideyProvider>
   )
 }

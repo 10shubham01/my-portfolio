@@ -17,16 +17,22 @@ import {
 } from "@/lib/spidey-position"
 import type { Position, Size } from "@/lib/scatter-layout"
 
+export type SpideyMood = "idle" | "excited" | "dance" | "peek"
+
 type SpideyApi = {
   setPosition: (position: { x: number; y: number }) => void
+  setMood: (mood: SpideyMood) => void
 }
 
 type SpideyContextValue = {
   position: { x: number; y: number }
   dragging: boolean
+  mood: SpideyMood
   beginDrag: (clientX: number, clientY: number) => void
   moveDrag: (clientX: number, clientY: number) => void
   endDrag: () => void
+  setMood: (mood: SpideyMood) => void
+  jumpTo: (position: { x: number; y: number }) => void
 }
 
 const SpideyContext = createContext<SpideyContextValue | null>(null)
@@ -63,6 +69,7 @@ export function SpideyProvider({
 }) {
   const [position, setPosition] = useState(() => getInitialPosition(positions, sizes))
   const [dragging, setDragging] = useState(false)
+  const [mood, setMoodState] = useState<SpideyMood>("idle")
   const dragOffset = useRef({ x: 0, y: 0 })
   const positionRef = useRef(position)
   const boundsRef = useRef(bounds)
@@ -114,21 +121,34 @@ export function SpideyProvider({
     setDragging(false)
   }, [])
 
+  const setMood = useCallback((next: SpideyMood) => {
+    setMoodState(next)
+  }, [])
+
+  const jumpTo = useCallback((target: { x: number; y: number }) => {
+    setCanvasPosition(target.x, target.y)
+    setMoodState("peek")
+  }, [setCanvasPosition])
+
   useEffect(() => {
     registerApi?.({
       setPosition: (next) => setPosition(clampSpideyPosition(next.x, next.y, boundsRef.current)),
+      setMood,
     })
-  }, [registerApi])
+  }, [registerApi, setMood])
 
   const value = useMemo(
     () => ({
       position,
       dragging,
+      mood,
       beginDrag,
       moveDrag,
       endDrag,
+      setMood,
+      jumpTo,
     }),
-    [position, dragging, beginDrag, moveDrag, endDrag]
+    [position, dragging, mood, beginDrag, moveDrag, endDrag, setMood, jumpTo]
   )
 
   return <SpideyContext.Provider value={value}>{children}</SpideyContext.Provider>

@@ -6,7 +6,7 @@ import { useSpidey } from "@/components/portfolio/spidey-context"
 import { SPIDEY_FIGURE_VIEWBOX, SPIDEY_RENDER_HEIGHT, SPIDEY_RENDER_WIDTH } from "@/lib/spidey-position"
 
 export function CanvasSpiderman() {
-  const { position, dragging, beginDrag, moveDrag, endDrag } = useSpidey()
+  const { position, dragging, mood, beginDrag, moveDrag, endDrag } = useSpidey()
   const [hovered, setHovered] = useState(false)
   const isDragging = useRef(false)
 
@@ -68,7 +68,7 @@ export function CanvasSpiderman() {
             </feMerge>
           </filter>
         </defs>
-        <SpiderManFigure hovered={hovered} dragging={dragging} />
+        <SpiderManFigure hovered={hovered} dragging={dragging} mood={mood} />
       </svg>
     </div>
   )

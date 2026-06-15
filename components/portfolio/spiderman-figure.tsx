@@ -7,14 +7,27 @@ const WHITE = "#f8f8f8"
 export function SpiderManFigure({
   hovered,
   dragging,
+  mood = "idle",
 }: {
   hovered: boolean
   dragging: boolean
+  mood?: "idle" | "excited" | "dance" | "peek"
 }) {
-  const eyeGlow = hovered && !dragging ? "url(#eye-glow)" : undefined
+  const eyeGlow =
+    (hovered && !dragging) || mood === "excited" || mood === "dance"
+      ? "url(#eye-glow)"
+      : undefined
+  const groupClass =
+    mood === "dance"
+      ? "origin-center animate-bounce"
+      : mood === "excited"
+        ? "origin-center scale-110"
+        : mood === "peek"
+          ? "origin-center -rotate-6"
+          : ""
 
   return (
-    <g transform="translate(100, 100)" aria-hidden>
+    <g transform="translate(100, 100)" className={groupClass} aria-hidden>
       <path
         d="M-6 14 L-14 28 L-12 34 L-4 22 Z"
         fill={BLUE}

@@ -3,6 +3,7 @@ import { DM_Mono, Geist, Inter } from "next/font/google"
 
 import "./globals.css"
 import { cn } from "@/lib/utils"
+import { SITE } from "@/lib/canvas-data"
 
 const geist = Geist({
   subsets: ["latin"],
@@ -21,6 +22,7 @@ const dmMono = DM_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE.url),
   title: "Shubham Gupta | Software Engineer @ WebMD",
   description:
     "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development. Previously senior engineer at Credilio Financial Technologies.",
@@ -45,14 +47,6 @@ export const metadata: Metadata = {
     url: "https://shubhamgupta.dev",
     siteName: "Shubham Gupta",
     type: "profile",
-    images: [
-      {
-        url: "https://shubhamgupta.dev/images/logo/og-image.png",
-        width: 1200,
-        height: 675,
-        alt: "Shubham Gupta — Senior Software Engineer at WebMD",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -60,7 +54,6 @@ export const metadata: Metadata = {
     title: "Shubham Gupta | Software Engineer @ WebMD",
     description:
       "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development.",
-    images: ["https://shubhamgupta.dev/images/logo/og-image.png"],
   },
   icons: {
     icon: "/favicon.ico",

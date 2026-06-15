@@ -46,12 +46,14 @@ export function CanvasZoomControls({
   onZoomOut,
   onZoomReset,
   onFitAll,
+  onOpenSpotlight,
 }: {
   zoom: number
   onZoomIn: () => void
   onZoomOut: () => void
   onZoomReset: () => void
   onFitAll: () => void
+  onOpenSpotlight?: () => void
 }) {
   const label = `${Math.round(zoom * 100)}%`
 
@@ -88,6 +90,21 @@ export function CanvasZoomControls({
       </button>
 
       <div className="mx-0.5 h-5 w-px bg-gray-200 dark:bg-neutral-700" />
+
+      {onOpenSpotlight ? (
+        <>
+          <button
+            type="button"
+            aria-label="Open spotlight"
+            title="Spotlight (⌘K)"
+            className={cn(controlClass, "min-w-[52px] px-2 font-mono text-[11px]")}
+            onClick={onOpenSpotlight}
+          >
+            ⌘K
+          </button>
+          <div className="mx-0.5 h-5 w-px bg-gray-200 dark:bg-neutral-700" />
+        </>
+      ) : null}
 
       <button
         type="button"

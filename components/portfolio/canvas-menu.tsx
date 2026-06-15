@@ -4,6 +4,7 @@ import { Check, ChevronLeft, ChevronRight, Link } from "lucide-react"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { copyItemDeeplink } from "@/lib/canvas-deeplink"
 import { getThemeNavItem, type NavGroup, type NavItem } from "@/lib/canvas-nav"
+import { canvasPanelScroll } from "@/components/portfolio/canvas-overlay-panel"
 import { cn } from "@/lib/utils"
 
 const rowClass =
@@ -51,35 +52,6 @@ function NavItemRow({
     </div>
   )
 }
-
-function MenuIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-      <path
-        d="M2 4h12M2 8h12M2 12h12"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-function CloseIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-      <path
-        d="M4 4l8 8M12 4l-8 8"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-const chromeButtonClass =
-  "flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 shadow-sm transition-[color,box-shadow,border-color] hover:border-gray-300 hover:text-gray-900 hover:shadow dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-neutral-600 dark:hover:text-neutral-100"
 
 const MENU_WIDTH = 220
 const VIEWPORT_PADDING = 8
@@ -177,7 +149,7 @@ function CanvasMenuPanel({
             </button>
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto p-1.5">
+          <div className={cn(canvasPanelScroll, "min-h-0 flex-1 p-1.5")}>
             <div className="flex flex-col gap-0.5">
               {activeGroup.items.map((item) => (
                 <NavItemRow
@@ -258,7 +230,7 @@ export function CanvasMenu({
   onResetCanvas,
 }: {
   open: boolean
-  onOpenChange: (open: boolean, source?: "button") => void
+  onOpenChange: (open: boolean) => void
   anchor: { x: number; y: number } | null
   selectedId: string | null
   groups: NavGroup[]
@@ -284,6 +256,8 @@ export function CanvasMenu({
   const pointerPosition =
     adjustedPosition ?? (anchor ? clampMenuPosition(anchor.x, anchor.y) : null)
 
+  if (!anchor || !pointerPosition) return null
+
   return (
     <>
       {open && (
@@ -293,46 +267,20 @@ export function CanvasMenu({
         />
       )}
 
-      <div className="fixed top-4 right-4 z-50 flex flex-col items-end gap-2">
-        <button
-          type="button"
-          onClick={() => onOpenChange(!open, "button")}
-          onPointerDown={(event) => event.stopPropagation()}
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          className={chromeButtonClass}
-        >
-          {open ? <CloseIcon /> : <MenuIcon />}
-        </button>
-
-        {!anchor && (
-          <CanvasMenuPanel
-            open={open}
-            selectedId={selectedId}
-            groups={groups}
-            onNavigateToItem={onNavigateToItem}
-            onResetCanvas={onResetCanvas}
-            className="origin-top-right"
-          />
-        )}
+      <div
+        ref={panelRef}
+        className="fixed z-50"
+        style={{ left: pointerPosition.x, top: pointerPosition.y }}
+      >
+        <CanvasMenuPanel
+          open={open}
+          selectedId={selectedId}
+          groups={groups}
+          onNavigateToItem={onNavigateToItem}
+          onResetCanvas={onResetCanvas}
+          className="origin-top-left"
+        />
       </div>
-
-      {anchor && pointerPosition && (
-        <div
-          ref={panelRef}
-          className="fixed z-50"
-          style={{ left: pointerPosition.x, top: pointerPosition.y }}
-        >
-          <CanvasMenuPanel
-            open={open}
-            selectedId={selectedId}
-            groups={groups}
-            onNavigateToItem={onNavigateToItem}
-            onResetCanvas={onResetCanvas}
-            className="origin-top-left"
-          />
-        </div>
-      )}
     </>
   )
 }
