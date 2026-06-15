@@ -1,0 +1,55 @@
+{
+  "items": [
+    {
+      "id": "intro",
+      "component": "intro",
+      "type": "intro",
+      "label": "intro",
+      "position": { "x": 0, "y": 0 },
+      "size": { "width": 480, "height": 640 },
+      "scatter": false
+    },
+    {
+      "id": "me",
+      "component": "media",
+      "type": "image",
+      "label": "me.jpg",
+      "position": { "x": -520, "y": -80 },
+      "size": { "width": 300, "height": 533 },
+      "scatter": true,
+      "asset": "images/me.jpg",
+      "alt": "Shubham Gupta"
+    },
+    {
+      "id": "waving",
+      "component": "media",
+      "type": "image",
+      "label": "waving.gif",
+      "position": { "x": 520, "y": -120 },
+      "size": { "width": 300, "height": 200 },
+      "scatter": true,
+      "asset": "images/waving.gif",
+      "alt": "Waving doodle"
+    },
+    {
+      "id": "logo",
+      "component": "media",
+      "type": "image",
+      "label": "logo.png",
+      "position": { "x": -380, "y": 280 },
+      "size": { "width": 300, "height": 200 },
+      "scatter": true,
+      "asset": "images/logo.png",
+      "alt": "Shubham Gupta logo"
+    },
+    {
+      "id": "skills",
+      "component": "skills",
+      "type": "skills",
+      "label": "skills",
+      "position": { "x": 520, "y": 120 },
+      "size": { "width": 360, "height": 420 },
+      "scatter": true
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "skills": [
+    { "name": "React", "slug": "react" },
+    { "name": "Next.js", "slug": "nextdotjs" },
+    { "name": "Vue", "slug": "vuedotjs" },
+    { "name": "TypeScript", "slug": "typescript" },
+    { "name": "Node.js", "slug": "nodedotjs" },
+    { "name": "Tailwind", "slug": "tailwindcss" },
+    { "name": "PostgreSQL", "slug": "postgresql" },
+    { "name": "AWS", "iconUrl": "https://icon.icepanel.io/Technology/svg/AWS.svg" },
+    { "name": "Vite", "slug": "vite" },
+    { "name": "Pinia", "slug": "pinia" },
+    { "name": "Remotion", "iconUrl": "https://www.remotion.dev/img/favicon.png" }
+  ]
+}
