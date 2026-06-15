@@ -41,7 +41,7 @@ export const SOCIAL_LINKS = [
   {
     platform: "RESUME",
     handle: "/PDF",
-    href: "https://www.shubhamgupta.dev/shubham-gupta.pdf",
+    href: "/shubham-gupta.pdf",
   },
 ] as const
 

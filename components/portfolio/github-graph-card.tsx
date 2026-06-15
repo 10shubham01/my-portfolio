@@ -4,8 +4,8 @@ import { useEffect, useState } from "react"
 import {
   CardSectionTitle,
   CardSurface,
-  cardLinkClass,
   cardMetaClass,
+  VisitLink,
 } from "@/components/portfolio/card-chrome"
 import { useFrameResize } from "@/components/portfolio/use-frame-resize"
 import { useTheme } from "@/components/portfolio/theme-provider"
@@ -164,14 +164,7 @@ export function GitHubGraphCard({
             ? `${total.toLocaleString()} contributions in the last year`
             : "Contribution activity"}
         </p>
-        <a
-          href={GITHUB.profileUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`group shrink-0 ${cardLinkClass}`}
-        >
-          [ PROFILE ]
-        </a>
+        <VisitLink href={GITHUB.profileUrl} label="PROFILE" />
       </div>
     </CardSurface>
   )

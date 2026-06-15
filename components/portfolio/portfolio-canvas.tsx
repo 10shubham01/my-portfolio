@@ -22,7 +22,7 @@ import { getItemIdFromUrl, setItemDeeplink } from "@/lib/canvas-deeplink"
 import { getSpideyHomePosition } from "@/lib/spidey-position"
 
 const GRID_SPACING = 20
-const ZOOM_MIN = 0.4
+const ZOOM_MIN = 0.1
 const ZOOM_MAX = 2.5
 const ZOOM_STEP = 1.25
 
@@ -55,6 +55,9 @@ export function PortfolioCanvas() {
   const spideyApiRef = useRef<{ setPosition: (position: { x: number; y: number }) => void } | null>(
     null
   )
+  const deeplinkFocusPending = useRef(
+    typeof window !== "undefined" && !!getItemIdFromUrl(window.location.search)
+  )
 
   useEffect(() => {
     boundsRef.current = getContentBounds(positions, sizes)
@@ -76,6 +79,7 @@ export function PortfolioCanvas() {
   const [interacting, setInteracting] = useState(false)
 
   const beginInteraction = useCallback(() => {
+    deeplinkFocusPending.current = false
     setInteracting(true)
     if (canvasRef.current) {
       canvasRef.current.style.willChange = "transform"
@@ -187,10 +191,14 @@ export function PortfolioCanvas() {
       options?: {
         updateUrl?: boolean
         replaceUrl?: boolean
+        position?: { x: number; y: number }
+        size?: { w: number; h: number }
       }
     ) => {
-      const pos = positions[item.id] ?? { x: item.x, y: item.y }
-      const size = sizes[item.id] ?? { w: item.width, h: item.height }
+      const pos =
+        options?.position ?? positions[item.id] ?? { x: item.x, y: item.y }
+      const size =
+        options?.size ?? sizes[item.id] ?? { w: item.width, h: item.height }
       const vw = window.innerWidth
       const vh = window.innerHeight
       const isMobile = vw < 768
@@ -257,7 +265,13 @@ export function PortfolioCanvas() {
     }
 
     const intro = CANVAS_ITEMS.find((item) => item.id === "intro")
-    if (intro) focusItem(intro)
+    if (intro) {
+      focusItem(intro, {
+        position: basePositions.intro,
+        size: baseSizes.intro,
+        replaceUrl: true,
+      })
+    }
   }, [focusItem])
 
   const activateItem = useCallback((id: string) => {
@@ -281,7 +295,7 @@ export function PortfolioCanvas() {
 
   useEffect(() => {
     setPositions((current) => {
-      const anchored = withAnchoredLayout(current, sizes)
+      const anchored = withAnchoredLayout(current, sizes, { anchorToIntro: false })
       const unchanged = ANCHORED_ITEM_IDS.every((id) => {
         const next = anchored[id]
         const prev = current[id]
@@ -291,7 +305,6 @@ export function PortfolioCanvas() {
       return anchored
     })
   }, [
-    sizes.intro?.h,
     sizes.now?.h,
     sizes.vscode?.h,
     sizes.awards?.h,
@@ -300,8 +313,6 @@ export function PortfolioCanvas() {
     sizes["work-mountblue"]?.h,
     sizes.github?.h,
     sizes.socials?.h,
-    positions.intro?.x,
-    positions.intro?.y,
     positions["work-credilio"]?.x,
     positions["work-credilio"]?.y,
     positions["work-webmd"]?.x,
@@ -315,26 +326,38 @@ export function PortfolioCanvas() {
       CANVAS_ITEMS.find((item) => item.type === "intro")
     if (!target) return
 
-    const vw = window.innerWidth
-    const vh = window.innerHeight
-    const isMobile = vw < 768
-    const isTall = target.height > target.width
-    const padding = isMobile ? 24 : 80
-
-    const zoom = Math.min(
-      (vw - 2 * (isMobile && isTall ? 16 : padding)) / target.width,
-      (vh - 2 * (isMobile ? 48 : padding)) / target.height,
-      isMobile ? 1.2 : 1.5
-    )
-
-    panRef.current = {
-      x: vw / 2 - (target.x + target.width / 2) * zoom,
-      y: vh / 2 - (target.y + target.height / 2) * zoom,
-    }
-    zoomRef.current = zoom
-    setSelectedId(target.id)
+    focusItem(target, {
+      updateUrl: false,
+      replaceUrl: true,
+      position: positions[target.id] ?? { x: target.x, y: target.y },
+      size: sizes[target.id] ?? { w: target.width, h: target.height },
+    })
     setReady(true)
+    // Intentionally run once on mount with the initial layout snapshot above.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (!ready || !deeplinkFocusPending.current || !selectedId) return
+
+    const deeplinkId = getItemIdFromUrl(window.location.search)
+    if (!deeplinkId || deeplinkId !== selectedId) {
+      deeplinkFocusPending.current = false
+      return
+    }
+
+    const item = CANVAS_ITEMS.find((entry) => entry.id === deeplinkId)
+    if (item) focusItem(item, { updateUrl: false })
+  }, [ready, selectedId, positions, sizes, focusItem])
+
+  useEffect(() => {
+    if (!ready) return
+
+    const timer = window.setTimeout(() => {
+      deeplinkFocusPending.current = false
+    }, 1500)
+    return () => window.clearTimeout(timer)
+  }, [ready])
 
   useEffect(() => {
     if (ready) {

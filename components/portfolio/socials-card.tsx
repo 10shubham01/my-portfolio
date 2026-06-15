@@ -1,7 +1,11 @@
 "use client"
 
 import { SOCIAL_LINKS } from "@/lib/canvas-data"
-import { CardSectionTitle, CardSurface } from "@/components/portfolio/card-chrome"
+import {
+  CardSectionTitle,
+  CardSurface,
+  VisitLink,
+} from "@/components/portfolio/card-chrome"
 import { useFrameResize } from "@/components/portfolio/use-frame-resize"
 
 export function SocialsCard({
@@ -19,12 +23,9 @@ export function SocialsCard({
 
       <div className="mt-5 flex flex-col gap-4">
         {SOCIAL_LINKS.map(({ platform, handle, href }) => (
-          <a
+          <div
             key={platform}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-center justify-between font-medium"
+            className="flex items-center justify-between gap-3 font-medium"
           >
             <span className="font-mono text-[12px]">
               <span className="font-medium text-gray-600 dark:text-neutral-300">
@@ -32,10 +33,8 @@ export function SocialsCard({
               </span>
               <span className="text-gray-400 dark:text-neutral-500"> {handle}</span>
             </span>
-            <span className="font-mono text-xs text-gray-400 transition-colors group-hover:text-gray-800 dark:text-neutral-500 dark:group-hover:text-neutral-200">
-              [ VISIT ]
-            </span>
-          </a>
+            <VisitLink href={href} />
+          </div>
         ))}
       </div>
     </CardSurface>

@@ -116,11 +116,17 @@ export function getGitHubPosition(
 
 export function withAnchoredLayout(
   positions: Record<string, Position>,
-  sizes: Record<string, Size>
+  sizes: Record<string, Size>,
+  options?: { anchorToIntro?: boolean }
 ): Record<string, Position> {
-  const withNow = { ...positions, now: getNowPosition(positions, sizes) }
-  const vscode = getVSCodePosition(withNow, sizes)
-  const withVSCode = { ...withNow, vscode }
+  const anchorToIntro = options?.anchorToIntro ?? true
+  const withVSCode = anchorToIntro
+    ? (() => {
+        const withNow = { ...positions, now: getNowPosition(positions, sizes) }
+        return { ...withNow, vscode: getVSCodePosition(withNow, sizes) }
+      })()
+    : positions
+
   const withAwards = {
     ...withVSCode,
     awards: getAwardsPosition(withVSCode, sizes),

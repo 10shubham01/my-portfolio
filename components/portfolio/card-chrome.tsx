@@ -24,6 +24,30 @@ export const cardBodyClass =
 export const cardLinkClass =
   "shrink-0 font-mono text-xs text-gray-400 transition-colors group-hover:text-gray-800 dark:group-hover:text-neutral-200"
 
+export const visitLinkClass =
+  "inline-flex shrink-0 items-center font-mono text-[11px] font-medium tracking-wide text-[#18A0FB] transition-colors hover:opacity-80"
+
+export function VisitLink({
+  href,
+  label = "VISIT",
+  className,
+}: {
+  href: string
+  label?: string
+  className?: string
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={cn(visitLinkClass, className)}
+    >
+      [ {label} ]
+    </a>
+  )
+}
+
 export const chromePanelClass =
   "rounded-lg border border-gray-200 bg-white shadow-sm dark:border-neutral-700 dark:bg-neutral-900"
 

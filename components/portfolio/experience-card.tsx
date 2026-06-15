@@ -7,8 +7,8 @@ import {
   CardDate,
   DashedRule,
   cardBodyClass,
-  cardLinkClass,
   cardTitleClass,
+  VisitLink,
 } from "@/components/portfolio/card-chrome"
 import { useFrameResize } from "@/components/portfolio/use-frame-resize"
 
@@ -26,10 +26,6 @@ export function ExperienceCard({
 
   if (!entry) return null
 
-  const content = (
-    <WorkEntry entry={entry} linked={Boolean(entry.href)} />
-  )
-
   return (
     <CardSurface ref={ref} interactive={interactive}>
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
@@ -38,18 +34,7 @@ export function ExperienceCard({
       </div>
 
       <div className="mt-5">
-        {entry.href ? (
-          <a
-            href={entry.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group block"
-          >
-            {content}
-          </a>
-        ) : (
-          content
-        )}
+        <WorkEntry entry={entry} />
       </div>
     </CardSurface>
   )
@@ -57,10 +42,8 @@ export function ExperienceCard({
 
 function WorkEntry({
   entry,
-  linked = false,
 }: {
   entry: NonNullable<ReturnType<typeof getExperienceById>>
-  linked?: boolean
 }) {
   return (
     <div className="flex flex-col gap-4">
@@ -71,7 +54,7 @@ function WorkEntry({
             <CardDate>{entry.period}</CardDate>
           </p>
         </div>
-        {linked && <span className={cardLinkClass}>[ VISIT ]</span>}
+        {entry.href && <VisitLink href={entry.href} />}
       </div>
 
       <ul className="flex flex-col gap-2">
