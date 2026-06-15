@@ -18,6 +18,7 @@ export function CanvasFrame({
   item,
   selected,
   onSelect,
+  onActivate,
   onMove,
   zoomRef,
   suppressHover = false,
@@ -26,6 +27,7 @@ export function CanvasFrame({
   item: CanvasItem
   selected: boolean
   onSelect: (item: CanvasItem) => void
+  onActivate: (id: string) => void
   onMove: (id: string, x: number, y: number) => void
   zoomRef: React.RefObject<number>
   suppressHover?: boolean
@@ -90,13 +92,14 @@ export function CanvasFrame({
         top: item.y,
         width: item.width,
         touchAction: "none",
-        zIndex: selected ? 40 : 1,
+        zIndex: selected ? 100 : hovered && !suppressHover ? 10 : 1,
       }}
       onPointerDown={(event) => {
         const isMobile = window.innerWidth < 768
         if (event.button !== 0) return
         if ((event.target as HTMLElement).closest("a, button, [role='button']")) return
 
+        onActivate(item.id)
         pointerActive.current = true
         moved.current = false
         dragStart.current = {

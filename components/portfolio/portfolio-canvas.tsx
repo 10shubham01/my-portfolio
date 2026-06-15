@@ -10,7 +10,21 @@ import {
 } from "@/lib/scatter-layout"
 import { CanvasFrame } from "@/components/portfolio/canvas-frame"
 import { RenderCanvasItem } from "@/components/portfolio/render-canvas-item"
-import { InfoPanel } from "@/components/portfolio/info-panel"
+import { CanvasMenu } from "@/components/portfolio/canvas-menu"
+
+const GRID_SPACING = 20
+
+function getDotColor(hex: string) {
+  const normalized = hex.replace("#", "")
+  if (normalized.length !== 6) return "rgba(0, 0, 0, 0.12)"
+
+  const r = Number.parseInt(normalized.slice(0, 2), 16)
+  const g = Number.parseInt(normalized.slice(2, 4), 16)
+  const b = Number.parseInt(normalized.slice(4, 6), 16)
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+
+  return luminance > 0.5 ? "rgba(0, 0, 0, 0.12)" : "rgba(255, 255, 255, 0.14)"
+}
 
 export function PortfolioCanvas() {
   const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -22,6 +36,7 @@ export function PortfolioCanvas() {
   const [sizes, setSizes] = useState(getDefaultSizes)
 
   const containerRef = useRef<HTMLDivElement>(null)
+  const dotsRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLDivElement>(null)
   const panRef = useRef({ x: 0, y: 0 })
   const zoomRef = useRef(1)
@@ -73,20 +88,29 @@ export function PortfolioCanvas() {
 
   const applyTransform = useCallback(
     (x: number, y: number, zoom: number, animate = false) => {
-      if (!canvasRef.current) return
-
       const transition = "0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
-      canvasRef.current.style.transition = animate
-        ? `transform ${transition}, --canvas-zoom ${transition}`
-        : "none"
-
       const rx = Math.round(x)
       const ry = Math.round(y)
-      canvasRef.current.style.transform = `translate3d(${rx}px, ${ry}px, 0) scale(${zoom})`
+      const spacing = GRID_SPACING * zoom
 
-      const zoomStr = String(zoom)
-      if (canvasRef.current.style.getPropertyValue("--canvas-zoom") !== zoomStr) {
-        canvasRef.current.style.setProperty("--canvas-zoom", zoomStr)
+      if (canvasRef.current) {
+        canvasRef.current.style.transition = animate
+          ? `transform ${transition}, --canvas-zoom ${transition}`
+          : "none"
+        canvasRef.current.style.transform = `translate3d(${rx}px, ${ry}px, 0) scale(${zoom})`
+
+        const zoomStr = String(zoom)
+        if (canvasRef.current.style.getPropertyValue("--canvas-zoom") !== zoomStr) {
+          canvasRef.current.style.setProperty("--canvas-zoom", zoomStr)
+        }
+      }
+
+      if (dotsRef.current) {
+        dotsRef.current.style.transition = animate
+          ? `background-position ${transition}, background-size ${transition}`
+          : "none"
+        dotsRef.current.style.backgroundSize = `${spacing}px ${spacing}px`
+        dotsRef.current.style.backgroundPosition = `${rx}px ${ry}px`
       }
     },
     []
@@ -140,6 +164,10 @@ export function PortfolioCanvas() {
     const intro = CANVAS_ITEMS.find((item) => item.id === "intro")
     if (intro) focusItem(intro)
   }, [focusItem])
+
+  const activateItem = useCallback((id: string) => {
+    setSelectedId(id)
+  }, [])
 
   const moveItem = useCallback((id: string, x: number, y: number) => {
     setPositions((current) => ({
@@ -398,11 +426,25 @@ export function PortfolioCanvas() {
       onPointerCancel={onPointerUp}
     >
       <div
+        ref={dotsRef}
+        className="canvas-dots"
+        style={{
+          backgroundImage: `radial-gradient(circle, ${getDotColor(bgColor)} 1px, transparent 1px)`,
+        }}
+      />
+
+      <div
         ref={canvasRef}
         className="portfolio-canvas"
         style={{ position: "absolute", top: 0, left: 0, transformOrigin: "0 0" }}
       >
-        {CANVAS_ITEMS.map((item) => {
+        {[...CANVAS_ITEMS]
+          .sort((a, b) => {
+            if (a.id === selectedId) return 1
+            if (b.id === selectedId) return -1
+            return 0
+          })
+          .map((item) => {
           const pos = positions[item.id] ?? { x: item.x, y: item.y }
           const size = sizes[item.id] ?? { w: item.width, h: item.height }
           const frameItem: CanvasItem = {
@@ -419,6 +461,7 @@ export function PortfolioCanvas() {
               item={frameItem}
               selected={selectedId === item.id}
               onSelect={focusItem}
+              onActivate={activateItem}
               onMove={moveItem}
               zoomRef={zoomRef}
               suppressHover={panning || interacting}
@@ -434,82 +477,18 @@ export function PortfolioCanvas() {
         })}
       </div>
 
-      {infoOpen && (
-        <div
-          style={{ position: "fixed", inset: 0, zIndex: 49 }}
-          onPointerDown={(event) => {
-            event.stopPropagation()
-            setInfoOpen(false)
-          }}
-        />
-      )}
-
-      <div
-        onClick={() => setInfoOpen((open) => !open)}
-        onPointerDown={(event) => event.stopPropagation()}
-        style={{
-          position: "fixed",
-          top: 16,
-          right: 16,
-          zIndex: 50,
-          width: infoOpen ? 280 : 40,
-          maxHeight: infoOpen ? 600 : 40,
-          borderRadius: infoOpen ? 16 : 99,
-          background: "linear-gradient(180deg, #404040 0%, #171717 100%)",
-          border: "1px solid #525252",
-          overflow: "hidden",
-          cursor: infoOpen ? "default" : "pointer",
-          boxSizing: "border-box",
-          willChange: "width, max-height, border-radius",
-          transition: infoOpen
-            ? "width 0.3s cubic-bezier(0.22,1,0.36,1), max-height 0.3s cubic-bezier(0.22,1,0.36,1), border-radius 0.3s cubic-bezier(0.22,1,0.36,1)"
-            : "width 0.25s cubic-bezier(0.4,0,0.6,1), max-height 0.25s cubic-bezier(0.4,0,0.6,1), border-radius 0.25s cubic-bezier(0.4,0,0.6,1)",
+      <CanvasMenu
+        open={infoOpen}
+        onOpenChange={setInfoOpen}
+        selectedId={selectedId}
+        items={CANVAS_ITEMS.map((item) => ({ id: item.id, label: item.label }))}
+        onNavigateToItem={(id) => {
+          const item = CANVAS_ITEMS.find((entry) => entry.id === id)
+          if (item) focusItem(item)
+          setInfoOpen(false)
         }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            opacity: infoOpen ? 0 : 1,
-            transition: infoOpen
-              ? "opacity 0.2s cubic-bezier(0.4,0,0.6,1)"
-              : "opacity 0.35s cubic-bezier(0.22,1,0.36,1) 0.15s",
-            pointerEvents: infoOpen ? "none" : "auto",
-          }}
-        >
-          <span
-            style={{
-              color: "white",
-              fontSize: 24,
-              fontWeight: 300,
-              fontFamily: "Inter, sans-serif",
-            }}
-          >
-            ?
-          </span>
-        </div>
-
-        <div
-          onClick={(event) => event.stopPropagation()}
-          style={{
-            opacity: infoOpen ? 1 : 0,
-            transition: infoOpen
-              ? "opacity 0.35s cubic-bezier(0.22,1,0.36,1) 0.15s"
-              : "opacity 0.2s cubic-bezier(0.4,0,0.6,1)",
-            pointerEvents: infoOpen ? "auto" : "none",
-          }}
-        >
-          <InfoPanel
-            isOpen={infoOpen}
-            bgColor={bgColor}
-            onBgColorChange={setBgColor}
-            onResetCanvas={resetToIntro}
-          />
-        </div>
-      </div>
+        onResetCanvas={resetToIntro}
+      />
     </div>
   )
 }
