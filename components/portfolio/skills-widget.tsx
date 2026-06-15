@@ -30,16 +30,16 @@ export function SkillsWidget({
   return (
     <div
       ref={ref}
-      className="flex w-full flex-col gap-5 bg-white p-6 sm:gap-6 sm:p-8"
+      className="flex w-full flex-col gap-5 bg-white p-6 sm:gap-6 sm:p-8 dark:bg-neutral-900"
       style={{ pointerEvents: interactive ? "auto" : "none" }}
     >
-      <h2 className="font-mono text-sm font-medium uppercase tracking-widest text-neutral-500">
+      <h2 className="font-mono text-sm font-medium uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
         Skills
       </h2>
       <ul className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4">
         {SKILLS.map((skill) => (
           <li key={skill.name} className="flex flex-col items-center gap-2 text-center">
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-neutral-100 bg-neutral-50 p-2 transition-transform hover:scale-105">
+            <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-neutral-100 bg-neutral-50 p-2 transition-transform hover:scale-105 dark:border-neutral-700 dark:bg-neutral-800">
               <img
                 src={getSkillIconUrl(skill)}
                 alt=""
@@ -50,7 +50,7 @@ export function SkillsWidget({
                 decoding="async"
               />
             </div>
-            <span className="text-xs leading-tight text-neutral-700">{skill.name}</span>
+            <span className="text-xs leading-tight text-neutral-700 dark:text-neutral-300">{skill.name}</span>
           </li>
         ))}
       </ul>

@@ -26,30 +26,51 @@ function placeFixedItems(items: CanvasItem[]) {
   return placed
 }
 
+function frameBounds(x: number, y: number, w: number, h: number) {
+  const labelHeight = 24
+  return { left: x, top: y, right: x + w, bottom: y + labelHeight + h }
+}
+
+function framesOverlap(
+  a: ReturnType<typeof frameBounds>,
+  b: ReturnType<typeof frameBounds>,
+  gap = 48
+) {
+  return !(
+    a.right + gap < b.left ||
+    a.left - gap > b.right ||
+    a.bottom + gap < b.top ||
+    a.top - gap > b.bottom
+  )
+}
+
 export function generateScatterLayout(): Record<string, Position> {
   const random = createSeededRandom(42)
   const placed = placeFixedItems(CANVAS_ITEMS)
 
-  const overlaps = (x: number, y: number, w: number, h: number) =>
-    Object.values(placed).some(
-      (item) =>
-        !(
-          x + w + 60 < item.x ||
-          x - 60 > item.x + item.w ||
-          y + h + 60 < item.y ||
-          y - 60 > item.y + item.h
-        )
+  const overlaps = (x: number, y: number, w: number, h: number) => {
+    const candidate = frameBounds(x, y, w, h)
+    return Object.values(placed).some((item) =>
+      framesOverlap(candidate, frameBounds(item.x, item.y, item.w, item.h))
     )
+  }
 
   const scatterItems = CANVAS_ITEMS.filter((item) => item.scatter).sort(
     (a, b) => random() - 0.5 || a.id.localeCompare(b.id)
   )
 
   for (const item of scatterItems) {
+    const preferred = { x: item.x, y: item.y }
+    if (!overlaps(preferred.x, preferred.y, item.width, item.height)) {
+      placed[item.id] = { x: preferred.x, y: preferred.y, w: item.width, h: item.height }
+      continue
+    }
+
     const angle = random() * Math.PI * 2
     const radius = 900 + 300 * random()
     let x = Math.cos(angle) * radius - item.width / 2
     let y = Math.sin(angle) * radius - item.height / 2
+    let placedItem = false
 
     if (!overlaps(x, y, item.width, item.height)) {
       placed[item.id] = { x, y, w: item.width, h: item.height }
@@ -58,15 +79,26 @@ export function generateScatterLayout(): Record<string, Position> {
 
     let spiral = 0
     let distance = 0
-    for (let attempt = 0; attempt < 600; attempt++) {
-      distance += 50
-      spiral += 0.6
+    for (let attempt = 0; attempt < 800; attempt++) {
+      distance += 40
+      spiral += 0.55
       x = Math.cos(angle) * radius - item.width / 2 + Math.cos(spiral) * distance
       y = Math.sin(angle) * radius - item.height / 2 + Math.sin(spiral) * distance
-      if (!overlaps(x, y, item.width, item.height)) break
+      if (!overlaps(x, y, item.width, item.height)) {
+        placed[item.id] = { x, y, w: item.width, h: item.height }
+        placedItem = true
+        break
+      }
     }
 
-    placed[item.id] = { x, y, w: item.width, h: item.height }
+    if (!placedItem) {
+      placed[item.id] = {
+        x: preferred.x,
+        y: preferred.y,
+        w: item.width,
+        h: item.height,
+      }
+    }
   }
 
   return Object.fromEntries(

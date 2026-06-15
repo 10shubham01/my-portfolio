@@ -63,6 +63,7 @@ export function MediaItem({
           justifyContent: "center",
           border: "1px dashed #d1d5db",
         }}
+        className="dark:border-neutral-600 dark:bg-neutral-800"
       >
         <span style={{ color: "#9ca3af", fontSize: 10, fontFamily: "monospace" }}>
           PLACEHOLDER

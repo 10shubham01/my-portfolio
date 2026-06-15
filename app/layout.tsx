@@ -75,7 +75,7 @@ const jsonLd = {
   givenName: "Shubham",
   familyName: "Gupta",
   url: "https://shubhamgupta.dev",
-  image: "https://shubhamgupta.dev/images/logo/logo.png",
+  image: "https://shubhamgupta.dev/images/logo/og-image.png",
   description:
     "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development. Previously senior engineer at Credilio Financial Technologies.",
   jobTitle: "Senior Software Engineer",
@@ -111,7 +111,12 @@ export default function RootLayout({
       )}
       suppressHydrationWarning
     >
-      <body className="h-full bg-gray-100" suppressHydrationWarning>
+      <body className="h-full bg-gray-100 dark:bg-neutral-950" suppressHydrationWarning>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("portfolio-theme");var d=t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme: dark)").matches);if(d)document.documentElement.classList.add("dark");}catch(e){}})();`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

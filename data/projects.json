@@ -1,0 +1,56 @@
+{
+  "projects": [
+    {
+      "id": "dbspin",
+      "name": "dbspin",
+      "tagline": "PostgreSQL connection CLI",
+      "description": "A CLI to quickly connect to PostgreSQL databases using pgcli or psql.",
+      "highlights": [
+        "Interactive prompts for environment, tool, port alias, and database",
+        "Direct mode with command-line arguments",
+        "Visualize query results with interactive Chart.js graphs"
+      ],
+      "stack": ["Node.js", "Chart.js", "PostgreSQL", "pgcli", "psql"],
+      "href": "https://github.com/10shubham01/dbspin"
+    },
+    {
+      "id": "text-command-palette",
+      "name": "Text Command Palette",
+      "tagline": "VS Code-style command palette for text",
+      "description": "Select any text, press a shortcut, and instantly apply powerful text transformations—without leaving the page.",
+      "highlights": [
+        "Open with Ctrl+K or Cmd+K on any website with text selection",
+        "12+ transformations: case conversion, formatting, cleanup, and utilities",
+        "Offline-first and lightweight — all processing runs locally in the browser"
+      ],
+      "stack": ["Chrome Extension", "JavaScript", "Manifest V3"],
+      "href": "https://chromewebstore.google.com/detail/text-command-palette/gdlldblnpmbnjeildgidppdnoefapajo"
+    },
+    {
+      "id": "spotlight",
+      "name": "Spotlight Chrome Extension",
+      "tagline": "Spotlight-style command palette for Chrome",
+      "description": "A Mac Spotlight–inspired command palette to search tabs, bookmarks, history, and recently closed tabs—without leaving the keyboard.",
+      "highlights": [
+        "Open with Cmd+Shift+K or Ctrl+Shift+K — shortcut is fully customizable",
+        "Search active tabs, recently closed tabs, bookmarks, and browser history in one place",
+        "Quick actions to switch tabs, reopen closed ones, or fall back to Google search"
+      ],
+      "stack": ["Chrome Extension", "React", "TypeScript", "Manifest V3"],
+      "href": "https://chromewebstore.google.com/detail/spotlight-chrome-extensio/abbhoiaihkicmgmmglcomckkbcmdnjpp"
+    },
+    {
+      "id": "easybg",
+      "name": "easybg",
+      "tagline": "Tailwind CSS background snippet collection",
+      "description": "A curated library of 176+ Tailwind CSS backgrounds—gradients, patterns, mesh, and animated effects. Preview live, copy classes, and drop them into your next project.",
+      "highlights": [
+        "176+ backgrounds across gradients, geometric, animated, patterns, mesh, and Spider-Man themes",
+        "Live preview with one-click copy for Tailwind classes",
+        "Built on Tailwind CSS v4 with dark mode and keyboard shortcuts"
+      ],
+      "stack": ["Next.js", "React", "TypeScript", "Tailwind CSS v4"],
+      "href": "https://easybg.shubhamgupta.dev/"
+    }
+  ]
+}

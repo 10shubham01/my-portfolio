@@ -1,5 +1,7 @@
 "use client"
 
+import { cn } from "@/lib/utils"
+
 function ZoomOutIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
@@ -36,7 +38,7 @@ function FitIcon() {
 }
 
 const controlClass =
-  "flex h-8 items-center justify-center rounded-md text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900"
+  "flex h-8 items-center justify-center rounded-md text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
 
 export function CanvasZoomControls({
   zoom,
@@ -55,13 +57,13 @@ export function CanvasZoomControls({
 
   return (
     <div
-      className="fixed bottom-4 right-4 z-50 flex items-center rounded-lg border border-gray-200 bg-white p-1 shadow-sm"
+      className="fixed bottom-4 right-4 z-50 flex items-center rounded-lg border border-gray-200 bg-white p-1 shadow-sm dark:border-neutral-700 dark:bg-neutral-900"
       onPointerDown={(event) => event.stopPropagation()}
     >
       <button
         type="button"
         aria-label="Zoom out"
-        className={`${controlClass} w-8`}
+        className={cn(controlClass, "w-8")}
         onClick={onZoomOut}
       >
         <ZoomOutIcon />
@@ -70,7 +72,7 @@ export function CanvasZoomControls({
       <button
         type="button"
         aria-label="Reset zoom to 100%"
-        className={`${controlClass} min-w-[52px] px-2 font-mono text-[11px]`}
+        className={cn(controlClass, "min-w-[52px] px-2 font-mono text-[11px]")}
         onClick={onZoomReset}
       >
         {label}
@@ -79,19 +81,19 @@ export function CanvasZoomControls({
       <button
         type="button"
         aria-label="Zoom in"
-        className={`${controlClass} w-8`}
+        className={cn(controlClass, "w-8")}
         onClick={onZoomIn}
       >
         <ZoomInIcon />
       </button>
 
-      <div className="mx-0.5 h-5 w-px bg-gray-200" />
+      <div className="mx-0.5 h-5 w-px bg-gray-200 dark:bg-neutral-700" />
 
       <button
         type="button"
         aria-label="Fit all frames"
         title="Fit all"
-        className={`${controlClass} w-8`}
+        className={cn(controlClass, "w-8")}
         onClick={onFitAll}
       >
         <FitIcon />

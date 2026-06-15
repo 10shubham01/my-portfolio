@@ -1,0 +1,67 @@
+{
+  "experience": [
+    {
+      "id": "webmd",
+      "role": "Senior Software Engineer",
+      "company": "WebMD",
+      "period": "Mar 2026 – Present",
+      "highlights": [
+        "Re-architected the internal tool page builder using TypeScript and Vite to improve performance and scalability.",
+        "Created a centralized component library to manage and reuse all micro-components efficiently."
+      ],
+      "stack": ["Vue.js", "TypeScript", "Tailwind", "Pinia"],
+      "href": "https://www.webmd.com"
+    },
+    {
+      "id": "credilio",
+      "role": "Senior Software Engineer",
+      "company": "Credilio Financial Technologies",
+      "period": "Dec 2022 – Mar 2026",
+      "highlights": [
+        "Led a team of engineers, conducted code reviews, and mentored junior developers.",
+        "Onboarded 5+ developers with training, knowledge transfer, and ongoing support.",
+        "Designed and built multiple end-to-end AWS architectures from scratch for scalable, cost-optimized production systems.",
+        "Drove delivery of credit card and personal loan journeys, integrating web SDKs, KYC providers, and lender APIs.",
+        "Integrated New Relic for production observability and Singular for attribution tracking across regulated flows.",
+        "Led AI adoption initiatives to enhance code quality and accelerate delivery through team-wide enablement."
+      ],
+      "projects": [
+        {
+          "title": "Bureau wrap video",
+          "description": "Full-stack credit score visualization platform with Remotion — dynamic videos from bureau reports.",
+          "stack": ["Next.js", "Remotion", "AWS Lambda", "Adonis.js", "PostgreSQL"]
+        },
+        {
+          "title": "Customer Portal",
+          "description": "White-label credit card and personal loan journeys with multi-partner customization and bank API integrations.",
+          "stack": ["React", "Next.js", "TypeScript", "Vite", "Zod", "Redux"]
+        },
+        {
+          "title": "Advisor Portal",
+          "description": "Scalable, accessibility-compliant form infrastructure for white-label advisory workflows across web and mobile.",
+          "stack": ["React", "Next.js", "TypeScript", "Vite", "Zod", "Redux"]
+        },
+        {
+          "title": "Admin Portal",
+          "description": "Role- and policy-driven authorization layer for secure multi-tenant administrative workflows.",
+          "stack": ["Nuxt.js", "Vue.js", "TypeScript", "Tailwind", "Pinia"]
+        }
+      ],
+      "stack": ["React", "Next.js", "Vue", "Nuxt", "TypeScript", "AWS", "PostgreSQL", "Adonis.js"],
+      "href": "https://www.shubhamgupta.dev/work"
+    },
+    {
+      "id": "mountblue",
+      "role": "Software Engineer / Trainee",
+      "company": "Mountblue",
+      "period": "Aug 2021 – Nov 2022",
+      "highlights": [
+        "Built dynamic web applications with Vue.js, React.js, and Node.js — APIs and database layers with Express and PostgreSQL/MySQL.",
+        "Full-stack consulting for Credilio Financial Technologies during the engagement.",
+        "Migrated a Nuxt 2 project to Nuxt 3 with a scalable architecture and improved performance.",
+        "Researched and adopted new frameworks and tools to keep stacks current and maintainable."
+      ],
+      "stack": ["Vue 2", "Nuxt 2", "Nuxt 3", "TypeScript", "Adonis.js", "React", "Node.js", "PostgreSQL"]
+    }
+  ]
+}

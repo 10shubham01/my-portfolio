@@ -1,55 +1,179 @@
 {
   "items": [
     {
+      "id": "theme-toggle",
+      "component": "theme-doodle",
+      "type": "theme",
+      "label": "theme",
+      "position": { "x": 520, "y": -200 },
+      "size": { "width": 96, "height": 96 },
+      "scatter": false
+    },
+    {
       "id": "intro",
       "component": "intro",
       "type": "intro",
       "label": "intro",
       "position": { "x": 0, "y": 0 },
-      "size": { "width": 480, "height": 640 },
+      "size": { "width": 480, "height": 720 },
       "scatter": false
     },
     {
-      "id": "me",
-      "component": "media",
-      "type": "image",
-      "label": "me.jpg",
-      "position": { "x": -520, "y": -80 },
-      "size": { "width": 300, "height": 533 },
-      "scatter": true,
-      "asset": "images/me.jpg",
-      "alt": "Shubham Gupta"
+      "id": "socials",
+      "component": "socials",
+      "type": "socials",
+      "label": "socials",
+      "position": { "x": 700, "y": 1760 },
+      "size": { "width": 380, "height": 400 },
+      "scatter": false
+    },
+    {
+      "id": "now",
+      "component": "now",
+      "type": "now",
+      "label": "right now",
+      "position": { "x": -504, "y": -408 },
+      "size": { "width": 360, "height": 240 },
+      "scatter": false
     },
     {
       "id": "waving",
       "component": "media",
       "type": "image",
       "label": "waving.gif",
-      "position": { "x": 520, "y": -120 },
-      "size": { "width": 300, "height": 200 },
-      "scatter": true,
+      "position": { "x": 720, "y": -540 },
+      "size": { "width": 300, "height": 404 },
+      "scatter": false,
       "asset": "images/waving.gif",
       "alt": "Waving doodle"
     },
     {
-      "id": "logo",
+      "id": "me",
       "component": "media",
       "type": "image",
-      "label": "logo.png",
-      "position": { "x": -380, "y": 280 },
-      "size": { "width": 300, "height": 200 },
-      "scatter": true,
-      "asset": "images/logo.png",
-      "alt": "Shubham Gupta logo"
+      "label": "me.jpg",
+      "position": { "x": -520, "y": 200 },
+      "size": { "width": 300, "height": 533 },
+      "scatter": false,
+      "asset": "images/me.jpg",
+      "alt": "Shubham Gupta"
+    },
+    {
+      "id": "work-webmd",
+      "component": "work",
+      "type": "work",
+      "label": "webmd",
+      "workId": "webmd",
+      "position": { "x": -1100, "y": -20 },
+      "size": { "width": 420, "height": 360 },
+      "scatter": false
+    },
+    {
+      "id": "work-credilio",
+      "component": "work",
+      "type": "work",
+      "label": "credilio",
+      "workId": "credilio",
+      "position": { "x": 760, "y": 820 },
+      "size": { "width": 420, "height": 720 },
+      "scatter": false
+    },
+    {
+      "id": "work-mountblue",
+      "component": "work",
+      "type": "work",
+      "label": "mountblue",
+      "workId": "mountblue",
+      "position": { "x": -1100, "y": 520 },
+      "size": { "width": 420, "height": 440 },
+      "scatter": false
     },
     {
       "id": "skills",
       "component": "skills",
       "type": "skills",
       "label": "skills",
-      "position": { "x": 520, "y": 120 },
+      "position": { "x": 640, "y": 160 },
       "size": { "width": 360, "height": 420 },
-      "scatter": true
+      "scatter": false
+    },
+    {
+      "id": "vscode",
+      "component": "media",
+      "type": "image",
+      "label": "vscode.gif",
+      "position": { "x": 160, "y": 1356 },
+      "size": { "width": 120, "height": 118 },
+      "scatter": false,
+      "asset": "gifs/vscode.gif",
+      "alt": "VS Code"
+    },
+    {
+      "id": "awards",
+      "component": "awards",
+      "type": "awards",
+      "label": "awards",
+      "position": { "x": -20, "y": 1642 },
+      "size": { "width": 360, "height": 300 },
+      "scatter": false
+    },
+    {
+      "id": "github",
+      "component": "github",
+      "type": "github",
+      "label": "github",
+      "position": { "x": 700, "y": 1553 },
+      "size": { "width": 682, "height": 190 },
+      "scatter": false
+    },
+    {
+      "id": "web-doodle",
+      "component": "web-doodle",
+      "type": "doodle",
+      "label": "spiderman.svg",
+      "position": { "x": -1580, "y": -560 },
+      "size": { "width": 400, "height": 460 },
+      "scatter": false
+    },
+    {
+      "id": "project-dbspin",
+      "component": "project",
+      "type": "project",
+      "label": "dbspin",
+      "projectId": "dbspin",
+      "position": { "x": -1100, "y": 1128 },
+      "size": { "width": 400, "height": 380 },
+      "scatter": false
+    },
+    {
+      "id": "project-text-command-palette",
+      "component": "project",
+      "type": "project",
+      "label": "text command palette",
+      "projectId": "text-command-palette",
+      "position": { "x": -1580, "y": 1128 },
+      "size": { "width": 400, "height": 380 },
+      "scatter": false
+    },
+    {
+      "id": "project-spotlight",
+      "component": "project",
+      "type": "project",
+      "label": "spotlight",
+      "projectId": "spotlight",
+      "position": { "x": -620, "y": 1128 },
+      "size": { "width": 400, "height": 380 },
+      "scatter": false
+    },
+    {
+      "id": "project-easybg",
+      "component": "project",
+      "type": "project",
+      "label": "easybg",
+      "projectId": "easybg",
+      "position": { "x": -20, "y": 1660 },
+      "size": { "width": 400, "height": 380 },
+      "scatter": false
     }
   ]
 }

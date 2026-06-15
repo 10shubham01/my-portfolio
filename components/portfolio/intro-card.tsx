@@ -1,9 +1,10 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useRef } from "react"
-import { SITE, SOCIAL_LINKS } from "@/lib/canvas-data"
+import { SITE } from "@/lib/canvas-data"
 import { SayHiButton } from "@/components/portfolio/say-hi-button"
+import { CardSurface, CardDate } from "@/components/portfolio/card-chrome"
+import { useFrameResize } from "@/components/portfolio/use-frame-resize"
 
 function ExternalLink({
   href,
@@ -31,29 +32,10 @@ export function IntroCard({
   interactive: boolean
   onResize?: (width: number, height: number) => void
 }) {
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!onResize || !ref.current) return
-
-    const observer = new ResizeObserver(([entry]) => {
-      const box = entry.borderBoxSize?.[0]
-      onResize(
-        box ? box.inlineSize : entry.contentRect.width,
-        box ? box.blockSize : entry.contentRect.height
-      )
-    })
-
-    observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [onResize])
+  const ref = useFrameResize(onResize)
 
   return (
-    <div
-      ref={ref}
-      className="flex w-full flex-col gap-8 bg-white p-6 sm:gap-10 sm:p-8"
-      style={{ pointerEvents: interactive ? "auto" : "none" }}
-    >
+    <CardSurface ref={ref} interactive={interactive}>
       <div className="flex flex-col items-start gap-4">
         <Image
           src="/assets/images/waving.gif"
@@ -65,15 +47,15 @@ export function IntroCard({
           aria-hidden
         />
 
-        <p className="font-sans text-xs tracking-[0.28em] text-gray-400 uppercase">
+        <p className="font-sans text-xs tracking-[0.28em] text-gray-400 uppercase dark:text-neutral-500">
           {SITE.location} · {SITE.age}
         </p>
 
-        <h1 className="font-geist text-[32px] leading-tight font-medium tracking-tight text-gray-900">
+        <h1 className="font-geist text-[32px] leading-tight font-medium tracking-tight text-gray-900 dark:text-neutral-100">
           {SITE.name}
         </h1>
 
-        <div className="flex flex-col gap-3 text-[15px] leading-relaxed text-gray-500">
+        <div className="flex flex-col gap-3 text-[15px] leading-relaxed text-gray-500 dark:text-neutral-400">
           <p>
             {SITE.title} at{" "}
             <ExternalLink href="https://www.webmd.com">WebMD</ExternalLink>.
@@ -94,48 +76,15 @@ export function IntroCard({
             platform architecture, and engineering mentorship.
           </p>
           <p>
-            Recognized with the True Soldier Award (2025) and Strive for
-            Excellence Award (2024) at Credilio. BCA from Lovely Professional
-            University (2018–2021).
+            Recognized with the True Soldier Award (<CardDate>2025</CardDate>) and Strive for
+            Excellence Award (<CardDate>2024</CardDate>) at Credilio. BCA from Lovely Professional
+            University (<CardDate>2018–2021</CardDate>).
           </p>
           <p>
             {SITE.tagline} <SayHiButton />
           </p>
         </div>
       </div>
-
-      <svg width="100%" height="1" className="overflow-visible" shapeRendering="crispEdges">
-        <line
-          x1="0"
-          y1="0.5"
-          x2="100%"
-          y2="0.5"
-          stroke="#e5e7eb"
-          strokeWidth="1"
-          strokeDasharray="4 4"
-          vectorEffect="non-scaling-stroke"
-        />
-      </svg>
-
-      <div className="flex flex-col gap-4">
-        {SOCIAL_LINKS.map(({ platform, handle, href }) => (
-          <a
-            key={platform}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group flex items-center justify-between font-medium"
-          >
-            <span className="font-mono text-[12px]">
-              <span className="font-medium text-gray-600">{platform}</span>
-              <span className="text-gray-400"> {handle}</span>
-            </span>
-            <span className="font-mono text-xs text-gray-400 transition-colors group-hover:text-gray-800">
-              [ VISIT ]
-            </span>
-          </a>
-        ))}
-      </div>
-    </div>
+    </CardSurface>
   )
 }

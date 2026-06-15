@@ -39,19 +39,9 @@ export const SOCIAL_LINKS = [
     href: "https://www.instagram.com/m0re0fme/",
   },
   {
-    platform: "TWITTER",
-    handle: "/10SHUBHAM01",
-    href: "https://twitter.com/10shubham01",
-  },
-  {
     platform: "RESUME",
     handle: "/PDF",
     href: "https://www.shubhamgupta.dev/shubham-gupta.pdf",
-  },
-  {
-    platform: "WRITINGS",
-    handle: "/BLOG",
-    href: "https://www.shubhamgupta.dev/writings",
   },
 ] as const
 

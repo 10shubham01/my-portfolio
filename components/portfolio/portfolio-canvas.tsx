@@ -1,43 +1,42 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { CANVAS_ITEMS, DEFAULT_BG } from "@/lib/canvas-data"
+import { CANVAS_ITEMS } from "@/lib/canvas-data"
 import type { CanvasItem } from "@/lib/canvas-config"
+import { getDotColor } from "@/lib/theme"
+import { useTheme } from "@/components/portfolio/theme-provider"
 import {
   generateScatterLayout,
   getContentBounds,
   getDefaultSizes,
 } from "@/lib/scatter-layout"
+import { ANCHORED_ITEM_IDS, withAnchoredLayout } from "@/lib/canvas-layout"
+import { buildCanvasNavGroups } from "@/lib/canvas-nav"
 import { CanvasFrame } from "@/components/portfolio/canvas-frame"
 import { RenderCanvasItem } from "@/components/portfolio/render-canvas-item"
 import { CanvasMenu } from "@/components/portfolio/canvas-menu"
 import { CanvasZoomControls } from "@/components/portfolio/canvas-zoom-controls"
+import { SpideyProvider } from "@/components/portfolio/spidey-context"
+import { CanvasSpiderman } from "@/components/portfolio/canvas-spiderman"
+import { getItemIdFromUrl, setItemDeeplink } from "@/lib/canvas-deeplink"
+import { getSpideyHomePosition } from "@/lib/spidey-position"
 
 const GRID_SPACING = 20
 const ZOOM_MIN = 0.4
 const ZOOM_MAX = 2.5
 const ZOOM_STEP = 1.25
 
-function getDotColor(hex: string) {
-  const normalized = hex.replace("#", "")
-  if (normalized.length !== 6) return "rgba(0, 0, 0, 0.12)"
-
-  const r = Number.parseInt(normalized.slice(0, 2), 16)
-  const g = Number.parseInt(normalized.slice(2, 4), 16)
-  const b = Number.parseInt(normalized.slice(4, 6), 16)
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
-
-  return luminance > 0.5 ? "rgba(0, 0, 0, 0.12)" : "rgba(255, 255, 255, 0.14)"
-}
-
 export function PortfolioCanvas() {
+  const { canvasBg, toggleTheme } = useTheme()
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [panning, setPanning] = useState(false)
   const [ready, setReady] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
-  const [bgColor, setBgColor] = useState(DEFAULT_BG)
+  const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null)
   const [zoomLevel, setZoomLevel] = useState(1)
-  const [positions, setPositions] = useState(generateScatterLayout)
+  const [positions, setPositions] = useState(() =>
+    withAnchoredLayout(generateScatterLayout(), getDefaultSizes())
+  )
   const [sizes, setSizes] = useState(getDefaultSizes)
 
   const containerRef = useRef<HTMLDivElement>(null)
@@ -53,6 +52,9 @@ export function PortfolioCanvas() {
   const pinchZoomStart = useRef(1)
   const clickedFrameId = useRef<string | null>(null)
   const boundsRef = useRef(getContentBounds(positions, sizes))
+  const spideyApiRef = useRef<{ setPosition: (position: { x: number; y: number }) => void } | null>(
+    null
+  )
 
   useEffect(() => {
     boundsRef.current = getContentBounds(positions, sizes)
@@ -175,11 +177,18 @@ export function PortfolioCanvas() {
     zoomRef.current = zoom
     panRef.current = clamped
     setSelectedId(null)
+    setItemDeeplink(null, true)
     applyTransform(clamped.x, clamped.y, zoom, true)
   }, [applyTransform, clampPan, clampZoom])
 
   const focusItem = useCallback(
-    (item: CanvasItem) => {
+    (
+      item: CanvasItem,
+      options?: {
+        updateUrl?: boolean
+        replaceUrl?: boolean
+      }
+    ) => {
       const pos = positions[item.id] ?? { x: item.x, y: item.y }
       const size = sizes[item.id] ?? { w: item.width, h: item.height }
       const vw = window.innerWidth
@@ -201,28 +210,52 @@ export function PortfolioCanvas() {
       zoomRef.current = zoom
       setSelectedId(item.id)
       applyTransform(x, y, zoom, true)
+
+      if (options?.updateUrl !== false) {
+        setItemDeeplink(item.id, options?.replaceUrl ?? false)
+      }
     },
     [applyTransform, positions, sizes]
   )
 
-  const resetView = useCallback(() => {
-    const vw = window.innerWidth
-    const vh = window.innerHeight
-    const zoom = vw < 768 ? 0.6 : 1
-    const cx = vw / 2
-    const cy = vh / 2
-    const contentX = (cx - panRef.current.x) / zoomRef.current
-    const contentY = (cy - panRef.current.y) / zoomRef.current
-    const x = cx - contentX * zoom
-    const y = cy - contentY * zoom
+  const resetView = useCallback(
+    (options?: { updateUrl?: boolean; replaceUrl?: boolean }) => {
+      const vw = window.innerWidth
+      const vh = window.innerHeight
+      const zoom = vw < 768 ? 0.6 : 1
+      const cx = vw / 2
+      const cy = vh / 2
+      const contentX = (cx - panRef.current.x) / zoomRef.current
+      const contentY = (cy - panRef.current.y) / zoomRef.current
+      const x = cx - contentX * zoom
+      const y = cy - contentY * zoom
 
-    panRef.current = { x, y }
-    zoomRef.current = zoom
-    setSelectedId(null)
-    applyTransform(x, y, zoom, true)
-  }, [applyTransform])
+      panRef.current = { x, y }
+      zoomRef.current = zoom
+      setSelectedId(null)
+      applyTransform(x, y, zoom, true)
 
-  const resetToIntro = useCallback(() => {
+      if (options?.updateUrl !== false) {
+        setItemDeeplink(null, options?.replaceUrl ?? false)
+      }
+    },
+    [applyTransform]
+  )
+
+  const resetCanvasLayout = useCallback(() => {
+    const baseSizes = getDefaultSizes()
+    const basePositions = withAnchoredLayout(generateScatterLayout(), baseSizes)
+    setSizes(baseSizes)
+    setPositions(basePositions)
+
+    const webPos = basePositions["web-doodle"]
+    const webSize = baseSizes["web-doodle"]
+    if (webPos && webSize) {
+      spideyApiRef.current?.setPosition(
+        getSpideyHomePosition(webPos.x, webPos.y, webSize.w)
+      )
+    }
+
     const intro = CANVAS_ITEMS.find((item) => item.id === "intro")
     if (intro) focusItem(intro)
   }, [focusItem])
@@ -247,26 +280,59 @@ export function PortfolioCanvas() {
   }, [])
 
   useEffect(() => {
-    const intro = CANVAS_ITEMS.find((item) => item.type === "intro")
-    if (!intro) return
+    setPositions((current) => {
+      const anchored = withAnchoredLayout(current, sizes)
+      const unchanged = ANCHORED_ITEM_IDS.every((id) => {
+        const next = anchored[id]
+        const prev = current[id]
+        return prev && next.x === prev.x && next.y === prev.y
+      })
+      if (unchanged) return current
+      return anchored
+    })
+  }, [
+    sizes.intro?.h,
+    sizes.now?.h,
+    sizes.vscode?.h,
+    sizes.awards?.h,
+    sizes["work-credilio"]?.h,
+    sizes["work-webmd"]?.h,
+    sizes["work-mountblue"]?.h,
+    sizes.github?.h,
+    sizes.socials?.h,
+    positions.intro?.x,
+    positions.intro?.y,
+    positions["work-credilio"]?.x,
+    positions["work-credilio"]?.y,
+    positions["work-webmd"]?.x,
+    positions["work-webmd"]?.y,
+  ])
+
+  useEffect(() => {
+    const deeplinkId = getItemIdFromUrl(window.location.search)
+    const target =
+      (deeplinkId && CANVAS_ITEMS.find((item) => item.id === deeplinkId)) ||
+      CANVAS_ITEMS.find((item) => item.type === "intro")
+    if (!target) return
 
     const vw = window.innerWidth
     const vh = window.innerHeight
     const isMobile = vw < 768
+    const isTall = target.height > target.width
     const padding = isMobile ? 24 : 80
 
     const zoom = Math.min(
-      (vw - 2 * (isMobile && intro.height > intro.width ? 16 : padding)) / intro.width,
-      (vh - 2 * (isMobile ? 48 : padding)) / intro.height,
+      (vw - 2 * (isMobile && isTall ? 16 : padding)) / target.width,
+      (vh - 2 * (isMobile ? 48 : padding)) / target.height,
       isMobile ? 1.2 : 1.5
     )
 
     panRef.current = {
-      x: vw / 2 - (intro.x + intro.width / 2) * zoom,
-      y: vh / 2 - (intro.y + intro.height / 2) * zoom,
+      x: vw / 2 - (target.x + target.width / 2) * zoom,
+      y: vh / 2 - (target.y + target.height / 2) * zoom,
     }
     zoomRef.current = zoom
-    setSelectedId("intro")
+    setSelectedId(target.id)
     setReady(true)
   }, [])
 
@@ -279,19 +345,37 @@ export function PortfolioCanvas() {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (document.activeElement?.tagName === "INPUT") return
-      if (
-        event.key.toLowerCase() === "r" &&
-        !event.metaKey &&
-        !event.ctrlKey &&
-        !event.altKey
-      ) {
-        resetToIntro()
+      if (event.metaKey || event.ctrlKey || event.altKey) return
+
+      const key = event.key.toLowerCase()
+      if (key === "r") {
+        resetCanvasLayout()
+      } else if (key === "d") {
+        toggleTheme()
       }
     }
 
     window.addEventListener("keydown", onKeyDown)
     return () => window.removeEventListener("keydown", onKeyDown)
-  }, [resetToIntro])
+  }, [resetCanvasLayout, toggleTheme])
+
+  useEffect(() => {
+    if (!ready) return
+
+    const onPopState = () => {
+      const id = getItemIdFromUrl(window.location.search)
+      if (id) {
+        const item = CANVAS_ITEMS.find((entry) => entry.id === id)
+        if (item) focusItem(item, { updateUrl: false })
+        return
+      }
+
+      resetView({ updateUrl: false })
+    }
+
+    window.addEventListener("popstate", onPopState)
+    return () => window.removeEventListener("popstate", onPopState)
+  }, [ready, focusItem, resetView])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -358,10 +442,11 @@ export function PortfolioCanvas() {
     const target = event.target as HTMLElement
     const frame = target.closest("[data-frame-id]")
     const interactive = target.closest("a, button, input, [role='button']")
+    const spidey = target.closest("[data-spidey]")
     clickedFrameId.current = frame?.getAttribute("data-frame-id") ?? null
 
     if (pointers.current.size === 1) {
-      if (event.button !== 0 || interactive) return
+      if (event.button !== 0 || interactive || spidey) return
 
       const isMobile = window.innerWidth < 768
       if (frame && !isMobile) return
@@ -467,25 +552,42 @@ export function PortfolioCanvas() {
 
   if (!ready) return null
 
+  const contentBounds = getContentBounds(positions, sizes)
+
   return (
+    <SpideyProvider
+      panRef={panRef}
+      zoomRef={zoomRef}
+      bounds={contentBounds}
+      positions={positions}
+      sizes={sizes}
+      registerApi={(api) => {
+        spideyApiRef.current = api
+      }}
+    >
     <div
       ref={containerRef}
       className="fixed inset-0 overflow-hidden select-none"
       style={{
         cursor: panning ? "grabbing" : "default",
         touchAction: "none",
-        background: bgColor,
+        background: canvasBg,
       }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
+      onContextMenu={(event) => {
+        event.preventDefault()
+        setMenuAnchor({ x: event.clientX, y: event.clientY })
+        setInfoOpen(true)
+      }}
     >
       <div
         ref={dotsRef}
         className="canvas-dots"
         style={{
-          backgroundImage: `radial-gradient(circle, ${getDotColor(bgColor)} 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(circle, ${getDotColor(canvasBg)} 1px, transparent 1px)`,
         }}
       />
 
@@ -531,19 +633,25 @@ export function PortfolioCanvas() {
             </CanvasFrame>
           )
         })}
+        <CanvasSpiderman />
       </div>
 
       <CanvasMenu
         open={infoOpen}
-        onOpenChange={setInfoOpen}
+        onOpenChange={(open, source) => {
+          setInfoOpen(open)
+          if (!open || source === "button") setMenuAnchor(null)
+        }}
+        anchor={menuAnchor}
         selectedId={selectedId}
-        items={CANVAS_ITEMS.map((item) => ({ id: item.id, label: item.label }))}
+        groups={buildCanvasNavGroups()}
         onNavigateToItem={(id) => {
           const item = CANVAS_ITEMS.find((entry) => entry.id === id)
           if (item) focusItem(item)
           setInfoOpen(false)
+          setMenuAnchor(null)
         }}
-        onResetCanvas={resetToIntro}
+        onResetCanvas={resetCanvasLayout}
       />
 
       <CanvasZoomControls
@@ -554,5 +662,6 @@ export function PortfolioCanvas() {
         onFitAll={fitAll}
       />
     </div>
+    </SpideyProvider>
   )
 }

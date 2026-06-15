@@ -1,0 +1,16 @@
+{
+  "awards": [
+    {
+      "title": "True Soldier Award",
+      "year": "2025",
+      "organization": "Credilio Financial Technologies",
+      "description": "Recognized for ownership, reliability, and going above and beyond for the team."
+    },
+    {
+      "title": "Strive for Excellence Award",
+      "year": "2024",
+      "organization": "Credilio Financial Technologies",
+      "description": "Awarded for consistently high-quality engineering and product delivery."
+    }
+  ]
+}

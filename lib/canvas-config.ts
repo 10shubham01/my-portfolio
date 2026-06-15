@@ -1,7 +1,31 @@
 import canvasItemsJson from "@/data/canvas-items.json"
 
-export type CanvasItemType = "intro" | "video" | "image" | "placeholder" | "skills"
-export type CanvasComponentId = "intro" | "media" | "skills"
+export type CanvasItemType =
+  | "intro"
+  | "video"
+  | "image"
+  | "placeholder"
+  | "skills"
+  | "work"
+  | "awards"
+  | "github"
+  | "doodle"
+  | "socials"
+  | "now"
+  | "project"
+  | "theme"
+export type CanvasComponentId =
+  | "intro"
+  | "media"
+  | "skills"
+  | "work"
+  | "awards"
+  | "github"
+  | "web-doodle"
+  | "socials"
+  | "now"
+  | "project"
+  | "theme-doodle"
 
 export interface CanvasItemConfig {
   id: string
@@ -15,6 +39,8 @@ export interface CanvasItemConfig {
   alt?: string
   placeholderColor?: string
   thumbnail?: string
+  workId?: string
+  projectId?: string
 }
 
 export interface CanvasItem extends CanvasItemConfig {

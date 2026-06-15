@@ -1,7 +1,11 @@
 "use client"
 
+import { Check, Link } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import type { CanvasItem } from "@/lib/canvas-config"
+import { copyItemDeeplink } from "@/lib/canvas-deeplink"
+import { getExperienceById } from "@/lib/experience"
+import { cn } from "@/lib/utils"
 
 const HANDLE_POSITIONS = [
   "top-0 left-0 -translate-x-1/2 -translate-y-1/2",
@@ -35,6 +39,7 @@ export function CanvasFrame({
 }) {
   const [hovered, setHovered] = useState(false)
   const [dragging, setDragging] = useState(false)
+  const [copied, setCopied] = useState(false)
   const frameRef = useRef<HTMLDivElement>(null)
   const pointerActive = useRef(false)
   const moved = useRef(false)
@@ -43,6 +48,10 @@ export function CanvasFrame({
   useEffect(() => {
     if (suppressHover) setHovered(false)
   }, [suppressHover])
+
+  useEffect(() => {
+    if (!selected) setCopied(false)
+  }, [selected])
 
   useEffect(() => {
     if (!dragging) return
@@ -81,6 +90,8 @@ export function CanvasFrame({
       onSelect(item)
     }
   }
+
+  const workEntry = item.workId ? getExperienceById(item.workId) : undefined
 
   return (
     <div
@@ -138,18 +149,50 @@ export function CanvasFrame({
       }}
       onPointerLeave={() => setHovered(false)}
     >
-      <span
-        className="canvas-label font-sans mb-1.5 block text-[11px] tracking-wide select-none"
-        style={{ color: hovered || selected ? "#18A0FB" : "#a3a3a3" }}
-      >
-        {item.label}
-      </span>
+      <div className="mb-1.5">
+        <span
+          className={cn(
+            "canvas-label inline-flex items-center gap-0 font-sans text-[11px] leading-none tracking-wide select-none",
+            hovered || selected ? "text-[#18A0FB]" : "text-gray-400 dark:text-neutral-500"
+          )}
+        >
+          {item.label}
+          {workEntry && (
+            <>
+              <span className="mx-1 text-gray-300 dark:text-neutral-600">·</span>
+              <span className="font-mono text-[#18A0FB]">{workEntry.period}</span>
+            </>
+          )}
+          {selected && (
+            <button
+              type="button"
+              onPointerDown={(event) => event.stopPropagation()}
+              onClick={async (event) => {
+                event.stopPropagation()
+                const ok = await copyItemDeeplink(item.id)
+                if (!ok) return
+                setCopied(true)
+                window.setTimeout(() => setCopied(false), 1500)
+              }}
+              className="m-0 ml-[2px] inline-flex shrink-0 items-center border-0 bg-transparent p-0 leading-none text-inherit transition-opacity hover:opacity-80"
+              aria-label={`Copy link to ${item.label}`}
+            >
+              {copied ? (
+                <Check className="size-[11px]" strokeWidth={2} />
+              ) : (
+                <Link className="size-[11px]" strokeWidth={2} />
+              )}
+            </button>
+          )}
+        </span>
+      </div>
 
       <div
-        className="frame-content relative select-none"
+        className="frame-content relative min-h-0 select-none overflow-visible"
         style={{
           width: item.width,
           height: item.height,
+          minHeight: item.height,
           cursor: dragging ? "grabbing" : undefined,
         }}
       >
@@ -179,7 +222,7 @@ export function CanvasFrame({
             {HANDLE_POSITIONS.map((position) => (
               <div
                 key={position}
-                className={`absolute ${position} bg-white`}
+                className={cn("absolute bg-white dark:bg-neutral-800", position)}
                 style={{
                   width: handleSize,
                   height: handleSize,
