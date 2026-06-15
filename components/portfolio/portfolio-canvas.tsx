@@ -11,8 +11,12 @@ import {
 import { CanvasFrame } from "@/components/portfolio/canvas-frame"
 import { RenderCanvasItem } from "@/components/portfolio/render-canvas-item"
 import { CanvasMenu } from "@/components/portfolio/canvas-menu"
+import { CanvasZoomControls } from "@/components/portfolio/canvas-zoom-controls"
 
 const GRID_SPACING = 20
+const ZOOM_MIN = 0.4
+const ZOOM_MAX = 2.5
+const ZOOM_STEP = 1.25
 
 function getDotColor(hex: string) {
   const normalized = hex.replace("#", "")
@@ -32,6 +36,7 @@ export function PortfolioCanvas() {
   const [ready, setReady] = useState(false)
   const [infoOpen, setInfoOpen] = useState(false)
   const [bgColor, setBgColor] = useState(DEFAULT_BG)
+  const [zoomLevel, setZoomLevel] = useState(1)
   const [positions, setPositions] = useState(generateScatterLayout)
   const [sizes, setSizes] = useState(getDefaultSizes)
 
@@ -112,9 +117,66 @@ export function PortfolioCanvas() {
         dotsRef.current.style.backgroundSize = `${spacing}px ${spacing}px`
         dotsRef.current.style.backgroundPosition = `${rx}px ${ry}px`
       }
+
+      setZoomLevel(zoom)
     },
     []
   )
+
+  const clampZoom = useCallback((zoom: number) => {
+    return Math.min(Math.max(zoom, ZOOM_MIN), ZOOM_MAX)
+  }, [])
+
+  const zoomAtViewportCenter = useCallback(
+    (nextZoom: number, animate = true) => {
+      const clampedZoom = clampZoom(nextZoom)
+      const centerX = window.innerWidth / 2
+      const centerY = window.innerHeight / 2
+      const ratio = clampedZoom / zoomRef.current
+      const x = centerX - (centerX - panRef.current.x) * ratio
+      const y = centerY - (centerY - panRef.current.y) * ratio
+      const clamped = clampPan(x, y, clampedZoom)
+
+      zoomRef.current = clampedZoom
+      panRef.current = clamped
+      applyTransform(clamped.x, clamped.y, clampedZoom, animate)
+    },
+    [applyTransform, clampPan, clampZoom]
+  )
+
+  const zoomIn = useCallback(() => {
+    zoomAtViewportCenter(zoomRef.current * ZOOM_STEP)
+  }, [zoomAtViewportCenter])
+
+  const zoomOut = useCallback(() => {
+    zoomAtViewportCenter(zoomRef.current / ZOOM_STEP)
+  }, [zoomAtViewportCenter])
+
+  const zoomTo100 = useCallback(() => {
+    zoomAtViewportCenter(1)
+  }, [zoomAtViewportCenter])
+
+  const fitAll = useCallback(() => {
+    const { minX, maxX, minY, maxY } = boundsRef.current
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+    const padding = vw < 768 ? 48 : 120
+    const contentW = maxX - minX
+    const contentH = maxY - minY
+    const zoom = clampZoom(
+      Math.min((vw - 2 * padding) / contentW, (vh - 2 * padding) / contentH)
+    )
+    const cx = (minX + maxX) / 2
+    const cy = (minY + maxY) / 2
+    const x = vw / 2 - cx * zoom
+    const y = vh / 2 - cy * zoom
+    const clamped = clampPan(x, y, zoom)
+
+    zoomRef.current = zoom
+    panRef.current = clamped
+    setSelectedId(null)
+    applyTransform(clamped.x, clamped.y, zoom, true)
+  }, [applyTransform, clampPan, clampZoom])
 
   const focusItem = useCallback(
     (item: CanvasItem) => {
@@ -265,10 +327,7 @@ export function PortfolioCanvas() {
 
       if (event.ctrlKey || event.metaKey) {
         const delta = event.deltaMode === 1 ? 10 * event.deltaY : event.deltaY
-        const nextZoom = Math.min(
-          Math.max(zoomRef.current * Math.pow(0.994, delta), 0.4),
-          2.5
-        )
+        const nextZoom = clampZoom(zoomRef.current * Math.pow(0.994, delta))
         const ratio = nextZoom / zoomRef.current
         const x = event.clientX - (event.clientX - panRef.current.x) * ratio
         const y = event.clientY - (event.clientY - panRef.current.y) * ratio
@@ -291,7 +350,7 @@ export function PortfolioCanvas() {
 
     container.addEventListener("wheel", onWheel, { passive: false })
     return () => container.removeEventListener("wheel", onWheel)
-  }, [ready, applyTransform, clampPan, beginInteraction, endInteractionSoon])
+  }, [ready, applyTransform, clampPan, clampZoom, beginInteraction, endInteractionSoon])
 
   const onPointerDown = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
     pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY })
@@ -353,10 +412,7 @@ export function PortfolioCanvas() {
         const distance = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y)
 
         if (pinchStart.current && pinchStart.current > 0) {
-          const nextZoom = Math.min(
-            Math.max(pinchZoomStart.current * (distance / pinchStart.current), 0.4),
-            2.5
-          )
+          const nextZoom = clampZoom(pinchZoomStart.current * (distance / pinchStart.current))
           const centerX = (points[0].x + points[1].x) / 2
           const centerY = (points[0].y + points[1].y) / 2
           const ratio = nextZoom / zoomRef.current
@@ -370,7 +426,7 @@ export function PortfolioCanvas() {
         }
       }
     },
-    [applyTransform, clampPan]
+    [applyTransform, clampPan, clampZoom]
   )
 
   const onPointerUp = useCallback(
@@ -488,6 +544,14 @@ export function PortfolioCanvas() {
           setInfoOpen(false)
         }}
         onResetCanvas={resetToIntro}
+      />
+
+      <CanvasZoomControls
+        zoom={zoomLevel}
+        onZoomIn={zoomIn}
+        onZoomOut={zoomOut}
+        onZoomReset={zoomTo100}
+        onFitAll={fitAll}
       />
     </div>
   )
