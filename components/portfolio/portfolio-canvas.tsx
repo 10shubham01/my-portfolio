@@ -21,6 +21,7 @@ import { ShortcutsDialog } from "@/components/portfolio/shortcuts-dialog"
 import { SpideyProvider } from "@/components/portfolio/spidey-context"
 import { CanvasSpiderman } from "@/components/portfolio/canvas-spiderman"
 import { getItemIdFromUrl, setItemDeeplink } from "@/lib/canvas-deeplink"
+import { getCanvasItemMeta, DEFAULT_META } from "@/lib/canvas-meta"
 import { getSpideyHomePosition } from "@/lib/spidey-position"
 import { KONAMI_SEQUENCE } from "@/lib/portfolio-shortcuts"
 import type { SpideyMood } from "@/components/portfolio/spidey-context"
@@ -200,6 +201,13 @@ export function PortfolioCanvas() {
     }
     spideyApiRef.current?.setMood("idle")
   }, [])
+
+  useEffect(() => {
+    document.title = getCanvasItemMeta(selectedId).title
+    return () => {
+      document.title = DEFAULT_META.title
+    }
+  }, [selectedId])
 
   const summonSpideyToSelection = useCallback(() => {
     if (!selectedId) return
