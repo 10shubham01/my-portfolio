@@ -51,6 +51,21 @@
       ],
       "stack": ["Next.js", "React", "TypeScript", "Tailwind CSS v4"],
       "href": "https://easybg.shubhamgupta.dev/"
+    },
+    {
+      "id": "scut-cli",
+      "name": "scut",
+      "tagline": "Run command sequences with one short name",
+      "description": "Create, list, edit, and run shortcuts for sequences of CLI commands—one short name instead of retyping the same cd … && … && … every time.",
+      "highlights": [
+        "All shortcuts live in one JSON file you edit directly—add a key to create one, delete it to remove",
+        "Steps run together in one shell via &&, so an early cd carries forward; extra args append to the last step",
+        "Cross-platform across bash, zsh, fish, PowerShell, and cmd, with zero runtime dependencies"
+      ],
+      "stack": ["Node.js", "CLI"],
+      "href": "https://www.npmjs.com/package/scut-cli",
+      "media": "/assets/gifs/scut-demo.gif",
+      "mediaAlt": "scut CLI demo"
     }
   ]
 }

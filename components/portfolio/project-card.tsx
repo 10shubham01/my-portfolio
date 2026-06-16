@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { getProjectById } from "@/lib/projects"
 import {
   CardSectionTitle,
@@ -42,6 +43,20 @@ export function ProjectCard({
         </div>
 
         <p className={`${cardBodyClass} text-[13px]`}>{project.description}</p>
+
+        {project.media && (
+          <div className="relative aspect-[1002/682] w-full overflow-hidden rounded-lg border border-neutral-100 dark:border-neutral-700">
+            <Image
+              src={project.media}
+              alt={project.mediaAlt || `${project.name} demo`}
+              fill
+              unoptimized={project.media.endsWith(".gif")}
+              sizes="400px"
+              className="object-cover"
+              draggable={false}
+            />
+          </div>
+        )}
 
         <ul className="flex flex-col gap-2">
           {project.highlights.map((highlight) => (

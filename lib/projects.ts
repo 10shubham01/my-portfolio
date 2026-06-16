@@ -8,6 +8,8 @@ export interface ProjectEntry {
   highlights: string[]
   stack: string[]
   href: string
+  media?: string
+  mediaAlt?: string
 }
 
 export const PROJECTS: ProjectEntry[] = projectsJson.projects

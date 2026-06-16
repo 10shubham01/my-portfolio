@@ -6,8 +6,9 @@
       "company": "WebMD",
       "period": "Mar 2026 – Present",
       "highlights": [
-        "Re-architected the internal tool page builder using TypeScript and Vite to improve performance and scalability.",
-        "Created a centralized component library to manage and reuse all micro-components efficiently."
+        "Three months in—past the 'where's the coffee' phase, deep into the 'where's the prod config' phase.",
+        "Too early for bold claims, so just the honest stuff: clean commits, good questions, and PRs that mostly pass on the first try.",
+        "Ask me again next quarter—the interesting part is still compiling."
       ],
       "stack": ["Vue.js", "TypeScript", "Tailwind", "Pinia"],
       "href": "https://www.webmd.com"
