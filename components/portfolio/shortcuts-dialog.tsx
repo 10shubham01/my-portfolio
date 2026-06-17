@@ -38,7 +38,7 @@ export function ShortcutsDialog({
               <ul className="mt-0.5 flex flex-col gap-0.5">
                 {entries.map((entry) => (
                   <li
-                    key={entry.label}
+                    key={`${entry.keys.join("+")}-${entry.label}`}
                     className="flex items-center justify-between gap-4 rounded px-1.5 py-1"
                   >
                     <span className="font-mono text-[11px] text-gray-600 dark:text-neutral-300">

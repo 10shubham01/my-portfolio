@@ -174,3 +174,61 @@
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
 }
+
+/* Spidey: subtle idle breathing so he never looks frozen */
+.spidey-breathe {
+    transform-box: fill-box;
+    transform-origin: center bottom;
+    animation: spidey-breathe 3.8s ease-in-out infinite;
+}
+
+@keyframes spidey-breathe {
+    0%,
+    100% {
+        transform: translateY(0) scaleY(1);
+    }
+    50% {
+        transform: translateY(-0.8px) scaleY(1.02);
+    }
+}
+
+/* Spidey: arms drift gently while idle */
+.spidey-limb-sway {
+    transform-box: fill-box;
+    transform-origin: center top;
+    animation: spidey-limb-sway 4.6s ease-in-out infinite;
+}
+
+@keyframes spidey-limb-sway {
+    0%,
+    100% {
+        transform: rotate(-1.3deg);
+    }
+    50% {
+        transform: rotate(1.3deg);
+    }
+}
+
+/* Presence: spiders dangling on threads sway like a pendulum */
+.presence-dangle {
+    transform-origin: top center;
+    animation: presence-sway 3.4s ease-in-out infinite;
+}
+
+@keyframes presence-sway {
+    0%,
+    100% {
+        transform: rotate(-4deg);
+    }
+    50% {
+        transform: rotate(4deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spidey-breathe,
+    .spidey-limb-sway,
+    .presence-dangle {
+        animation: none;
+    }
+}

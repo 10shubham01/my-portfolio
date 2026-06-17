@@ -18,13 +18,23 @@ import { RenderCanvasItem } from "@/components/portfolio/render-canvas-item"
 import { CanvasMenu } from "@/components/portfolio/canvas-menu"
 import { CanvasZoomControls } from "@/components/portfolio/canvas-zoom-controls"
 import { CanvasSpotlight } from "@/components/portfolio/canvas-spotlight"
+import { CanvasTour } from "@/components/portfolio/canvas-tour"
+import { CANVAS_TOUR, TOUR_STEP_DURATION } from "@/lib/canvas-tour"
 import { ShortcutsDialog } from "@/components/portfolio/shortcuts-dialog"
 import { SpideyProvider } from "@/components/portfolio/spidey-context"
 import { CanvasSpiderman } from "@/components/portfolio/canvas-spiderman"
-import { getItemIdFromUrl, setItemDeeplink } from "@/lib/canvas-deeplink"
+import {
+  getItemIdFromUrl,
+  setItemDeeplink,
+  getViewFromUrl,
+  copyViewDeeplink,
+} from "@/lib/canvas-deeplink"
 import { getCanvasItemMeta, DEFAULT_META } from "@/lib/canvas-meta"
 import { getSpideyHomePosition } from "@/lib/spidey-position"
 import { KONAMI_SEQUENCE } from "@/lib/portfolio-shortcuts"
+import { useCanvasPresence } from "@/components/portfolio/use-canvas-presence"
+import { CanvasCursors, PresenceWeb } from "@/components/portfolio/canvas-cursors"
+import { isSupabaseEnabled } from "@/lib/supabase"
 import type { SpideyMood } from "@/components/portfolio/spidey-context"
 
 const GRID_SPACING = 20
@@ -40,12 +50,19 @@ export function PortfolioCanvas() {
   const [infoOpen, setInfoOpen] = useState(false)
   const [spotlightOpen, setSpotlightOpen] = useState(false)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
+  const [tourActive, setTourActive] = useState(false)
+  const [tourStep, setTourStep] = useState(0)
+  const [tourPlaying, setTourPlaying] = useState(true)
   const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null)
   const [zoomLevel, setZoomLevel] = useState(1)
   const [positions, setPositions] = useState(() =>
     withAnchoredLayout(generateScatterLayout(), getDefaultSizes())
   )
   const [sizes, setSizes] = useState(getDefaultSizes)
+
+  const { members: presenceMembers, count: presenceCount, cursors, sendCursor } =
+    useCanvasPresence(isSupabaseEnabled)
+  const prevPresenceCountRef = useRef(0)
 
   const containerRef = useRef<HTMLDivElement>(null)
   const dotsRef = useRef<HTMLDivElement>(null)
@@ -62,7 +79,12 @@ export function PortfolioCanvas() {
   const boundsRef = useRef(getContentBounds(positions, sizes))
   const spideyApiRef = useRef<{
     setPosition: (position: { x: number; y: number }) => void
+    travelTo: (
+      position: { x: number; y: number },
+      options?: { wander?: boolean; endMood?: SpideyMood }
+    ) => void
     setMood: (mood: SpideyMood) => void
+    say: (text: string, durationMs?: number) => void
   } | null>(null)
   const konamiIndexRef = useRef(0)
   const deeplinkFocusPending = useRef(
@@ -72,6 +94,17 @@ export function PortfolioCanvas() {
   useEffect(() => {
     boundsRef.current = getContentBounds(positions, sizes)
   }, [positions, sizes])
+
+  // When a new visitor swings in, Spidey perks up and announces it.
+  useEffect(() => {
+    const prev = prevPresenceCountRef.current
+    prevPresenceCountRef.current = presenceCount
+    if (presenceCount > prev && prev >= 1 && presenceCount >= 2) {
+      spideyApiRef.current?.setMood("excited")
+      spideyApiRef.current?.say("someone just swung in! 🕸️", 3600)
+      window.setTimeout(() => spideyApiRef.current?.setMood("idle"), 2400)
+    }
+  }, [presenceCount])
 
   const clampPan = useCallback((x: number, y: number, zoom: number) => {
     const { minX, maxX, minY, maxY } = boundsRef.current
@@ -90,6 +123,8 @@ export function PortfolioCanvas() {
 
   const beginInteraction = useCallback(() => {
     deeplinkFocusPending.current = false
+    // A manual pan/zoom gesture takes the wheel from the auto-playing tour.
+    setTourPlaying(false)
     setInteracting(true)
     if (canvasRef.current) {
       canvasRef.current.style.willChange = "transform"
@@ -216,19 +251,18 @@ export function PortfolioCanvas() {
     const size = sizes[selectedId]
     if (!pos || !size) return
 
-    spideyApiRef.current?.setPosition({
+    // Web-swing over to the focused card.
+    spideyApiRef.current?.travelTo({
       x: pos.x + size.w / 2,
       y: pos.y + size.h / 2,
     })
-    spideyApiRef.current?.setMood("peek")
   }, [positions, selectedId, sizes])
 
   const triggerKonamiEasterEgg = useCallback(() => {
-    spideyApiRef.current?.setMood("excited")
     const centerX = (boundsRef.current.minX + boundsRef.current.maxX) / 2
     const centerY = (boundsRef.current.minY + boundsRef.current.maxY) / 2
-    spideyApiRef.current?.setPosition({ x: centerX, y: centerY })
-    window.setTimeout(() => spideyApiRef.current?.setMood("idle"), 4000)
+    spideyApiRef.current?.travelTo({ x: centerX, y: centerY }, { endMood: "excited" })
+    spideyApiRef.current?.say("you found the code! 🕷️", 4000)
     posthog.capture("konami_code_triggered")
   }, [])
 
@@ -317,6 +351,97 @@ export function PortfolioCanvas() {
     [applyTransform]
   )
 
+  const applyViewCamera = useCallback(
+    (view: { x: number; y: number; zoom: number }, animate = true) => {
+      const zoom = clampZoom(view.zoom)
+      const clamped = clampPan(view.x, view.y, zoom)
+      panRef.current = clamped
+      zoomRef.current = zoom
+      setSelectedId(null)
+      applyTransform(clamped.x, clamped.y, zoom, animate)
+    },
+    [applyTransform, clampPan, clampZoom]
+  )
+
+  const copyCurrentView = useCallback(async () => {
+    const ok = await copyViewDeeplink({
+      x: panRef.current.x,
+      y: panRef.current.y,
+      zoom: zoomRef.current,
+    })
+    posthog.capture("canvas_view_link_copied", {
+      zoom: Number(zoomRef.current.toFixed(3)),
+      success: ok,
+    })
+    return ok
+  }, [])
+
+  const tourSteps = CANVAS_TOUR.filter((step) =>
+    CANVAS_ITEMS.some((item) => item.id === step.id)
+  )
+
+  const goToTourStep = useCallback(
+    (index: number) => {
+      const step = tourSteps[index]
+      if (!step) return
+      const item = CANVAS_ITEMS.find((entry) => entry.id === step.id)
+      if (item) focusItem(item, { replaceUrl: true })
+      setTourStep(index)
+    },
+    [focusItem, tourSteps]
+  )
+
+  const startTour = useCallback(() => {
+    setSpotlightOpen(false)
+    setShortcutsOpen(false)
+    setTourActive(true)
+    setTourPlaying(true)
+    setTourStep(0)
+    goToTourStep(0)
+    posthog.capture("tour_started")
+  }, [goToTourStep])
+
+  const exitTour = useCallback(() => {
+    setTourActive(false)
+    setTourPlaying(false)
+    posthog.capture("tour_exited", { last_step: tourStep })
+  }, [tourStep])
+
+  const nextTourStep = useCallback(() => {
+    if (tourStep >= tourSteps.length - 1) {
+      exitTour()
+      posthog.capture("tour_completed")
+      return
+    }
+    setTourPlaying(false)
+    goToTourStep(tourStep + 1)
+  }, [tourStep, tourSteps.length, goToTourStep, exitTour])
+
+  const prevTourStep = useCallback(() => {
+    if (tourStep <= 0) return
+    setTourPlaying(false)
+    goToTourStep(tourStep - 1)
+  }, [tourStep, goToTourStep])
+
+  const toggleTourPlay = useCallback(() => {
+    setTourPlaying((current) => !current)
+  }, [])
+
+  // Hands-free auto-advance while playing.
+  useEffect(() => {
+    if (!tourActive || !tourPlaying) return
+    const timer = window.setTimeout(() => {
+      if (tourStep >= tourSteps.length - 1) {
+        setTourActive(false)
+        setTourPlaying(false)
+        posthog.capture("tour_completed")
+      } else {
+        goToTourStep(tourStep + 1)
+      }
+    }, TOUR_STEP_DURATION)
+    return () => window.clearTimeout(timer)
+  }, [tourActive, tourPlaying, tourStep, tourSteps.length, goToTourStep])
+
   const resetCanvasLayout = useCallback(() => {
     const baseSizes = getDefaultSizes()
     const basePositions = withAnchoredLayout(generateScatterLayout(), baseSizes)
@@ -388,6 +513,17 @@ export function PortfolioCanvas() {
 
   useEffect(() => {
     const deeplinkId = getItemIdFromUrl(window.location.search)
+
+    // A shared raw-camera view (no focused card) restores the exact region.
+    if (!deeplinkId) {
+      const sharedView = getViewFromUrl(window.location.search)
+      if (sharedView) {
+        applyViewCamera(sharedView, false)
+        setReady(true)
+        return
+      }
+    }
+
     const target =
       (deeplinkId && CANVAS_ITEMS.find((item) => item.id === deeplinkId)) ||
       CANVAS_ITEMS.find((item) => item.type === "intro")
@@ -453,6 +589,8 @@ export function PortfolioCanvas() {
         toggleTheme()
       } else if (key === "s") {
         summonSpideyToSelection()
+      } else if (key === "t") {
+        startTour()
       } else if (key === "?") {
         setShortcutsOpen(true)
       } else if (KONAMI_SEQUENCE[konamiIndexRef.current] === event.key) {
@@ -468,7 +606,13 @@ export function PortfolioCanvas() {
 
     window.addEventListener("keydown", onKeyDown)
     return () => window.removeEventListener("keydown", onKeyDown)
-  }, [resetCanvasLayout, toggleTheme, summonSpideyToSelection, triggerKonamiEasterEgg])
+  }, [
+    resetCanvasLayout,
+    toggleTheme,
+    summonSpideyToSelection,
+    triggerKonamiEasterEgg,
+    startTour,
+  ])
 
   useEffect(() => {
     if (!ready) return
@@ -598,6 +742,13 @@ export function PortfolioCanvas() {
 
   const onPointerMove = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
+      // Broadcast our cursor (canvas-space) to other visitors on every move,
+      // including plain hover when no pointer is pressed.
+      sendCursor(
+        (event.clientX - panRef.current.x) / zoomRef.current,
+        (event.clientY - panRef.current.y) / zoomRef.current
+      )
+
       if (!pointers.current.has(event.pointerId)) return
 
       pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY })
@@ -635,7 +786,7 @@ export function PortfolioCanvas() {
         }
       }
     },
-    [applyTransform, clampPan, clampZoom]
+    [applyTransform, clampPan, clampZoom, sendCursor]
   )
 
   const onPointerUp = useCallback(
@@ -758,6 +909,7 @@ export function PortfolioCanvas() {
           )
         })}
         <CanvasSpiderman />
+        <CanvasCursors cursors={cursors} />
       </div>
 
       <CanvasMenu
@@ -801,7 +953,23 @@ export function PortfolioCanvas() {
       onFitAll={fitAll}
       onResetLayout={resetCanvasLayout}
       onShowShortcuts={() => setShortcutsOpen(true)}
+      onCopyView={copyCurrentView}
+      onStartTour={startTour}
     />
+
+    <CanvasTour
+      active={tourActive}
+      caption={tourSteps[tourStep]?.caption ?? ""}
+      step={tourStep}
+      total={tourSteps.length}
+      playing={tourPlaying}
+      onPrev={prevTourStep}
+      onNext={nextTourStep}
+      onTogglePlay={toggleTourPlay}
+      onExit={exitTour}
+    />
+
+    {isSupabaseEnabled ? <PresenceWeb members={presenceMembers} /> : null}
 
     <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
     </SpideyProvider>

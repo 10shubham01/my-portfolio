@@ -7,6 +7,7 @@ export type ShortcutEntry = {
 export const PORTFOLIO_SHORTCUTS: ShortcutEntry[] = [
   { keys: ["⌘", "K"], label: "Open spotlight", group: "Navigation" },
   { keys: ["?"], label: "Keyboard shortcuts", group: "Navigation" },
+  { keys: ["T"], label: "Take the guided tour", group: "Navigation" },
   { keys: ["Esc"], label: "Reset view", group: "Navigation" },
   { keys: ["←", "→"], label: "Cycle cards", group: "Navigation" },
   { keys: ["R"], label: "Reset canvas layout", group: "Canvas" },

@@ -24,6 +24,8 @@ type CanvasSpotlightProps = {
   onFitAll: () => void
   onResetLayout: () => void
   onShowShortcuts: () => void
+  onCopyView: () => void | Promise<unknown>
+  onStartTour: () => void
 }
 
 function SpotlightItem({
@@ -63,6 +65,8 @@ export function CanvasSpotlight({
   onFitAll,
   onResetLayout,
   onShowShortcuts,
+  onCopyView,
+  onStartTour,
 }: CanvasSpotlightProps) {
   const { theme, toggleTheme } = useTheme()
   const navGroups = buildCanvasNavGroups()
@@ -161,6 +165,25 @@ export function CanvasSpotlight({
               onSelect={() => {
                 posthog.capture("spotlight_item_selected", { item_id: "action-copy-email", kind: "action" })
                 run(() => void copyEmail())
+              }}
+            />
+            <SpotlightItem
+              value="action-start-tour"
+              keywords={["tour", "guide", "walkthrough", "intro"]}
+              label="take the guided tour"
+              hint="T"
+              onSelect={() => {
+                posthog.capture("spotlight_item_selected", { item_id: "action-start-tour", kind: "action" })
+                run(onStartTour)
+              }}
+            />
+            <SpotlightItem
+              value="action-copy-view"
+              keywords={["share", "link", "view", "copy", "url"]}
+              label="copy link to this view"
+              onSelect={() => {
+                posthog.capture("spotlight_item_selected", { item_id: "action-copy-view", kind: "action" })
+                run(() => void onCopyView())
               }}
             />
             <SpotlightItem
