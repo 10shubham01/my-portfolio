@@ -1,0 +1,34 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Spider-Man mask -->
+  <path
+    d="M16 2.5 C23.5 2.5 28 8 28 15.5 C28 23 22.5 30 16 30 C9.5 30 4 23 4 15.5 C4 8 8.5 2.5 16 2.5 Z"
+    fill="#E23636"
+    stroke="#1a1a1a"
+    stroke-width="1"
+  />
+  <!-- Web: radial spokes + concentric strands -->
+  <g fill="none" stroke="#1a1a1a" stroke-width="0.55" stroke-linecap="round" opacity="0.75">
+    <path d="M16 4.5 L16 16" />
+    <path d="M16 4.5 C12 7 9.5 10.5 8 14.5" />
+    <path d="M16 4.5 C20 7 22.5 10.5 24 14.5" />
+    <path d="M16 4.5 C13.5 6 11.5 8 10 10.5" />
+    <path d="M16 4.5 C18.5 6 20.5 8 22 10.5" />
+    <path d="M10.5 9.5 C13.5 8 18.5 8 21.5 9.5" />
+    <path d="M8.5 13.5 C12.5 11.5 19.5 11.5 23.5 13.5" />
+  </g>
+  <!-- Eyes -->
+  <path
+    d="M14.2 14.2 C10.5 12.8 7 14.5 7.2 18 C10 19.2 13 17.8 14.6 16.2 Z"
+    fill="#ffffff"
+    stroke="#1a1a1a"
+    stroke-width="0.9"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M17.8 14.2 C21.5 12.8 25 14.5 24.8 18 C22 19.2 19 17.8 17.4 16.2 Z"
+    fill="#ffffff"
+    stroke="#1a1a1a"
+    stroke-width="0.9"
+    stroke-linejoin="round"
+  />
+</svg>
