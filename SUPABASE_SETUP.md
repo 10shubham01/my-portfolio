@@ -1,8 +1,8 @@
 # Supabase setup — live cursors
 
-The canvas **"N exploring now"** pill and live visitor cursors use Supabase **Realtime** (presence + broadcast). No database tables are required.
+The canvas's live visitor presence (the **dangling-spiders web**) and cursors use Supabase **Realtime** (presence + broadcast). No database tables are required.
 
-If the env vars below are missing, the canvas runs exactly as before (no cursors, no pill). Nothing crashes.
+If the env vars below are missing, the canvas runs exactly as before (no cursors, no presence web). Nothing crashes.
 
 ## 1. Create a project
 
@@ -28,7 +28,7 @@ Restart `pnpm dev` after adding them.
 
 Run the app, open it in two browser windows, and you should see:
 
-- a green **"N exploring now"** pill bottom-left,
+- a **web of dangling spiders** top-left — one spider per visitor online, yours highlighted,
 - each window's cursor in the other (labelled with a random Spidey-verse name).
 
 Realtime **presence/broadcast** needs no extra database config — it works as soon as the env vars are set.
