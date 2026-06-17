@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef } from "react"
+import posthog from "posthog-js"
 import { Command } from "cmdk"
 import { buildCanvasNavGroups } from "@/lib/canvas-nav"
 import { CANVAS_ITEMS, EMAIL, SOCIAL_LINKS } from "@/lib/canvas-data"
@@ -125,7 +126,15 @@ export function CanvasSpotlight({
                   value={`nav-${item.id}`}
                   keywords={[group.label, item.label]}
                   label={item.label}
-                  onSelect={() => run(() => onNavigate(item.id))}
+                  onSelect={() => {
+                    posthog.capture("spotlight_item_selected", {
+                      item_id: item.id,
+                      item_label: item.label,
+                      group: group.label,
+                      kind: "navigation",
+                    })
+                    run(() => onNavigate(item.id))
+                  }}
                 />
               ))}
             </Command.Group>
@@ -140,33 +149,48 @@ export function CanvasSpotlight({
               keywords={["theme", "dark", "light"]}
               label={`toggle ${theme === "dark" ? "light" : "dark"} mode`}
               hint="D"
-              onSelect={() => run(toggleTheme)}
+              onSelect={() => {
+                posthog.capture("spotlight_item_selected", { item_id: "action-toggle-theme", kind: "action" })
+                run(toggleTheme)
+              }}
             />
             <SpotlightItem
               value="action-copy-email"
               keywords={["email", "contact"]}
               label="copy email"
-              onSelect={() => run(() => void copyEmail())}
+              onSelect={() => {
+                posthog.capture("spotlight_item_selected", { item_id: "action-copy-email", kind: "action" })
+                run(() => void copyEmail())
+              }}
             />
             <SpotlightItem
               value="action-fit-all"
               keywords={["zoom", "fit"]}
               label="fit all cards"
-              onSelect={() => run(onFitAll)}
+              onSelect={() => {
+                posthog.capture("spotlight_item_selected", { item_id: "action-fit-all", kind: "action" })
+                run(onFitAll)
+              }}
             />
             <SpotlightItem
               value="action-reset-layout"
               keywords={["reset", "layout"]}
               label="reset canvas layout"
               hint="R"
-              onSelect={() => run(onResetLayout)}
+              onSelect={() => {
+                posthog.capture("spotlight_item_selected", { item_id: "action-reset-layout", kind: "action" })
+                run(onResetLayout)
+              }}
             />
             <SpotlightItem
               value="action-shortcuts"
               keywords={["keyboard", "shortcuts"]}
               label="keyboard shortcuts"
               hint="?"
-              onSelect={() => run(onShowShortcuts)}
+              onSelect={() => {
+                posthog.capture("spotlight_item_selected", { item_id: "action-shortcuts", kind: "action" })
+                run(onShowShortcuts)
+              }}
             />
           </Command.Group>
 
@@ -181,6 +205,11 @@ export function CanvasSpotlight({
                 keywords={[link.platform, link.handle]}
                 label={`${link.platform.toLowerCase()} ${link.handle.toLowerCase()}`}
                 onSelect={() => {
+                  posthog.capture("spotlight_item_selected", {
+                    item_id: `link-${link.platform.toLowerCase()}`,
+                    item_label: link.platform,
+                    kind: "social_link",
+                  })
                   window.open(link.href, "_blank", "noopener,noreferrer")
                   onOpenChange(false)
                 }}

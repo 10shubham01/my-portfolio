@@ -1,6 +1,7 @@
 "use client"
 
 import { Check, ChevronLeft, ChevronRight, Link } from "lucide-react"
+import posthog from "posthog-js"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { copyItemDeeplink } from "@/lib/canvas-deeplink"
 import { getThemeNavItem, type NavGroup, type NavItem } from "@/lib/canvas-nav"
@@ -116,6 +117,7 @@ function CanvasMenuPanel({
     const ok = await copyItemDeeplink(id)
     if (!ok) return
     setCopiedId(id)
+    posthog.capture("canvas_link_copied", { item_id: id })
     window.setTimeout(() => {
       setCopiedId((current) => (current === id ? null : current))
     }, 1500)

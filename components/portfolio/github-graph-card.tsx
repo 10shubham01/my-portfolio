@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import posthog from "posthog-js"
 import {
   CardSectionTitle,
   CardSurface,
@@ -136,6 +137,12 @@ export function GitHubGraphCard({
           target="_blank"
           rel="noopener noreferrer"
           className="shrink-0 font-mono text-[11px] text-gray-400 transition-colors hover:text-gray-700 dark:text-neutral-500 dark:hover:text-neutral-300"
+          onClick={() =>
+            posthog.capture("github_profile_visited", {
+              location: "username_link",
+              href: GITHUB.profileUrl,
+            })
+          }
         >
           @{GITHUB.username}
         </a>
@@ -164,7 +171,18 @@ export function GitHubGraphCard({
             ? `${total.toLocaleString()} contributions in the last year`
             : "Contribution activity"}
         </p>
-        <VisitLink href={GITHUB.profileUrl} label="PROFILE" />
+        <VisitLink
+          href={GITHUB.profileUrl}
+          label="PROFILE"
+          trackingSource="github_card"
+          trackingProps={{ username: GITHUB.username, location: "profile_cta" }}
+          onClick={() =>
+            posthog.capture("github_profile_visited", {
+              location: "profile_cta",
+              href: GITHUB.profileUrl,
+            })
+          }
+        />
       </div>
     </CardSurface>
   )

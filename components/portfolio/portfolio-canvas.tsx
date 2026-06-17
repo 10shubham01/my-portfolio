@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import posthog from "posthog-js"
 import { CANVAS_ITEMS } from "@/lib/canvas-data"
 import type { CanvasItem } from "@/lib/canvas-config"
 import { getDotColor } from "@/lib/theme"
@@ -228,6 +229,7 @@ export function PortfolioCanvas() {
     const centerY = (boundsRef.current.minY + boundsRef.current.maxY) / 2
     spideyApiRef.current?.setPosition({ x: centerX, y: centerY })
     window.setTimeout(() => spideyApiRef.current?.setMood("idle"), 4000)
+    posthog.capture("konami_code_triggered")
   }, [])
 
   const focusItem = useCallback(
@@ -266,6 +268,24 @@ export function PortfolioCanvas() {
 
       if (options?.updateUrl !== false) {
         setItemDeeplink(item.id, options?.replaceUrl ?? false)
+      }
+
+      posthog.capture("canvas_item_focused", {
+        item_id: item.id,
+        item_type: item.type,
+        item_label: item.label,
+      })
+      if (item.type === "project") {
+        posthog.capture("project_card_viewed", {
+          item_id: item.id,
+          item_label: item.label,
+        })
+      }
+      if (item.type === "work") {
+        posthog.capture("experience_card_viewed", {
+          item_id: item.id,
+          item_label: item.label,
+        })
       }
 
       setSpideyMoodForItem(item)
@@ -420,6 +440,7 @@ export function PortfolioCanvas() {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault()
         setSpotlightOpen(true)
+        posthog.capture("spotlight_opened", { trigger: "keyboard_shortcut" })
         return
       }
 
@@ -763,7 +784,10 @@ export function PortfolioCanvas() {
         onZoomOut={zoomOut}
         onZoomReset={zoomTo100}
         onFitAll={fitAll}
-        onOpenSpotlight={() => setSpotlightOpen(true)}
+        onOpenSpotlight={() => {
+          setSpotlightOpen(true)
+          posthog.capture("spotlight_opened", { trigger: "toolbar_button" })
+        }}
       />
     </div>
 

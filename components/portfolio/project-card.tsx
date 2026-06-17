@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import posthog from "posthog-js"
 import { getProjectById } from "@/lib/projects"
 import {
   CardSectionTitle,
@@ -39,7 +40,18 @@ export function ProjectCard({
             <h3 className={cardTitleClass}>{project.name}</h3>
             <p className={`mt-0.5 ${cardMetaClass}`}>{project.tagline}</p>
           </div>
-          <VisitLink href={project.href} />
+          <VisitLink
+            href={project.href}
+            trackingSource="project_card"
+            trackingProps={{ project_id: projectId, project_name: project.name }}
+            onClick={() =>
+              posthog.capture("project_link_visited", {
+                project_id: projectId,
+                project_name: project.name,
+                href: project.href,
+              })
+            }
+          />
         </div>
 
         <p className={`${cardBodyClass} text-[13px]`}>{project.description}</p>

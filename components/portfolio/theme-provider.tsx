@@ -7,6 +7,7 @@ import {
   useEffect,
   useState,
 } from "react"
+import posthog from "posthog-js"
 import {
   getCanvasBg,
   getInitialTheme,
@@ -44,6 +45,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const next = current === "dark" ? "light" : "dark"
       localStorage.setItem(THEME_STORAGE_KEY, next)
       document.documentElement.classList.toggle("dark", next === "dark")
+      posthog.capture("theme_toggled", { theme: next })
       return next
     })
   }, [])

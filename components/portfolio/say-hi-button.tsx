@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import posthog from "posthog-js"
 import { EMAIL } from "@/lib/canvas-data"
 
 export function SayHiButton() {
@@ -14,6 +15,7 @@ export function SayHiButton() {
       await navigator.clipboard.writeText(EMAIL)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
+      posthog.capture("contact_email_copied", { method: "clipboard" })
     } catch {
       const input = document.createElement("input")
       input.value = EMAIL
@@ -23,6 +25,7 @@ export function SayHiButton() {
         document.execCommand("copy")
         setCopied(true)
         setTimeout(() => setCopied(false), 2000)
+        posthog.capture("contact_email_copied", { method: "execCommand" })
       } catch {
         window.alert(`Email: ${EMAIL}`)
       }

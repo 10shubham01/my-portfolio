@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import posthog from "posthog-js"
 import { SITE } from "@/lib/canvas-data"
 import { SayHiButton } from "@/components/portfolio/say-hi-button"
 import { CardSurface, CardDate } from "@/components/portfolio/card-chrome"
@@ -8,9 +9,11 @@ import { useFrameResize } from "@/components/portfolio/use-frame-resize"
 
 function ExternalLink({
   href,
+  linkLabel,
   children,
 }: {
   href: string
+  linkLabel: string
   children: React.ReactNode
 }) {
   return (
@@ -19,6 +22,12 @@ function ExternalLink({
       target="_blank"
       rel="noopener noreferrer"
       className="text-blue-500 hover:underline"
+      onClick={() =>
+        posthog.capture("intro_link_visited", {
+          link_label: linkLabel,
+          href,
+        })
+      }
     >
       {children}
     </a>
@@ -58,9 +67,15 @@ export function IntroCard({
         <div className="flex flex-col gap-3 text-[15px] leading-relaxed text-gray-500 dark:text-neutral-400">
           <p>
             {SITE.title} at{" "}
-            <ExternalLink href="https://www.webmd.com">WebMD</ExternalLink>.
+            <ExternalLink href="https://www.webmd.com" linkLabel="webmd">
+              WebMD
+            </ExternalLink>
+            .
             Previously senior engineer at{" "}
-            <ExternalLink href="https://www.shubhamgupta.dev/work">
+            <ExternalLink
+              href="https://www.shubhamgupta.dev/work"
+              linkLabel="credilio_work_history"
+            >
               Credilio Financial Technologies
             </ExternalLink>
             .

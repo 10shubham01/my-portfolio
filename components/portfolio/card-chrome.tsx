@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils"
+import posthog from "posthog-js"
 
 export const cardTitleClass =
   "font-geist text-[17px] font-medium tracking-tight text-gray-900 dark:text-neutral-100"
@@ -31,10 +32,16 @@ export function VisitLink({
   href,
   label = "VISIT",
   className,
+  onClick,
+  trackingSource,
+  trackingProps,
 }: {
   href: string
   label?: string
   className?: string
+  onClick?: () => void
+  trackingSource?: string
+  trackingProps?: Record<string, string | number | boolean | null | undefined>
 }) {
   return (
     <a
@@ -42,6 +49,15 @@ export function VisitLink({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(visitLinkClass, className)}
+      onClick={() => {
+        posthog.capture("link_clicked", {
+          href,
+          label: label.toLowerCase(),
+          source: trackingSource ?? "unknown",
+          ...trackingProps,
+        })
+        onClick?.()
+      }}
     >
       [ {label} ]
     </a>

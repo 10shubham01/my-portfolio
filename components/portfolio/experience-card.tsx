@@ -1,5 +1,6 @@
 "use client"
 
+import posthog from "posthog-js"
 import { getExperienceById } from "@/lib/experience"
 import {
   CardSectionTitle,
@@ -54,7 +55,19 @@ function WorkEntry({
             <CardDate>{entry.period}</CardDate>
           </p>
         </div>
-        {entry.href && <VisitLink href={entry.href} />}
+        {entry.href && (
+          <VisitLink
+            href={entry.href}
+            trackingSource="experience_card"
+            trackingProps={{ company: entry.company, role: entry.role }}
+            onClick={() =>
+              posthog.capture("experience_link_visited", {
+                company: entry.company,
+                href: entry.href,
+              })
+            }
+          />
+        )}
       </div>
 
       <ul className="flex flex-col gap-2">
