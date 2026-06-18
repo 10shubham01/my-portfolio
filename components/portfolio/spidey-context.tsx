@@ -56,8 +56,8 @@ const SpideyContext = createContext<SpideyContextValue | null>(null)
 // Cards worth visiting while wandering (skip decorative/utility items).
 const WANDER_TYPES = new Set(["project", "work", "github", "awards", "skills", "now"])
 
-const IDLE_BEFORE_WANDER_MS = 15000
-const WANDER_INTERVAL_MS = 10000
+const IDLE_BEFORE_WANDER_MS = 15000000000000
+const WANDER_INTERVAL_MS = 15000000000000
 
 const WANDER_QUIPS = [
   "psst — press T for the tour.",
