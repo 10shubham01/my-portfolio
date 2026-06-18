@@ -8,6 +8,7 @@ import {
   useState,
 } from "react"
 import posthog from "posthog-js"
+import { playClickSound } from "@/lib/play-click"
 import {
   getCanvasBg,
   getInitialTheme,
@@ -35,12 +36,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const setTheme = useCallback((next: Theme) => {
-    setThemeState(next)
+    let changed = false
+    setThemeState((current) => {
+      if (current === next) return current
+      changed = true
+      return next
+    })
+    if (!changed) return
+    playClickSound()
     localStorage.setItem(THEME_STORAGE_KEY, next)
     document.documentElement.classList.toggle("dark", next === "dark")
   }, [])
 
   const toggleTheme = useCallback(() => {
+    playClickSound()
     setThemeState((current) => {
       const next = current === "dark" ? "light" : "dark"
       localStorage.setItem(THEME_STORAGE_KEY, next)
