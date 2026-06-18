@@ -52,9 +52,6 @@ function WorkEntry({
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className={cardTitleClass}>{entry.role}</h3>
-          <p className="mt-0.5">
-            <CardDate>{entry.period}</CardDate>
-          </p>
         </div>
         {entry.href && (
           <VisitLink

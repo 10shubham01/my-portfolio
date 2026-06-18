@@ -4,8 +4,24 @@ import Image from "next/image"
 import posthog from "posthog-js"
 import { SITE } from "@/lib/canvas-data"
 import { SayHiButton } from "@/components/portfolio/say-hi-button"
-import { CardSurface, CardDate } from "@/components/portfolio/card-chrome"
+import { CardSurface, CardDate, CornerFrame } from "@/components/portfolio/card-chrome"
 import { useFrameResize } from "@/components/portfolio/use-frame-resize"
+
+// Career start: August 2022. Computed live so the intro always reflects the
+// current tenure without manual edits.
+const CAREER_START = new Date(2021, 7, 1) // month is 0-indexed: 7 = August
+
+function formatExperience(from: Date, to: Date) {
+  let months = (to.getFullYear() - from.getFullYear()) * 12 + (to.getMonth() - from.getMonth())
+  if (to.getDate() < from.getDate()) months -= 1
+  const years = Math.floor(months / 12)
+  const remMonths = months % 12
+
+  const parts: string[] = []
+  if (years > 0) parts.push(`${years} year${years === 1 ? "" : "s"}`)
+  if (remMonths > 0) parts.push(`${remMonths} month${remMonths === 1 ? "" : "s"}`)
+  return parts.join(" ") || "0 months"
+}
 
 function ExternalLink({
   href,
@@ -42,6 +58,7 @@ export function IntroCard({
   onResize?: (width: number, height: number) => void
 }) {
   const ref = useFrameResize(onResize)
+  const experience = formatExperience(CAREER_START, new Date())
 
   return (
     <CardSurface ref={ref} interactive={interactive}>
@@ -64,6 +81,16 @@ export function IntroCard({
           {SITE.name}
         </h1>
 
+        <CornerFrame
+          as="div"
+          className="my-1 block w-full px-2.5 py-1.5 text-[15px] leading-relaxed text-gray-700 dark:text-neutral-200"
+        >
+          <span className="font-medium text-gray-900 dark:text-neutral-100">
+            {experience}
+          </span>{" "}
+          of professional engineering experience — and counting.
+        </CornerFrame>
+
         <div className="flex flex-col gap-3 text-[15px] leading-relaxed text-gray-500 dark:text-neutral-400">
           <p>
             {SITE.title} at{" "}
@@ -73,10 +100,10 @@ export function IntroCard({
             .
             Previously senior engineer at{" "}
             <ExternalLink
-              href="https://www.shubhamgupta.dev/work"
-              linkLabel="credilio_work_history"
+              href="https://www.novio.in/"
+              linkLabel="novio_work_history"
             >
-              Credilio Financial Technologies
+              novio
             </ExternalLink>
             .
           </p>
@@ -91,9 +118,9 @@ export function IntroCard({
             platform architecture, and engineering mentorship.
           </p>
           <p>
-            Recognized with the True Soldier Award (<CardDate>2025</CardDate>) and Strive for
-            Excellence Award (<CardDate>2024</CardDate>) at Credilio. BCA from Lovely Professional
-            University (<CardDate>2018–2021</CardDate>).
+            Recognized with the True Soldier Award <CardDate>2025</CardDate> and Strive for
+            Excellence Award <CardDate>2024</CardDate> at novio. BCA from Lovely Professional
+            University <CardDate>2018–2021</CardDate>.
           </p>
           <p>
             {SITE.tagline} <SayHiButton />

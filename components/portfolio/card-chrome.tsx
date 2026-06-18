@@ -6,8 +6,34 @@ export const cardTitleClass =
 
 export const cardMetaClass = "font-mono text-[11px] text-gray-400 dark:text-neutral-500"
 
+// Geometric corner-bracket frame: four short L-shaped ticks that sit just
+// outside each corner so the boundary reads as an extended technical bracket
+// (crop-mark style) instead of a filled badge. Reused by CardDate and the
+// intro highlight so the whole canvas shares one framing language.
+export function CornerFrame({
+  children,
+  className,
+  as: Tag = "span",
+}: {
+  children: React.ReactNode
+  className?: string
+  as?: "span" | "div"
+}) {
+  const corner =
+    "pointer-events-none absolute h-2 w-2 border-[#18A0FB]"
+  return (
+    <Tag className={cn("relative", className)}>
+      <span aria-hidden className={cn(corner, "-top-[3px] -left-[3px] border-t border-l")} />
+      <span aria-hidden className={cn(corner, "-top-[3px] -right-[3px] border-t border-r")} />
+      <span aria-hidden className={cn(corner, "-bottom-[3px] -left-[3px] border-b border-l")} />
+      <span aria-hidden className={cn(corner, "-right-[3px] -bottom-[3px] border-r border-b")} />
+      {children}
+    </Tag>
+  )
+}
+
 export const cardDateClass =
-  "rounded bg-[#18A0FB]/10 px-1.5 py-0.5 font-mono text-[11px] font-medium tracking-wide text-[#18A0FB]"
+  "font-mono text-[11px] font-medium tracking-wide text-gray-600 dark:text-neutral-300"
 
 export function CardDate({
   children,
@@ -16,7 +42,11 @@ export function CardDate({
   children: React.ReactNode
   className?: string
 }) {
-  return <span className={cn(cardDateClass, className)}>{children}</span>
+  return (
+    <CornerFrame className={cn("mx-1 inline-flex items-center px-1 py-0", cardDateClass, className)}>
+      {children}
+    </CornerFrame>
+  )
 }
 
 export const cardBodyClass =
@@ -112,13 +142,28 @@ export function CardSectionTitle({ children }: { children: React.ReactNode }) {
   )
 }
 
-// Refined "pill" chip used for tech stacks. Centralized so every card shares
-// the same look and picks up the brand-blue hover accent.
+// Tech-stack chip. Plain monospace token wrapped in brand-blue brackets — no
+// border or fill — so it matches the [ VISIT ] link language already on the
+// cards. The brackets are dimmed by default and brighten with the label on
+// hover.
 export const cardChipClass =
-  "rounded-full border border-gray-200/80 bg-gray-50 px-2.5 py-0.5 font-mono text-[10px] text-neutral-600 transition-colors hover:border-[#18A0FB]/40 hover:text-[#18A0FB] dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-[#18A0FB]/50 dark:hover:text-[#18A0FB]"
+  "group/chip inline-flex items-center gap-0.5 font-mono text-[10px] text-neutral-600 transition-colors hover:text-[#18A0FB] dark:text-neutral-300 dark:hover:text-[#18A0FB]"
+
+const cardChipBracketClass =
+  "text-[#18A0FB]/50 transition-colors group-hover/chip:text-[#18A0FB]"
 
 export function CardChip({ children }: { children: React.ReactNode }) {
-  return <span className={cardChipClass}>{children}</span>
+  return (
+    <span className={cardChipClass}>
+      <span aria-hidden className={cardChipBracketClass}>
+        [
+      </span>
+      {children}
+      <span aria-hidden className={cardChipBracketClass}>
+        ]
+      </span>
+    </span>
+  )
 }
 
 export function DashedRule({ className = "my-4" }: { className?: string }) {

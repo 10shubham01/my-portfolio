@@ -16,7 +16,7 @@
     {
       "id": "credilio",
       "role": "Senior Software Engineer",
-      "company": "Credilio Financial Technologies",
+      "company": "novio",
       "period": "Dec 2022 – Mar 2026",
       "highlights": [
         "Led a team of engineers, conducted code reviews, and mentored junior developers.",
@@ -49,7 +49,7 @@
         }
       ],
       "stack": ["React", "Next.js", "Vue", "Nuxt", "TypeScript", "AWS", "PostgreSQL", "Adonis.js"],
-      "href": "https://www.shubhamgupta.dev/work"
+      "href": "https://www.novio.in/"
     },
     {
       "id": "mountblue",
@@ -58,7 +58,7 @@
       "period": "Aug 2021 – Nov 2022",
       "highlights": [
         "Built dynamic web applications with Vue.js, React.js, and Node.js — APIs and database layers with Express and PostgreSQL/MySQL.",
-        "Full-stack consulting for Credilio Financial Technologies during the engagement.",
+        "Full-stack consulting for novio during the engagement.",
         "Migrated a Nuxt 2 project to Nuxt 3 with a scalable architecture and improved performance.",
         "Researched and adopted new frameworks and tools to keep stacks current and maintainable."
       ],

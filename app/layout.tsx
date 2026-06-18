@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: "Shubham Gupta | Software Engineer @ WebMD",
   description:
-    "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development. Previously senior engineer at Credilio Financial Technologies.",
+    "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development. Previously senior engineer at novio.",
   authors: [{ name: "Shubham Gupta", url: "https://shubhamgupta.dev" }],
   keywords: [
     "Shubham Gupta",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     "Shubham Gupta software engineer",
     "Shubham Gupta Mumbai",
     "Shubham Gupta portfolio",
-    "Shubham Gupta Credilio",
+    "Shubham Gupta novio",
     "software engineer WebMD",
     "senior software engineer Mumbai",
     "full stack developer India",
@@ -72,7 +72,7 @@ const jsonLd = {
   url: "https://shubhamgupta.dev",
   image: "https://shubhamgupta.dev/images/logo/og-image.png",
   description:
-    "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development. Previously senior engineer at Credilio Financial Technologies.",
+    "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development. Previously senior engineer at novio.",
   jobTitle: "Senior Software Engineer",
   worksFor: {
     "@type": "Organization",

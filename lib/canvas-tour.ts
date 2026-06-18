@@ -17,7 +17,7 @@ export const CANVAS_TOUR: TourStep[] = [
   { id: "intro", caption: "Hey — I'm Shubham. Welcome to the board. Let me show you around." },
   { id: "now", caption: "What I'm focused on right now." },
   { id: "work-webmd", caption: "Currently building health-tech tooling at WebMD." },
-  { id: "work-credilio", caption: "Before that, fintech platform work at Credilio." },
+  { id: "work-credilio", caption: "Before that, fintech platform work at novio." },
   { id: "skills", caption: "The stack I reach for, day to day." },
   { id: "project-spotlight", caption: "A favourite side project — and yes, this canvas has one too (⌘K)." },
   { id: "project-scut-cli", caption: "scut — a CLI I built to speed up everyday dev work." },
