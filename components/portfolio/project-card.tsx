@@ -4,6 +4,7 @@ import Image from "next/image"
 import posthog from "posthog-js"
 import { getProjectById } from "@/lib/projects"
 import {
+  CardChip,
   CardSectionTitle,
   CardSurface,
   cardBodyClass,
@@ -84,12 +85,7 @@ export function ProjectCard({
 
         <div className="flex flex-wrap gap-1.5 pt-1">
           {project.stack.map((tech) => (
-            <span
-              key={tech}
-              className="rounded-md border border-neutral-100 bg-neutral-50 px-2 py-0.5 font-mono text-[10px] text-neutral-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
-            >
-              {tech}
-            </span>
+            <CardChip key={tech}>{tech}</CardChip>
           ))}
         </div>
       </div>

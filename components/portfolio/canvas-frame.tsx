@@ -70,6 +70,9 @@ export function CanvasFrame({
   const outlineBase = {
     outlineWidth,
     outlineOffset: "calc(-1 * (1.5px / var(--canvas-zoom, 1)))",
+    // Match the tactile card radius (rounded-xl = 12px) so the dashed/solid
+    // selection outline hugs the rounded corners instead of squaring them off.
+    borderRadius: "12px",
   } as const
 
   const finishPointer = (event: React.PointerEvent<HTMLDivElement>) => {

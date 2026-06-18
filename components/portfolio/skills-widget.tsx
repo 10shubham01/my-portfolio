@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react"
 import { getSkillIconUrl, SKILLS } from "@/lib/skills"
+import { cardSurfaceClass } from "@/components/portfolio/card-chrome"
+import { cn } from "@/lib/utils"
 
 export function SkillsWidget({
   interactive,
@@ -30,10 +32,17 @@ export function SkillsWidget({
   return (
     <div
       ref={ref}
-      className="flex w-full flex-col gap-5 bg-white p-6 sm:gap-6 sm:p-8 dark:bg-neutral-900"
+      className={cn(
+        "flex w-full flex-col gap-5 p-6 sm:gap-6 sm:p-8",
+        cardSurfaceClass
+      )}
       style={{ pointerEvents: interactive ? "auto" : "none" }}
     >
-      <h2 className="font-mono text-sm font-medium uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
+      <h2 className="inline-flex items-center gap-2 font-mono text-sm font-medium uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
+        <span
+          aria-hidden
+          className="h-3.5 w-[3px] shrink-0 rounded-full bg-[#18A0FB]"
+        />
         Skills
       </h2>
       <ul className="grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4">

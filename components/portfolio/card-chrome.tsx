@@ -67,6 +67,13 @@ export function VisitLink({
 export const chromePanelClass =
   "rounded-lg border border-gray-200 bg-white shadow-sm dark:border-neutral-700 dark:bg-neutral-900"
 
+// Shared "tactile frame" surface: hairline border, rounded corners and a soft
+// layered shadow so each card reads as a tangible object on the canvas instead
+// of a flat white block. Keep this radius in sync with the selection outline
+// radius in canvas-frame.tsx (12px = rounded-xl).
+export const cardSurfaceClass =
+  "rounded-xl border border-gray-200/80 bg-white shadow-[0_1px_2px_-1px_rgba(16,24,40,0.10),0_8px_24px_-8px_rgba(16,24,40,0.14)] dark:border-neutral-700/60 dark:bg-neutral-900 dark:shadow-[0_2px_10px_-2px_rgba(0,0,0,0.6)]"
+
 export function CardSurface({
   ref,
   interactive,
@@ -82,7 +89,8 @@ export function CardSurface({
     <div
       ref={ref}
       className={cn(
-        "flex w-full flex-col bg-white p-6 sm:p-8 dark:bg-neutral-900",
+        "flex w-full flex-col p-6 sm:p-8",
+        cardSurfaceClass,
         className
       )}
       style={{ pointerEvents: interactive ? "auto" : "none" }}
@@ -94,10 +102,23 @@ export function CardSurface({
 
 export function CardSectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="font-mono text-sm font-medium tracking-widest text-neutral-500 uppercase dark:text-neutral-400">
+    <h2 className="inline-flex items-center gap-2 font-mono text-sm font-medium tracking-widest text-neutral-500 uppercase dark:text-neutral-400">
+      <span
+        aria-hidden
+        className="h-3.5 w-[3px] shrink-0 rounded-full bg-[#18A0FB]"
+      />
       {children}
     </h2>
   )
+}
+
+// Refined "pill" chip used for tech stacks. Centralized so every card shares
+// the same look and picks up the brand-blue hover accent.
+export const cardChipClass =
+  "rounded-full border border-gray-200/80 bg-gray-50 px-2.5 py-0.5 font-mono text-[10px] text-neutral-600 transition-colors hover:border-[#18A0FB]/40 hover:text-[#18A0FB] dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:border-[#18A0FB]/50 dark:hover:text-[#18A0FB]"
+
+export function CardChip({ children }: { children: React.ReactNode }) {
+  return <span className={cardChipClass}>{children}</span>
 }
 
 export function DashedRule({ className = "my-4" }: { className?: string }) {
