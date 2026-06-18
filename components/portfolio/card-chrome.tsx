@@ -95,12 +95,11 @@ export function VisitLink({
 }
 
 export const chromePanelClass =
-  "rounded-lg border border-gray-200 bg-white dark:border-neutral-700 dark:bg-neutral-900"
+  "border border-gray-200 bg-white dark:border-neutral-700 dark:bg-neutral-900"
 
-// Shared card surface: hairline border and rounded corners. Keep this radius
-// in sync with the selection outline radius in canvas-frame.tsx (12px = rounded-xl).
+// Shared card surface: hairline border.
 export const cardSurfaceClass =
-  "rounded-xl border border-gray-200/80 bg-white dark:border-neutral-700/60 dark:bg-neutral-900"
+  "border border-gray-200/80 bg-white dark:border-neutral-700/60 dark:bg-neutral-900"
 
 export function CardSurface({
   ref,
