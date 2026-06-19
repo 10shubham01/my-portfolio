@@ -143,6 +143,7 @@ export function MediaItem({
             crossOrigin="anonymous"
             unoptimized={isGif}
             sizes={`${item.width}px`}
+            className={item.mediaClassName}
             style={{
               objectFit: "cover",
               opacity: isGif && !active ? 0 : 1,

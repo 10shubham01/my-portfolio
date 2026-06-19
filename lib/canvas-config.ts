@@ -15,6 +15,7 @@ export type CanvasItemType =
   | "project"
   | "peerlist"
   | "theme"
+  | "manifesto"
 export type CanvasComponentId =
   | "intro"
   | "media"
@@ -28,6 +29,7 @@ export type CanvasComponentId =
   | "project"
   | "peerlist"
   | "theme-doodle"
+  | "manifesto"
 
 export interface CanvasItemConfig {
   id: string
@@ -39,6 +41,7 @@ export interface CanvasItemConfig {
   scatter?: boolean
   asset?: string
   alt?: string
+  mediaClassName?: string
   placeholderColor?: string
   thumbnail?: string
   workId?: string

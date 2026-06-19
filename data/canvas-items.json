@@ -193,6 +193,27 @@
       "position": { "x": -2060, "y": 1128 },
       "size": { "width": 400, "height": 380 },
       "scatter": false
+    },
+    {
+      "id": "intersection",
+      "component": "media",
+      "type": "image",
+      "label": "intersection.svg",
+      "position": { "x": 1140, "y": 200 },
+      "size": { "width": 400, "height": 302 },
+      "scatter": false,
+      "asset": "images/intersection.svg",
+      "alt": "Intersection illustration",
+      "mediaClassName": "dark:opacity-55 dark:filter-[invert(1)_brightness(1.6)_contrast(1.1)_sepia(0.08)]"
+    },
+    {
+      "id": "manifesto",
+      "component": "manifesto",
+      "type": "manifesto",
+      "label": "principles",
+      "position": { "x": 1340, "y": 600 },
+      "size": { "width": 440, "height": 600 },
+      "scatter": false
     }
   ]
 }
