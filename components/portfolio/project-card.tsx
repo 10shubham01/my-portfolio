@@ -58,7 +58,10 @@ export function ProjectCard({
         <p className={`${cardBodyClass} text-[13px]`}>{project.description}</p>
 
         {project.media && (
-          <div className="relative aspect-[1002/682] w-full overflow-hidden rounded-lg border border-neutral-100 dark:border-neutral-700">
+          <div
+            className="relative w-full overflow-hidden rounded-lg border border-neutral-100 dark:border-neutral-700"
+            style={{ aspectRatio: project.mediaAspect ?? "1002/682" }}
+          >
             <Image
               src={project.media}
               alt={project.mediaAlt || `${project.name} demo`}

@@ -11,6 +11,7 @@ import { WebDoodleCard } from "@/components/portfolio/web-doodle-card"
 import { SocialsCard } from "@/components/portfolio/socials-card"
 import { NowCard } from "@/components/portfolio/now-card"
 import { ProjectCard } from "@/components/portfolio/project-card"
+import { PeerlistCard } from "@/components/portfolio/peerlist-card"
 import { ThemeDoodle } from "@/components/portfolio/theme-doodle"
 
 export function RenderCanvasItem({
@@ -57,6 +58,8 @@ export function RenderCanvasItem({
           onResize={onResize}
         />
       )
+    case "peerlist":
+      return <PeerlistCard interactive={active} onResize={onResize} />
     case "theme-doodle":
       return <ThemeDoodle />
     default:

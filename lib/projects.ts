@@ -10,6 +10,7 @@ export interface ProjectEntry {
   href: string
   media?: string
   mediaAlt?: string
+  mediaAspect?: string
 }
 
 export const PROJECTS: ProjectEntry[] = projectsJson.projects

@@ -11,7 +11,10 @@
         "Visualize query results with interactive Chart.js graphs"
       ],
       "stack": ["Node.js", "Chart.js", "PostgreSQL", "pgcli", "psql"],
-      "href": "https://github.com/10shubham01/dbspin"
+      "href": "https://github.com/10shubham01/dbspin",
+      "media": "/assets/gifs/dbspin.gif",
+      "mediaAlt": "dbspin CLI demo",
+      "mediaAspect": "1108/682"
     },
     {
       "id": "text-command-palette",
@@ -24,7 +27,10 @@
         "Offline-first and lightweight — all processing runs locally in the browser"
       ],
       "stack": ["Chrome Extension", "JavaScript", "Manifest V3"],
-      "href": "https://chromewebstore.google.com/detail/text-command-palette/gdlldblnpmbnjeildgidppdnoefapajo"
+      "href": "https://chromewebstore.google.com/detail/text-command-palette/gdlldblnpmbnjeildgidppdnoefapajo",
+      "media": "/assets/images/text-command-palette.png",
+      "mediaAlt": "Text Command Palette demo",
+      "mediaAspect": "800/500"
     },
     {
       "id": "spotlight",
@@ -37,7 +43,10 @@
         "Quick actions to switch tabs, reopen closed ones, or fall back to Google search"
       ],
       "stack": ["Chrome Extension", "React", "TypeScript", "Manifest V3"],
-      "href": "https://chromewebstore.google.com/detail/spotlight-chrome-extensio/abbhoiaihkicmgmmglcomckkbcmdnjpp"
+      "href": "https://chromewebstore.google.com/detail/spotlight-chrome-extensio/abbhoiaihkicmgmmglcomckkbcmdnjpp",
+      "media": "/assets/images/spotlight.png",
+      "mediaAlt": "Spotlight Chrome Extension demo",
+      "mediaAspect": "800/500"
     },
     {
       "id": "easybg",
@@ -50,7 +59,10 @@
         "Built on Tailwind CSS v4 with dark mode and keyboard shortcuts"
       ],
       "stack": ["Next.js", "React", "TypeScript", "Tailwind CSS v4"],
-      "href": "https://easybg.shubhamgupta.dev/"
+      "href": "https://easybg.shubhamgupta.dev/",
+      "media": "/assets/images/easybg.png",
+      "mediaAlt": "easybg background collection",
+      "mediaAspect": "1920/2463"
     },
     {
       "id": "scut-cli",

@@ -13,6 +13,7 @@ export type CanvasItemType =
   | "socials"
   | "now"
   | "project"
+  | "peerlist"
   | "theme"
 export type CanvasComponentId =
   | "intro"
@@ -25,6 +26,7 @@ export type CanvasComponentId =
   | "socials"
   | "now"
   | "project"
+  | "peerlist"
   | "theme-doodle"
 
 export interface CanvasItemConfig {

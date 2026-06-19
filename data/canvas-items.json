@@ -28,6 +28,15 @@
       "scatter": false
     },
     {
+      "id": "peerlist",
+      "component": "peerlist",
+      "type": "peerlist",
+      "label": "featured",
+      "position": { "x": 0, "y": -384 },
+      "size": { "width": 380, "height": 180 },
+      "scatter": false
+    },
+    {
       "id": "now",
       "component": "now",
       "type": "now",
