@@ -1,3 +1,7 @@
+"use client"
+
+import { useState } from "react"
+import { MousePointerClick } from "lucide-react"
 import { cn } from "@/lib/utils"
 import posthog from "posthog-js"
 
@@ -58,6 +62,24 @@ export const cardLinkClass =
 export const visitLinkClass =
   "inline-flex shrink-0 items-center font-mono text-[11px] font-medium tracking-wide text-[#18A0FB] transition-colors hover:opacity-80"
 
+// Guiding cursor that hovers over a CTA and taps at it on a loop, nudging the
+// user to click. Render it as a sibling inside a `relative` wrapper around any
+// clickable element; pass `className` to anchor it to the right corner.
+export function CtaCursor({ className }: { className?: string }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "cta-cursor-hint pointer-events-none absolute text-[#18A0FB]",
+        className ?? "-right-2 -bottom-3"
+      )}
+    >
+      <span className="cta-cursor-ping absolute -top-1 -left-1 h-5 w-5 rounded-full border border-[#18A0FB]" />
+      <MousePointerClick className="size-4 drop-shadow-sm" strokeWidth={2} />
+    </span>
+  )
+}
+
 export function VisitLink({
   href,
   label = "VISIT",
@@ -65,6 +87,7 @@ export function VisitLink({
   onClick,
   trackingSource,
   trackingProps,
+  hint = false,
 }: {
   href: string
   label?: string
@@ -72,25 +95,35 @@ export function VisitLink({
   onClick?: () => void
   trackingSource?: string
   trackingProps?: Record<string, string | number | boolean | null | undefined>
+  /** When true, a guiding cursor hovers over the link until it is clicked. */
+  hint?: boolean
 }) {
+  const [clicked, setClicked] = useState(false)
+  const showHint = hint && !clicked
+
   return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={cn(visitLinkClass, className)}
-      onClick={() => {
-        posthog.capture("link_clicked", {
-          href,
-          label: label.toLowerCase(),
-          source: trackingSource ?? "unknown",
-          ...trackingProps,
-        })
-        onClick?.()
-      }}
-    >
-      [ {label} ]
-    </a>
+    <span className="relative inline-flex">
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={cn(visitLinkClass, className)}
+        onClick={() => {
+          setClicked(true)
+          posthog.capture("link_clicked", {
+            href,
+            label: label.toLowerCase(),
+            source: trackingSource ?? "unknown",
+            ...trackingProps,
+          })
+          onClick?.()
+        }}
+      >
+        [ {label} ]
+      </a>
+
+      {showHint && <CtaCursor />}
+    </span>
   )
 }
 

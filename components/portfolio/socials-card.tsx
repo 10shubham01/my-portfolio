@@ -23,7 +23,7 @@ export function SocialsCard({
       <CardSectionTitle>Socials</CardSectionTitle>
 
       <div className="mt-5 flex flex-col gap-4">
-        {SOCIAL_LINKS.map(({ platform, handle, href }) => (
+        {SOCIAL_LINKS.map(({ platform, handle, href }, index) => (
           <div key={platform} className="flex items-center justify-between gap-3 font-medium">
             <span className="font-mono text-[12px]">
               <span className="font-medium text-gray-600 dark:text-neutral-300">
@@ -33,6 +33,7 @@ export function SocialsCard({
             </span>
             <VisitLink
               href={href}
+              hint={interactive && index === 0}
               trackingSource="socials_card"
               trackingProps={{ platform }}
               onClick={() =>

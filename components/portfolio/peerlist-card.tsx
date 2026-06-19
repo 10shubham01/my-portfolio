@@ -1,9 +1,11 @@
 "use client"
 
+import { useState } from "react"
 import posthog from "posthog-js"
 import {
   CardSectionTitle,
   CardSurface,
+  CtaCursor,
 } from "@/components/portfolio/card-chrome"
 import { useFrameResize } from "@/components/portfolio/use-frame-resize"
 
@@ -18,6 +20,7 @@ export function PeerlistCard({
   onResize?: (width: number, height: number) => void
 }) {
   const ref = useFrameResize(onResize)
+  const [clicked, setClicked] = useState(false)
 
   return (
     <CardSurface ref={ref} interactive={interactive}>
@@ -27,14 +30,15 @@ export function PeerlistCard({
         href={PEERLIST_PROJECT_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-5 inline-flex w-fit transition-opacity hover:opacity-80"
-        onClick={() =>
+        className="relative mt-3 inline-flex w-fit transition-opacity hover:opacity-80"
+        onClick={() => {
+          setClicked(true)
           posthog.capture("link_clicked", {
             href: PEERLIST_PROJECT_URL,
             label: "peerlist project of the week",
             source: "peerlist-card",
           })
-        }
+        }}
       >
         {/* Theme-aware badge: light variant by default, dark variant when the
             `dark` class is on <html>. */}
@@ -48,6 +52,7 @@ export function PeerlistCard({
           alt="Peerlist Project of the Week — Rank #2"
           className="hidden h-16 w-auto dark:block"
         />
+        {interactive && !clicked && <CtaCursor className="right-1 bottom-1" />}
       </a>
     </CardSurface>
   )

@@ -36,7 +36,7 @@ export function ExperienceCard({
       </div>
 
       <div className="mt-5">
-        <WorkEntry entry={entry} />
+        <WorkEntry entry={entry} interactive={interactive} />
       </div>
     </CardSurface>
   )
@@ -44,8 +44,10 @@ export function ExperienceCard({
 
 function WorkEntry({
   entry,
+  interactive,
 }: {
   entry: NonNullable<ReturnType<typeof getExperienceById>>
+  interactive: boolean
 }) {
   return (
     <div className="flex flex-col gap-4">
@@ -56,6 +58,7 @@ function WorkEntry({
         {entry.href && (
           <VisitLink
             href={entry.href}
+            hint={interactive}
             trackingSource="experience_card"
             trackingProps={{ company: entry.company, role: entry.role }}
             onClick={() =>

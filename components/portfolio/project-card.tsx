@@ -44,6 +44,7 @@ export function ProjectCard({
           </div>
           <VisitLink
             href={project.href}
+            hint={interactive}
             trackingSource="project_card"
             trackingProps={{ project_id: projectId, project_name: project.name }}
             onClick={() =>

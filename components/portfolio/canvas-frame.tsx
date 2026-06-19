@@ -189,6 +189,7 @@ export function CanvasFrame({
 
       <div
         className="frame-content relative min-h-0 select-none overflow-visible"
+        data-active={selected ? "true" : undefined}
         style={{
           width: item.width,
           height: item.height,

@@ -168,6 +168,86 @@
     -webkit-backface-visibility: hidden;
 }
 
+/* Once a card is selected its content is interactive. Make every clickable
+   element inside read as clickable: a pointer cursor plus a subtle press
+   animation so a click feels acknowledged. */
+.frame-content[data-active="true"] a,
+.frame-content[data-active="true"] button:not(:disabled),
+.frame-content[data-active="true"] [role="button"]:not(:disabled),
+.frame-content[data-active="true"] [data-cta] {
+    cursor: pointer;
+    transition: transform 120ms ease;
+}
+
+.frame-content[data-active="true"] a:active,
+.frame-content[data-active="true"] button:not(:disabled):active,
+.frame-content[data-active="true"] [role="button"]:not(:disabled):active,
+.frame-content[data-active="true"] [data-cta]:active {
+    transform: scale(0.96);
+}
+
+/* Guiding cursor: a little pointer that hovers over the primary CTA of a
+   selected card and taps at it on a loop until the user clicks the CTA. */
+.cta-cursor-hint {
+    animation: cta-cursor-tap 1.6s ease-in-out infinite;
+    transform-origin: top left;
+}
+
+.cta-cursor-ping {
+    animation: cta-cursor-ping 1.6s ease-out infinite;
+}
+
+@keyframes cta-cursor-tap {
+    0%,
+    55%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+    65% {
+        transform: translate(-2px, -2px) scale(0.8);
+    }
+    75% {
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+@keyframes cta-cursor-ping {
+    0%,
+    55% {
+        transform: scale(0.4);
+        opacity: 0;
+    }
+    65% {
+        transform: scale(0.5);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(1.8);
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .frame-content[data-active="true"] a,
+    .frame-content[data-active="true"] button:not(:disabled),
+    .frame-content[data-active="true"] [role="button"]:not(:disabled),
+    .frame-content[data-active="true"] [data-cta] {
+        transition: none;
+    }
+
+    .frame-content[data-active="true"] a:active,
+    .frame-content[data-active="true"] button:not(:disabled):active,
+    .frame-content[data-active="true"] [role="button"]:not(:disabled):active,
+    .frame-content[data-active="true"] [data-cta]:active {
+        transform: none;
+    }
+
+    .cta-cursor-hint,
+    .cta-cursor-ping {
+        animation: none;
+    }
+}
+
 .canvas-label {
     transform: scale(calc(1 / var(--canvas-zoom, 1)));
     transform-origin: 0 100%;

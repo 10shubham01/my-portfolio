@@ -174,6 +174,7 @@ export function GitHubGraphCard({
         <VisitLink
           href={GITHUB.profileUrl}
           label="PROFILE"
+          hint={interactive}
           trackingSource="github_card"
           trackingProps={{ username: GITHUB.username, location: "profile_cta" }}
           onClick={() =>
