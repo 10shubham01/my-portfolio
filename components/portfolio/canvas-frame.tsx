@@ -66,6 +66,9 @@ export function CanvasFrame({
 
   const outlineWidth = "calc(1.5px / var(--canvas-zoom, 1))"
   const handleSize = "calc(8px / var(--canvas-zoom, 1))"
+  // Selection readout stays a constant on-screen size regardless of zoom.
+  const badgeFont = "calc(11px / var(--canvas-zoom, 1))"
+  const badgeGap = "calc(7px / var(--canvas-zoom, 1))"
   const showHover = hovered && !suppressHover && !selected
   const outlineBase = {
     outlineWidth,
@@ -234,6 +237,24 @@ export function CanvasFrame({
               />
             ))}
           </div>
+        )}
+
+        {/* Figma-style selection readout: position bottom-left, dimensions bottom-right */}
+        {selected && !suppressHover && !dragging && (
+          <>
+            <span
+              className="pointer-events-none absolute top-full left-0 font-mono leading-none whitespace-nowrap text-[#18A0FB] select-none"
+              style={{ marginTop: badgeGap, fontSize: badgeFont, zIndex: 11 }}
+            >
+              X {Math.round(item.x)}  Y {Math.round(item.y)}
+            </span>
+            <span
+              className="pointer-events-none absolute top-full right-0 font-mono leading-none whitespace-nowrap text-[#18A0FB] select-none"
+              style={{ marginTop: badgeGap, fontSize: badgeFont, zIndex: 11 }}
+            >
+              {Math.round(item.width)} × {Math.round(item.height)}
+            </span>
+          </>
         )}
       </div>
     </div>
