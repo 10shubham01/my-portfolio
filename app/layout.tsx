@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { DM_Mono, Geist, Inter } from "next/font/google"
+import { DM_Mono, Geist, Inter, Allura } from "next/font/google"
 
 import "./globals.css"
 import { cn } from "@/lib/utils"
@@ -19,6 +19,13 @@ const dmMono = DM_Mono({
   subsets: ["latin"],
   weight: ["300", "400", "500"],
   variable: "--font-dm-mono",
+})
+
+// Thin, flowing signature script for the contact slip's "Signed" line.
+const allura = Allura({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-signature",
 })
 
 export const metadata: Metadata = {
@@ -102,7 +109,8 @@ export default function RootLayout({
         "h-full antialiased",
         geist.variable,
         inter.variable,
-        dmMono.variable
+        dmMono.variable,
+        allura.variable
       )}
       suppressHydrationWarning
     >

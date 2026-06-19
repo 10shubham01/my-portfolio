@@ -16,6 +16,7 @@ export type CanvasItemType =
   | "peerlist"
   | "theme"
   | "manifesto"
+  | "contact"
 export type CanvasComponentId =
   | "intro"
   | "media"
@@ -30,6 +31,7 @@ export type CanvasComponentId =
   | "peerlist"
   | "theme-doodle"
   | "manifesto"
+  | "contact"
 
 export interface CanvasItemConfig {
   id: string

@@ -504,6 +504,7 @@ export function PortfolioCanvas() {
     sizes["work-webmd"]?.h,
     sizes["work-mountblue"]?.h,
     sizes.github?.h,
+    sizes.github?.w,
     sizes.socials?.h,
     positions["work-credilio"]?.x,
     positions["work-credilio"]?.y,

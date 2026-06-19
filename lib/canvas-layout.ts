@@ -12,6 +12,7 @@ export const ANCHORED_ITEM_IDS = [
   "project-easybg",
   "github",
   "socials",
+  "contact",
 ] as const
 
 function getItem(id: string) {
@@ -114,6 +115,28 @@ export function getGitHubPosition(
   }
 }
 
+export function getContactPosition(
+  positions: Record<string, Position>,
+  sizes: Record<string, Size>
+): Position {
+  const github = getItem("github")
+  const contact = getItem("contact")
+  if (!github || !contact) {
+    return positions.contact ?? { x: contact?.x ?? 0, y: contact?.y ?? 0 }
+  }
+
+  const githubPos = positions.github ?? { x: github.x, y: github.y }
+  const githubSize = sizes.github ?? { w: github.width, h: github.height }
+
+  // github is a wide card that the anchored layout pushes down beneath the
+  // work cards; sitting the contact slip to its right (with the standard frame
+  // gap) keeps the two from overlapping no matter how tall the work column gets.
+  return {
+    x: githubPos.x + githubSize.w + FRAME_GAP,
+    y: githubPos.y,
+  }
+}
+
 export function withAnchoredLayout(
   positions: Record<string, Position>,
   sizes: Record<string, Size>,
@@ -139,9 +162,13 @@ export function withAnchoredLayout(
     ...withEasybg,
     github: getGitHubPosition(withEasybg, sizes),
   }
-
-  return {
+  const withSocials = {
     ...withGitHub,
     socials: getSocialsPosition(withGitHub, sizes),
+  }
+
+  return {
+    ...withSocials,
+    contact: getContactPosition(withSocials, sizes),
   }
 }

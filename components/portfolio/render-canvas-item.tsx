@@ -14,6 +14,7 @@ import { ProjectCard } from "@/components/portfolio/project-card"
 import { PeerlistCard } from "@/components/portfolio/peerlist-card"
 import { ThemeDoodle } from "@/components/portfolio/theme-doodle"
 import { ManifestoCard } from "@/components/portfolio/manifesto-card"
+import { ContactCard } from "@/components/portfolio/contact-card"
 
 export function RenderCanvasItem({
   item,
@@ -65,6 +66,8 @@ export function RenderCanvasItem({
       return <ThemeDoodle />
     case "manifesto":
       return <ManifestoCard interactive={active} onResize={onResize} />
+    case "contact":
+      return <ContactCard interactive={active} onResize={onResize} />
     default:
       return null
   }

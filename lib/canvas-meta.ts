@@ -67,6 +67,11 @@ export function getCanvasItemMeta(id: string | null | undefined): CanvasItemMeta
         title: withName("Right now"),
         description: `What ${SITE.name} is up to right now.`,
       }
+    case "contact":
+      return {
+        title: withName("Get in touch"),
+        description: `Send ${SITE.name} a message — ideas, roles, or just to say hi.`,
+      }
     case "intro":
       return DEFAULT_META
   }

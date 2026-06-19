@@ -214,6 +214,15 @@
       "position": { "x": 1340, "y": 600 },
       "size": { "width": 440, "height": 620 },
       "scatter": false
+    },
+    {
+      "id": "contact",
+      "component": "contact",
+      "type": "contact",
+      "label": "transmission",
+      "position": { "x": 1180, "y": 1800 },
+      "size": { "width": 480, "height": 460 },
+      "scatter": false
     }
   ]
 }
