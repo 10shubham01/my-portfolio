@@ -7,6 +7,7 @@ import {
   CardChip,
   CardSectionTitle,
   CardSurface,
+  CornerFrame,
   cardBodyClass,
   cardMetaClass,
   cardTitleClass,
@@ -57,22 +58,47 @@ export function ProjectCard({
 
         <p className={`${cardBodyClass} text-[13px]`}>{project.description}</p>
 
-        {project.media && (
-          <div
-            className="relative w-full overflow-hidden rounded-lg border border-neutral-100 dark:border-neutral-700"
-            style={{ aspectRatio: project.mediaAspect ?? "1002/682" }}
-          >
-            <Image
-              src={project.media}
-              alt={project.mediaAlt || `${project.name} demo`}
-              fill
-              unoptimized={project.media.endsWith(".gif")}
-              sizes="400px"
-              className="object-cover"
-              draggable={false}
-            />
-          </div>
-        )}
+        {project.media &&
+          (() => {
+            const aspect = project.mediaAspect ?? "1002/682"
+            const fileName = project.media.split("/").pop()
+            const [w, h] = aspect.split("/")
+            const dimensions = w && h ? `${w} × ${h}` : null
+
+            return (
+              <figure className="my-1 flex flex-col gap-1.5">
+                {/* Figma-style frame label */}
+                <figcaption className="font-mono text-[10px] tracking-wide text-gray-400 dark:text-neutral-500">
+                  {fileName}
+                </figcaption>
+
+                {/* Brand-blue crop-mark brackets framing the media */}
+                <CornerFrame as="div" className="block w-full">
+                  <div
+                    className="relative w-full overflow-hidden bg-gray-50 dark:bg-neutral-900/60"
+                    style={{ aspectRatio: aspect }}
+                  >
+                    <Image
+                      src={project.media}
+                      alt={project.mediaAlt || `${project.name} demo`}
+                      fill
+                      unoptimized={project.media.endsWith(".gif")}
+                      sizes="400px"
+                      className="object-cover"
+                      draggable={false}
+                    />
+                  </div>
+                </CornerFrame>
+
+                {/* Blueprint dimension annotation */}
+                {dimensions && (
+                  <figcaption className="self-end font-mono text-[10px] text-gray-300 dark:text-neutral-600">
+                    {dimensions}
+                  </figcaption>
+                )}
+              </figure>
+            )
+          })()}
 
         <ul className="flex flex-col gap-2">
           {project.highlights.map((highlight) => (
