@@ -54,9 +54,10 @@ const PPI = 96 // px per inch
 const INCHES = 6
 const PX_PER_MM = PPI / 25.4 // ≈ 3.7795
 const RULER_W = 104 // width of the ruler body
-const TOP = 14 // headroom for the 0 mark
+const TOP = 16 // headroom so the 0 mark isn't clipped
+const BOTTOM = 16 // footroom so the 6in / 15cm marks aren't clipped
 const RULER_H = PPI * INCHES // 576
-const SVG_H = TOP + RULER_H + 2
+const SVG_H = TOP + RULER_H + BOTTOM
 
 // Left edge = centimetres (mm graduations). Ticks grow inward from x=0.
 const cmTicks = Array.from(
@@ -98,9 +99,9 @@ function Ruler() {
       {/* ruler body */}
       <rect
         x="0.5"
-        y={TOP - 0.5}
+        y={TOP}
         width={RULER_W - 1}
-        height={RULER_H + 1}
+        height={RULER_H}
         rx="3"
         stroke={`${SCALE}55`}
         strokeWidth="1"
@@ -120,7 +121,7 @@ function Ruler() {
         />
       ))}
       {cmTicks
-        .filter((t) => t.cm)
+        .filter((t) => t.cm !== null)
         .map((t) => (
           <text
             key={`cmn-${t.cm}`}
@@ -148,7 +149,7 @@ function Ruler() {
         />
       ))}
       {inchTicks
-        .filter((t) => t.inch)
+        .filter((t) => t.inch !== null)
         .map((t) => (
           <text
             key={`inn-${t.inch}`}

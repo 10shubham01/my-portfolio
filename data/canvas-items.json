@@ -212,7 +212,7 @@
       "type": "manifesto",
       "label": "principles",
       "position": { "x": 1340, "y": 600 },
-      "size": { "width": 440, "height": 600 },
+      "size": { "width": 440, "height": 620 },
       "scatter": false
     }
   ]
