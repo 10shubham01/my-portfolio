@@ -9,7 +9,7 @@ export interface CanvasItemMeta {
 }
 
 export const DEFAULT_META: CanvasItemMeta = {
-  title: `${SITE.name} | ${SITE.title} @ ${SITE.company}`,
+  title: `${SITE.name} — ${SITE.title} @ ${SITE.company}`,
   description: `${SITE.name} — ${SITE.title.toLowerCase()} at ${SITE.company} in ${SITE.location}, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development.`,
 }
 

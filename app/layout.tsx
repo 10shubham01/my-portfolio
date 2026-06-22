@@ -30,7 +30,7 @@ const allura = Allura({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
-  title: "Shubham Gupta | Software Engineer @ WebMD",
+  title: "Shubham Gupta — Software Engineer @ WebMD",
   description:
     "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development. Previously senior engineer at novio.",
   authors: [{ name: "Shubham Gupta", url: "https://shubhamgupta.dev" }],
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     "Next.js developer",
   ],
   openGraph: {
-    title: "Shubham Gupta | Software Engineer @ WebMD",
+    title: "Shubham Gupta — Software Engineer @ WebMD",
     description:
       "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development.",
     url: "https://shubhamgupta.dev",
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     creator: "@10shubham01",
-    title: "Shubham Gupta | Software Engineer @ WebMD",
+    title: "Shubham Gupta — Software Engineer @ WebMD",
     description:
       "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development.",
   },
