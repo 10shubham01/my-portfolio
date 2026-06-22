@@ -42,6 +42,8 @@
     --font-dm-mono: var(--font-dm-mono);
     --font-mono: var(--font-dm-mono);
     --font-signature: var(--font-signature);
+    --font-basteleur: var(--font-basteleur);
+    --font-helvetica: var(--font-helvetica);
     --default-font-family: var(--font-inter);
     --default-mono-font-family: var(--font-dm-mono);
     --color-background: var(--background);
@@ -146,6 +148,14 @@
 
 .font-signature {
     font-family: var(--font-signature), "Segoe Script", cursive;
+}
+
+.font-display {
+    font-family: var(--font-basteleur), ui-serif, Georgia, serif;
+}
+
+.font-helvetica {
+    font-family: var(--font-helvetica), "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .canvas-dots {

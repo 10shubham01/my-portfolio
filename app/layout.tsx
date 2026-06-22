@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { DM_Mono, Geist, Inter, Allura } from "next/font/google"
+import localFont from "next/font/local"
 
 import "./globals.css"
 import { cn } from "@/lib/utils"
@@ -26,6 +27,25 @@ const allura = Allura({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-signature",
+})
+
+// Local display serif used for the big draggable "Fullstack Developer" tagline.
+const basteleur = localFont({
+  src: [
+    { path: "./fonts/Basteleur-Bold.otf", weight: "700", style: "normal" },
+    { path: "./fonts/Basteleur-Moonlight.otf", weight: "300", style: "normal" },
+  ],
+  variable: "--font-basteleur",
+})
+
+// Local Helvetica Neue family.
+const helveticaNeue = localFont({
+  src: [
+    { path: "./fonts/HelveticaNeueRoman.otf", weight: "400", style: "normal" },
+    { path: "./fonts/HelveticaNeueLight.otf", weight: "300", style: "normal" },
+    { path: "./fonts/Helvetica-Oblique.ttf", weight: "400", style: "italic" },
+  ],
+  variable: "--font-helvetica",
 })
 
 export const metadata: Metadata = {
@@ -110,7 +130,9 @@ export default function RootLayout({
         geist.variable,
         inter.variable,
         dmMono.variable,
-        allura.variable
+        allura.variable,
+        basteleur.variable,
+        helveticaNeue.variable
       )}
       suppressHydrationWarning
     >

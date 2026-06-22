@@ -17,6 +17,7 @@ export type CanvasItemType =
   | "theme"
   | "manifesto"
   | "contact"
+  | "tagline"
 export type CanvasComponentId =
   | "intro"
   | "media"
@@ -32,6 +33,7 @@ export type CanvasComponentId =
   | "theme-doodle"
   | "manifesto"
   | "contact"
+  | "tagline-char"
 
 export interface CanvasItemConfig {
   id: string
@@ -48,6 +50,7 @@ export interface CanvasItemConfig {
   thumbnail?: string
   workId?: string
   projectId?: string
+  char?: string
 }
 
 export interface CanvasItem extends CanvasItemConfig {
@@ -77,8 +80,43 @@ function normalizeItem(config: CanvasItemConfig): CanvasItem {
   }
 }
 
+// "Fullstack Developer" as a single row of individually draggable letters,
+// sitting above everything as a banner at the top of the board. Each letter is
+// a fixed-position canvas card so it can be picked up and moved on its own.
+const TAGLINE_TEXT = "Fullstack Developer"
+const TAGLINE_ORIGIN = { x: -600, y: -760 }
+const TAGLINE_CHAR_WIDTH = 60
+const TAGLINE_CHAR_HEIGHT = 104
+const TAGLINE_CHAR_ADVANCE = 64
+
+function generateTaglineItems(): CanvasItemConfig[] {
+  const items: CanvasItemConfig[] = []
+
+  TAGLINE_TEXT.split("").forEach((char, index) => {
+    if (char === " ") return
+    items.push({
+      id: `tagline-${index}`,
+      component: "tagline-char",
+      type: "tagline",
+      label: char,
+      char,
+      scatter: false,
+      position: {
+        x: TAGLINE_ORIGIN.x + index * TAGLINE_CHAR_ADVANCE,
+        y: TAGLINE_ORIGIN.y,
+      },
+      size: { width: TAGLINE_CHAR_WIDTH, height: TAGLINE_CHAR_HEIGHT },
+    })
+  })
+
+  return items
+}
+
 export function loadCanvasItems(): CanvasItem[] {
-  return (canvasItemsJson.items as CanvasItemConfig[]).map(normalizeItem)
+  return [
+    ...(canvasItemsJson.items as CanvasItemConfig[]),
+    ...generateTaglineItems(),
+  ].map(normalizeItem)
 }
 
 export const CANVAS_ITEMS = loadCanvasItems()

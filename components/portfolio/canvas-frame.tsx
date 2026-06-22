@@ -152,6 +152,7 @@ export function CanvasFrame({
       }}
       onPointerLeave={() => setHovered(false)}
     >
+      {item.type !== "tagline" && (
       <div className="mb-1.5">
         <span
           className={cn(
@@ -189,6 +190,7 @@ export function CanvasFrame({
           )}
         </span>
       </div>
+      )}
 
       <div
         className="frame-content relative min-h-0 select-none overflow-visible"
