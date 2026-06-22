@@ -23,6 +23,19 @@ function ZoomInIcon() {
   )
 }
 
+function MenuIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+      <path
+        d="M2.5 4h9M2.5 7h9M2.5 10h9"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
 function FitIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
@@ -47,6 +60,7 @@ export function CanvasZoomControls({
   onZoomReset,
   onFitAll,
   onOpenSpotlight,
+  isMobile = false,
 }: {
   zoom: number
   onZoomIn: () => void
@@ -54,6 +68,7 @@ export function CanvasZoomControls({
   onZoomReset: () => void
   onFitAll: () => void
   onOpenSpotlight?: () => void
+  isMobile?: boolean
 }) {
   const label = `${Math.round(zoom * 100)}%`
 
@@ -95,12 +110,15 @@ export function CanvasZoomControls({
         <>
           <button
             type="button"
-            aria-label="Open spotlight"
-            title="Spotlight (⌘K)"
-            className={cn(controlClass, "min-w-[52px] px-2 font-mono text-[11px]")}
+            aria-label={isMobile ? "Open menu" : "Open spotlight"}
+            title={isMobile ? "Menu" : "Spotlight (⌘K)"}
+            className={cn(
+              controlClass,
+              isMobile ? "w-8" : "min-w-[52px] px-2 font-mono text-[11px]"
+            )}
             onClick={onOpenSpotlight}
           >
-            ⌘K
+            {isMobile ? <MenuIcon /> : "⌘K"}
           </button>
           <div className="mx-0.5 h-5 w-px bg-gray-200 dark:bg-neutral-700" />
         </>

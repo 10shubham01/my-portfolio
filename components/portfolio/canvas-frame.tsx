@@ -226,13 +226,14 @@ export function CanvasFrame({
             {HANDLE_POSITIONS.map((position) => (
               <div
                 key={position}
-                className={cn("absolute bg-white dark:bg-neutral-800", position)}
+                className={cn("absolute", position)}
                 style={{
                   width: handleSize,
                   height: handleSize,
                   borderWidth: outlineWidth,
                   borderStyle: "solid",
                   borderColor: "#18A0FB",
+                  backgroundColor: "#18A0FB",
                 }}
               />
             ))}

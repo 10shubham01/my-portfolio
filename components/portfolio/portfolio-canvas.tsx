@@ -18,6 +18,7 @@ import { RenderCanvasItem } from "@/components/portfolio/render-canvas-item"
 import { CanvasMenu } from "@/components/portfolio/canvas-menu"
 import { CanvasZoomControls } from "@/components/portfolio/canvas-zoom-controls"
 import { CanvasSpotlight } from "@/components/portfolio/canvas-spotlight"
+import { CanvasMobileMenu } from "@/components/portfolio/canvas-mobile-menu"
 import { CanvasTour } from "@/components/portfolio/canvas-tour"
 import { CANVAS_TOUR, TOUR_STEP_DURATION } from "@/lib/canvas-tour"
 import { ShortcutsDialog } from "@/components/portfolio/shortcuts-dialog"
@@ -54,6 +55,8 @@ export function PortfolioCanvas() {
   const [tourStep, setTourStep] = useState(0)
   const [tourPlaying, setTourPlaying] = useState(true)
   const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null)
+  const [isMobile, setIsMobile] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [zoomLevel, setZoomLevel] = useState(1)
   const [positions, setPositions] = useState(() =>
     withAnchoredLayout(generateScatterLayout(), getDefaultSizes())
@@ -94,6 +97,16 @@ export function PortfolioCanvas() {
   useEffect(() => {
     boundsRef.current = getContentBounds(positions, sizes)
   }, [positions, sizes])
+
+  // Track viewport so the toolbar opens a tap-friendly menu on mobile
+  // instead of the keyboard-driven command palette.
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 767px)")
+    const update = () => setIsMobile(query.matches)
+    update()
+    query.addEventListener("change", update)
+    return () => query.removeEventListener("change", update)
+  }, [])
 
   // When a new visitor swings in, Spidey perks up and announces it.
   useEffect(() => {
@@ -937,7 +950,13 @@ export function PortfolioCanvas() {
         onZoomOut={zoomOut}
         onZoomReset={zoomTo100}
         onFitAll={fitAll}
+        isMobile={isMobile}
         onOpenSpotlight={() => {
+          if (isMobile) {
+            setMobileMenuOpen(true)
+            posthog.capture("mobile_menu_opened", { trigger: "toolbar_button" })
+            return
+          }
           setSpotlightOpen(true)
           posthog.capture("spotlight_opened", { trigger: "toolbar_button" })
         }}
@@ -954,6 +973,19 @@ export function PortfolioCanvas() {
       onFitAll={fitAll}
       onResetLayout={resetCanvasLayout}
       onShowShortcuts={() => setShortcutsOpen(true)}
+      onCopyView={copyCurrentView}
+      onStartTour={startTour}
+    />
+
+    <CanvasMobileMenu
+      open={mobileMenuOpen}
+      onOpenChange={setMobileMenuOpen}
+      selectedId={selectedId}
+      onNavigate={(id) => {
+        const item = CANVAS_ITEMS.find((entry) => entry.id === id)
+        if (item) focusItem(item)
+      }}
+      onFitAll={fitAll}
       onCopyView={copyCurrentView}
       onStartTour={startTour}
     />
