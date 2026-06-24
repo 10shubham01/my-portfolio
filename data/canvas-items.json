@@ -242,6 +242,15 @@
       "position": { "x": 1340, "y": 1320 },
       "size": { "width": 420, "height": 460 },
       "scatter": false
+    },
+    {
+      "id": "webcam",
+      "component": "webcam",
+      "type": "webcam",
+      "label": "pixel cam",
+      "position": { "x": 1180, "y": -560 },
+      "size": { "width": 420, "height": 430 },
+      "scatter": false
     }
   ]
 }

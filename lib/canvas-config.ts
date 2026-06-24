@@ -18,6 +18,7 @@ export type CanvasItemType =
   | "manifesto"
   | "contact"
   | "rc"
+  | "webcam"
   | "tagline"
 export type CanvasComponentId =
   | "intro"
@@ -35,6 +36,7 @@ export type CanvasComponentId =
   | "manifesto"
   | "contact"
   | "phone-rc"
+  | "webcam"
   | "tagline-char"
 
 export interface CanvasItemConfig {

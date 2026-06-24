@@ -77,6 +77,11 @@ export function getCanvasItemMeta(id: string | null | undefined): CanvasItemMeta
         title: withName("Phone RC — drive your phone with the keyboard"),
         description: `A WebRTC toy by ${SITE.name}: pair your phone, and its vibration motor becomes the engine of a keyboard-controlled RC car.`,
       }
+    case "webcam":
+      return {
+        title: withName("Live Pixel Cam — motion-reactive webcam grid"),
+        description: `An interactive toy by ${SITE.name}: a 3D pixel grid driven by your webcam, processed entirely on-device. Camera turns on only when you select the card.`,
+      }
     case "intro":
       return DEFAULT_META
   }
