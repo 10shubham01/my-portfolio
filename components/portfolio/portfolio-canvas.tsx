@@ -33,6 +33,7 @@ import {
 import { getCanvasItemMeta, DEFAULT_META } from "@/lib/canvas-meta"
 import { getSpideyHomePosition } from "@/lib/spidey-position"
 import { KONAMI_SEQUENCE } from "@/lib/portfolio-shortcuts"
+import { isRcCapturing } from "@/lib/rc-input"
 import { useCanvasPresence } from "@/components/portfolio/use-canvas-presence"
 import { CanvasCursors, PresenceWeb } from "@/components/portfolio/canvas-cursors"
 import { isSupabaseEnabled } from "@/lib/supabase"
@@ -596,6 +597,10 @@ export function PortfolioCanvas() {
 
       if (event.metaKey || event.ctrlKey || event.altKey) return
 
+      // The Phone RC card owns the keyboard while it's active — its driving
+      // keys (D/S/etc.) would otherwise trigger theme toggle / summon / konami.
+      if (isRcCapturing()) return
+
       const key = event.key.toLowerCase()
       if (key === "r") {
         resetCanvasLayout()
@@ -663,6 +668,9 @@ export function PortfolioCanvas() {
       }
 
       if (spotlightOpen || shortcutsOpen) return
+
+      // Arrow keys steer the RC car while it's active — don't cycle cards.
+      if (isRcCapturing()) return
 
       if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
         event.preventDefault()

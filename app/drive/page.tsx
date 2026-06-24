@@ -11,6 +11,7 @@ import {
   type DriveState,
 } from "@/lib/rc-car"
 import { EngineSound } from "@/lib/engine-audio"
+import { PixelCar } from "@/components/portfolio/pixel-car"
 
 const BLUE = "#18A0FB"
 const CONNECT_TIMEOUT_MS = 12000
@@ -166,20 +167,27 @@ export default function DrivePage() {
   const { speed, label } = readout(drive)
   const note = vibrationFor(drive).note
   const running = isEngineRunning(drive)
+  const gear = drive.throttle === "fwd" ? "D" : drive.throttle === "rev" ? "R" : "N"
+  const speedPct = Math.min(1, Math.abs(speed) / 100)
 
   return (
-    <main className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-neutral-950 px-6 text-neutral-100 select-none">
-      {/* Blueprint grid backdrop */}
+    <main className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-neutral-950 px-5 py-6 text-neutral-100 select-none">
+      {/* Blueprint grid backdrop + vignette */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.18]"
+        className="pointer-events-none absolute inset-0 opacity-[0.15]"
         style={{
           backgroundImage: `linear-gradient(${BLUE}22 1px, transparent 1px), linear-gradient(90deg, ${BLUE}22 1px, transparent 1px)`,
           backgroundSize: "32px 32px",
         }}
       />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.85) 100%)" }}
+      />
 
-      <div className="relative flex w-full max-w-sm flex-col items-center gap-8">
+      <div className="relative flex w-full max-w-sm flex-col items-center gap-6">
         <header className="flex w-full items-center justify-between font-mono text-[11px] tracking-[0.2em] text-neutral-500 uppercase">
           <span className="inline-flex items-center gap-1.5">
             <span aria-hidden className="size-2 rotate-45" style={{ backgroundColor: BLUE }} />
@@ -188,35 +196,44 @@ export default function DrivePage() {
           <StatusPill phase={phase} />
         </header>
 
-        {/* ── Intro / connect states ──────────────────────────────────── */}
+        {/* ── Intro — arcade "press start" ────────────────────────────── */}
         {phase === "intro" && (
-          <div className="flex flex-col items-center gap-6 py-10 text-center">
-            <p className="font-mono text-[13px] leading-relaxed text-neutral-400">
-              Your phone is the car. Tap to start the engine, then drive it from
-              the desktop with the keyboard — you&apos;ll hear it rev
-              {canVibrate ? " and feel every bump." : "."}
+          <div className="flex flex-col items-center gap-7 py-8 text-center">
+            <div className="flex flex-col items-center gap-1.5">
+              <span className="font-mono text-[10px] tracking-[0.4em] text-neutral-500 uppercase">
+                player one
+              </span>
+              <h1
+                className="font-mono text-3xl font-bold tracking-[0.15em] uppercase"
+                style={{ color: BLUE, textShadow: `0 0 16px ${BLUE}66` }}
+              >
+                RC Racer
+              </h1>
+            </div>
+            <p className="max-w-[17rem] font-mono text-[12px] leading-relaxed text-neutral-400">
+              Your phone is the car. Hit start, then drive it from the desktop
+              keyboard — you&apos;ll{" "}
+              {canVibrate ? "feel it buzz and hear it rev." : "hear the engine rev."}
             </p>
             <button
               type="button"
               onClick={start}
-              className="flex size-32 items-center justify-center rounded-full border-2 font-mono text-[13px] font-bold tracking-[0.2em] uppercase transition-transform active:scale-95"
-              style={{ borderColor: BLUE, color: BLUE, boxShadow: `0 0 40px ${BLUE}33` }}
+              className="rc-blink border-2 px-7 py-3 font-mono text-[13px] font-bold tracking-[0.22em] uppercase transition-transform active:scale-95"
+              style={{ borderColor: BLUE, color: BLUE, boxShadow: `0 0 30px ${BLUE}40` }}
             >
-              Start
-              <br />
-              engine
+              ▸ press start ◂
             </button>
             {!canVibrate && (
               <p className="max-w-[16rem] font-mono text-[11px] leading-relaxed text-neutral-500">
                 this browser can&apos;t vibrate (iOS blocks it) — so you&apos;ll
-                drive by ear with the engine sound. turn the ringer up.
+                drive by ear. turn the ringer up.
               </p>
             )}
           </div>
         )}
 
         {phase === "connecting" && (
-          <p className="py-16 font-mono text-[12px] tracking-wide text-neutral-400">
+          <p className="rc-blink py-16 font-mono text-[12px] tracking-[0.2em] text-neutral-400 uppercase">
             linking to remote…
           </p>
         )}
@@ -244,7 +261,7 @@ export default function DrivePage() {
 
         {(phase === "error" || phase === "lost") && (
           <div className="flex flex-col items-center gap-5 py-12 text-center">
-            <p className="font-mono text-[12px] text-neutral-400">
+            <p className="font-mono text-[12px] tracking-wide text-neutral-400 uppercase">
               {phase === "lost" ? "remote disconnected" : "couldn't reach the remote"}
             </p>
             <button
@@ -258,66 +275,115 @@ export default function DrivePage() {
           </div>
         )}
 
-        {/* ── Live dashboard ──────────────────────────────────────────── */}
+        {/* ── Linked — arcade console with the pixel car ──────────────── */}
         {phase === "linked" && (
-          <>
-            {/* Motor disc — scales + glows with the engine */}
-            <div className="relative flex h-44 w-44 items-center justify-center">
+          <div className="flex w-full flex-col gap-4">
+            {/* CRT screen housing the pixel-art scene */}
+            <div
+              className="relative w-full overflow-hidden border-2"
+              style={{
+                borderColor: BLUE,
+                aspectRatio: "2 / 3",
+                boxShadow: `0 0 28px ${BLUE}40, inset 0 0 40px rgba(0,0,0,0.6)`,
+              }}
+            >
+              <PixelCar state={drive} />
+
+              {/* CRT scanlines */}
               <div
-                className="absolute inset-0 rounded-full border-2 transition-all duration-100"
+                aria-hidden
+                className="pointer-events-none absolute inset-0 opacity-60"
                 style={{
-                  borderColor: running ? BLUE : "#3f3f46",
-                  transform: `scale(${running ? (drive.boost ? 1.06 : 1.02) : 1})`,
-                  boxShadow: running ? `0 0 ${drive.boost ? 60 : 32}px ${BLUE}55` : "none",
-                  animation: running ? "rc-rev 0.25s linear infinite" : "none",
+                  backgroundImage:
+                    "repeating-linear-gradient(0deg, rgba(0,0,0,0.4) 0px, rgba(0,0,0,0.4) 1px, transparent 1px, transparent 3px)",
                 }}
               />
-              <div className="flex flex-col items-center">
-                <span className="font-mono text-5xl font-bold tabular-nums" style={{ color: running ? BLUE : "#52525b" }}>
-                  {Math.abs(speed)}
-                </span>
-                <span className="font-mono text-[10px] tracking-[0.3em] text-neutral-500 uppercase">
-                  {label}
-                </span>
+              {/* corner crop ticks */}
+              {[
+                "top-1 left-1 border-t-2 border-l-2",
+                "top-1 right-1 border-t-2 border-r-2",
+                "bottom-1 left-1 border-b-2 border-l-2",
+                "bottom-1 right-1 border-b-2 border-r-2",
+              ].map((pos) => (
+                <span
+                  key={pos}
+                  aria-hidden
+                  className={`pointer-events-none absolute size-3 ${pos}`}
+                  style={{ borderColor: BLUE }}
+                />
+              ))}
+
+              {/* HUD — top: gear + boost */}
+              <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-2.5 font-mono">
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[8px] tracking-[0.25em] text-neutral-400">GEAR</span>
+                  <span
+                    className="text-2xl leading-none font-bold"
+                    style={{ color: BLUE, textShadow: `0 0 10px ${BLUE}` }}
+                  >
+                    {gear}
+                  </span>
+                </div>
+                <div className="flex flex-col items-end gap-0.5">
+                  <span className="text-[8px] tracking-[0.25em] text-neutral-400">BOOST</span>
+                  <span
+                    className="text-sm font-bold tracking-[0.2em]"
+                    style={{
+                      color: drive.boost ? "#ffd23f" : "#3f3f46",
+                      textShadow: drive.boost ? "0 0 10px #ffd23f" : "none",
+                    }}
+                  >
+                    {drive.boost ? "▮▮▮" : "▯▯▯"}
+                  </span>
+                </div>
+              </div>
+
+              {/* HUD — bottom: speed + segmented bar */}
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-2.5 font-mono">
+                <div className="flex items-baseline gap-1">
+                  <span
+                    className="text-3xl leading-none font-bold tabular-nums"
+                    style={{ color: running ? BLUE : "#52525b", textShadow: running ? `0 0 10px ${BLUE}66` : "none" }}
+                  >
+                    {Math.abs(speed)}
+                  </span>
+                  <span className="text-[8px] tracking-[0.25em] text-neutral-400">{label}</span>
+                </div>
+                <div className="flex gap-[2px]">
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <span
+                      key={i}
+                      className="h-3 w-1.5"
+                      style={{
+                        backgroundColor:
+                          i / 10 < speedPct ? (i >= 8 ? "#ffd23f" : BLUE) : "#24242c",
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Direction cluster — mirrors the keys held on the remote */}
-            <div className="grid grid-cols-3 grid-rows-3 gap-2">
-              <span />
-              <Arrow on={drive.throttle === "fwd"}>↑</Arrow>
-              <span />
-              <Arrow on={drive.steer === "left"}>←</Arrow>
-              <span
-                className="flex size-12 items-center justify-center rounded-full border-2 font-mono text-lg transition-all"
-                style={
-                  drive.boost
-                    ? { borderColor: BLUE, backgroundColor: BLUE, color: "#0a0a0a" }
-                    : { borderColor: "#3f3f46", color: "#52525b" }
-                }
-              >
-                ●
-              </span>
-              <Arrow on={drive.steer === "right"}>→</Arrow>
-              <span />
-              <Arrow on={drive.throttle === "rev"}>↓</Arrow>
-              <span />
+            {/* Control strip — input mirror + engine note + stop */}
+            <div className="flex items-center justify-between gap-3">
+              <InputPad drive={drive} />
+              <div className="flex flex-col items-end gap-1 font-mono text-[10px] tracking-wide text-neutral-500">
+                <span className="text-neutral-300">{note}</span>
+                <span className="text-neutral-600">{canVibrate ? "buzz + sound" : "sound"}</span>
+                <button
+                  type="button"
+                  onClick={stopAll}
+                  className="mt-0.5 text-neutral-500 transition-colors hover:text-red-400"
+                >
+                  [ stop ]
+                </button>
+              </div>
             </div>
-
-            <div className="flex w-full items-center justify-between font-mono text-[11px] tracking-wide text-neutral-500">
-              <span>
-                engine: <span className="text-neutral-200">{note}</span>
-                <span className="text-neutral-600"> · {canVibrate ? "buzz + sound" : "sound"}</span>
-              </span>
-              <button type="button" onClick={stopAll} className="text-neutral-500 hover:text-red-400">
-                [ stop ]
-              </button>
-            </div>
-          </>
+          </div>
         )}
       </div>
 
-      <style>{`@keyframes rc-rev { 0%,100% { rotate: 0deg } 50% { rotate: 1.2deg } }`}</style>
+      <style>{`@keyframes rc-blink { 0%, 65% { opacity: 1 } 66%, 100% { opacity: 0.35 } } .rc-blink { animation: rc-blink 1.1s steps(1) infinite }`}</style>
     </main>
   )
 }
@@ -341,17 +407,33 @@ function StatusPill({ phase }: { phase: Phase }) {
   )
 }
 
-function Arrow({ on, children }: { on: boolean; children: React.ReactNode }) {
+// Compact d-pad mirroring the keys held on the remote.
+function InputPad({ drive }: { drive: DriveState }) {
+  const cell = "flex size-7 items-center justify-center border font-mono text-xs transition-all duration-75"
+  const lit = (on: boolean) =>
+    on
+      ? { borderColor: BLUE, backgroundColor: `${BLUE}22`, color: BLUE }
+      : { borderColor: "#2a2a32", color: "#3f3f46" }
   return (
-    <span
-      className="flex size-12 items-center justify-center border-2 font-mono text-lg transition-all duration-75"
-      style={
-        on
-          ? { borderColor: BLUE, backgroundColor: `${BLUE}22`, color: BLUE }
-          : { borderColor: "#3f3f46", color: "#52525b" }
-      }
-    >
-      {children}
-    </span>
+    <div className="grid grid-cols-3 grid-rows-3 gap-1">
+      <span />
+      <span className={cell} style={lit(drive.throttle === "fwd")}>↑</span>
+      <span />
+      <span className={cell} style={lit(drive.steer === "left")}>←</span>
+      <span
+        className="flex size-7 items-center justify-center rounded-full border text-[10px]"
+        style={
+          drive.boost
+            ? { borderColor: "#ffd23f", backgroundColor: "#ffd23f", color: "#0a0a0a" }
+            : { borderColor: "#2a2a32", color: "#3f3f46" }
+        }
+      >
+        ●
+      </span>
+      <span className={cell} style={lit(drive.steer === "right")}>→</span>
+      <span />
+      <span className={cell} style={lit(drive.throttle === "rev")}>↓</span>
+      <span />
+    </div>
   )
 }

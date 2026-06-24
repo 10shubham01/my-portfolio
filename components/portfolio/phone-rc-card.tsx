@@ -13,6 +13,7 @@ import {
   cardMetaClass,
 } from "@/components/portfolio/card-chrome"
 import { useFrameResize } from "@/components/portfolio/use-frame-resize"
+import { setRcCapturing } from "@/lib/rc-input"
 import {
   DRIVE_KEYS,
   IDLE_STATE,
@@ -68,6 +69,14 @@ export function PhoneRcCard({
   }, [])
 
   useEffect(() => () => teardown(), [teardown])
+
+  // While this card is the active card, it owns the keyboard — tell the canvas
+  // to stand down its own shortcuts (theme toggle, arrow-key cycling, konami)
+  // so they don't fight the driving keys.
+  useEffect(() => {
+    setRcCapturing(interactive)
+    return () => setRcCapturing(false)
+  }, [interactive])
 
   // Open a host peer and wait for a phone to join. PeerJS touches the DOM/RTC
   // stack, so it's imported lazily and only in the browser.
