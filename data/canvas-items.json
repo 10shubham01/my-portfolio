@@ -195,6 +195,16 @@
       "scatter": false
     },
     {
+      "id": "project-talentagr",
+      "component": "project",
+      "type": "project",
+      "label": "talentagr",
+      "projectId": "talentagr",
+      "position": { "x": -2540, "y": 1128 },
+      "size": { "width": 400, "height": 440 },
+      "scatter": false
+    },
+    {
       "id": "intersection",
       "component": "media",
       "type": "image",

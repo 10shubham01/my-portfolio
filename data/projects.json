@@ -1,6 +1,22 @@
 {
   "projects": [
     {
+      "id": "talentagr",
+      "name": "TalentAGR Consultancy",
+      "tagline": "Recruitment platform — hire smarter, grow faster",
+      "description": "A recruitment consultancy platform connecting job seekers with employers across India. I designed, built, and deployed the full web app — from role-fit job discovery for candidates to pre-screened talent pipelines for enterprises.",
+      "highlights": [
+        "Smart job matching by function, type, city, and industry, with candidate-first screening against active roles",
+        "Resume upload, interview prep guidance, and deployment-focused industry training programs",
+        "PAN-India coverage with daily vacancy updates, trusted by HDFC, ICICI, Axis, and Kotak Mahindra"
+      ],
+      "stack": ["Next.js", "React", "TypeScript", "Tailwind CSS", "Supabase"],
+      "href": "https://www.talentagr.com/",
+      "media": "/assets/images/talentagr.png",
+      "mediaAlt": "TalentAGR Consultancy web app",
+      "mediaAspect": "1280/720"
+    },
+    {
       "id": "dbspin",
       "name": "dbspin",
       "tagline": "PostgreSQL connection CLI",
