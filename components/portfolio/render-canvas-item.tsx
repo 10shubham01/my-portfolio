@@ -15,6 +15,7 @@ import { PeerlistCard } from "@/components/portfolio/peerlist-card"
 import { ThemeDoodle } from "@/components/portfolio/theme-doodle"
 import { ManifestoCard } from "@/components/portfolio/manifesto-card"
 import { ContactCard } from "@/components/portfolio/contact-card"
+import { PhoneRcCard } from "@/components/portfolio/phone-rc-card"
 import { TaglineChar } from "@/components/portfolio/tagline-char"
 
 export function RenderCanvasItem({
@@ -69,6 +70,8 @@ export function RenderCanvasItem({
       return <ManifestoCard interactive={active} onResize={onResize} />
     case "contact":
       return <ContactCard interactive={active} onResize={onResize} />
+    case "phone-rc":
+      return <PhoneRcCard interactive={active} onResize={onResize} />
     case "tagline-char":
       return <TaglineChar char={item.char ?? frameItem.char ?? ""} />
     default:
