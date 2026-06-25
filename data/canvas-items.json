@@ -235,15 +235,6 @@
       "scatter": false
     },
     {
-      "id": "phone-rc",
-      "component": "phone-rc",
-      "type": "rc",
-      "label": "phone rc",
-      "position": { "x": 1340, "y": 1320 },
-      "size": { "width": 420, "height": 460 },
-      "scatter": false
-    },
-    {
       "id": "webcam",
       "component": "webcam",
       "type": "webcam",

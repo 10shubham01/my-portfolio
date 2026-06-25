@@ -72,11 +72,6 @@ export function getCanvasItemMeta(id: string | null | undefined): CanvasItemMeta
         title: withName("Get in touch"),
         description: `Send ${SITE.name} a message — ideas, roles, or just to say hi.`,
       }
-    case "phone-rc":
-      return {
-        title: withName("Phone RC — drive your phone with the keyboard"),
-        description: `A WebRTC toy by ${SITE.name}: pair your phone, and its vibration motor becomes the engine of a keyboard-controlled RC car.`,
-      }
     case "webcam":
       return {
         title: withName("Live Pixel Cam — motion-reactive webcam grid"),

@@ -17,7 +17,6 @@ export type CanvasItemType =
   | "theme"
   | "manifesto"
   | "contact"
-  | "rc"
   | "webcam"
   | "tagline"
 export type CanvasComponentId =
@@ -35,7 +34,6 @@ export type CanvasComponentId =
   | "theme-doodle"
   | "manifesto"
   | "contact"
-  | "phone-rc"
   | "webcam"
   | "tagline-char"
 
