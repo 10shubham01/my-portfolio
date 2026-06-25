@@ -108,7 +108,7 @@ export function IntroCard({
             .
           </p>
           <p>
-            Six years designing, building, and operating production web
+            Almost {experience} designing, building, and operating production web
             applications — from UI and component libraries to APIs, data stores,
             and AWS infrastructure.
           </p>
