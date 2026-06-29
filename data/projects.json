@@ -1,6 +1,22 @@
 {
   "projects": [
     {
+      "id": "moneywrapped",
+      "name": "Money Wrapped",
+      "tagline": "A cinematic recap of your payments",
+      "description": "Drop in a payments statement PDF and get a Spotify Wrapped–style cinematic recap of your money — generated entirely in the browser.",
+      "highlights": [
+        "Upload a 1–6 month statement PDF and get a 60-second animated recap of your spending",
+        "Privacy-first: parsing and analysis run locally in the browser, nothing is uploaded",
+        "Supports Google Pay statements today, with more providers on the way"
+      ],
+      "stack": ["Next.js", "React", "TypeScript", "Tailwind CSS"],
+      "href": "https://moneywrapped.shubhamgupta.dev/",
+      "media": "/assets/images/moneywrapped.png",
+      "mediaAlt": "Money Wrapped — cinematic recap of your payments",
+      "mediaAspect": "1920/1090"
+    },
+    {
       "id": "talentagr",
       "name": "TalentAGR Consultancy",
       "tagline": "Recruitment platform — hire smarter, grow faster",
