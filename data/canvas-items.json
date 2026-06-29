@@ -195,6 +195,16 @@
       "scatter": false
     },
     {
+      "id": "project-moneywrapped",
+      "component": "project",
+      "type": "project",
+      "label": "money wrapped",
+      "projectId": "moneywrapped",
+      "position": { "x": -3020, "y": 1128 },
+      "size": { "width": 400, "height": 440 },
+      "scatter": false
+    },
+    {
       "id": "project-talentagr",
       "component": "project",
       "type": "project",
