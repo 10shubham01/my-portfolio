@@ -195,11 +195,11 @@
       "scatter": false
     },
     {
-      "id": "project-moneywrapped",
+      "id": "project-moneyunwrapped",
       "component": "project",
       "type": "project",
-      "label": "money wrapped",
-      "projectId": "moneywrapped",
+      "label": "money unwrapped",
+      "projectId": "moneyunwrapped",
       "position": { "x": -3020, "y": 1128 },
       "size": { "width": 400, "height": 440 },
       "scatter": false
