@@ -1,8 +1,8 @@
 {
   "projects": [
     {
-      "id": "moneywrapped",
-      "name": "Money Wrapped",
+      "id": "moneyunwrapped",
+      "name": "Money Unwrapped",
       "tagline": "A cinematic recap of your payments",
       "description": "Drop in a payments statement PDF and get a Spotify Wrapped–style cinematic recap of your money — generated entirely in the browser.",
       "highlights": [
@@ -11,9 +11,9 @@
         "Supports Google Pay statements today, with more providers on the way"
       ],
       "stack": ["Next.js", "React", "TypeScript", "Tailwind CSS"],
-      "href": "https://moneywrapped.shubhamgupta.dev/",
-      "media": "/assets/images/moneywrapped.png",
-      "mediaAlt": "Money Wrapped — cinematic recap of your payments",
+      "href": "https://moneyunwrapped.shubhamgupta.dev/",
+      "media": "/assets/images/moneyunwrapped.png",
+      "mediaAlt": "Money Unwrapped — cinematic recap of your payments",
       "mediaAspect": "1920/1090"
     },
     {
