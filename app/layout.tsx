@@ -27,6 +27,9 @@ const allura = Allura({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-signature",
+  // Only used on the offscreen contact slip's "Signed" line — don't preload it
+  // into <head> and compete with above-the-fold resources.
+  preload: false,
 })
 
 // Local display serif used for the big draggable "Fullstack Developer" tagline.

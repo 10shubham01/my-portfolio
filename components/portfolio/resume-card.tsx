@@ -42,7 +42,8 @@ export function ResumeCard({
           height={334}
           className="h-auto w-full max-w-[200px] select-none"
           draggable={false}
-          priority
+          loading="lazy"
+          sizes="200px"
         />
       </a>
     </div>
