@@ -1,7 +1,32 @@
-import { CANVAS_ITEMS } from "@/lib/canvas-config"
+import { CANVAS_ITEMS, type CanvasComponentId } from "@/lib/canvas-config"
 import { SITE } from "@/lib/canvas-data"
 import { getExperienceById } from "@/lib/experience"
 import { getProjectById } from "@/lib/projects"
+
+// Cards worth surfacing in search results — each of these has its own
+// title/description via getCanvasItemMeta. Purely decorative items (media,
+// doodles, the theme toggle, tagline letters) and the intro card (covered by
+// the site root) are intentionally excluded.
+const INDEXABLE_COMPONENTS: CanvasComponentId[] = [
+  "project",
+  "work",
+  "skills",
+  "awards",
+  "github",
+  "socials",
+  "now",
+  "contact",
+  "webcam",
+  "resume-card",
+  "manifesto",
+  "peerlist",
+]
+
+export function getIndexableCanvasItemIds(): string[] {
+  return CANVAS_ITEMS.filter((item) =>
+    INDEXABLE_COMPONENTS.includes(item.component)
+  ).map((item) => item.id)
+}
 
 export interface CanvasItemMeta {
   title: string
@@ -76,6 +101,21 @@ export function getCanvasItemMeta(id: string | null | undefined): CanvasItemMeta
       return {
         title: withName("Live Pixel Cam — motion-reactive webcam grid"),
         description: `An interactive toy by ${SITE.name}: a 3D pixel grid driven by your webcam, processed entirely on-device. Camera turns on only when you select the card.`,
+      }
+    case "resume-card":
+      return {
+        title: withName("Resume"),
+        description: `Download ${SITE.name}'s resume — experience, skills, and selected work as a one-page PDF.`,
+      }
+    case "manifesto":
+      return {
+        title: withName("Principles"),
+        description: `The principles ${SITE.name} builds by — on systems, details, product, motion, and restraint.`,
+      }
+    case "peerlist":
+      return {
+        title: withName("Featured on Peerlist"),
+        description: `${SITE.name}'s portfolio, featured as a Project of the Week on Peerlist.`,
       }
     case "intro":
       return DEFAULT_META
