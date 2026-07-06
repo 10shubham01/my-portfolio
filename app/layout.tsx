@@ -77,6 +77,7 @@ export const metadata: Metadata = {
     url: "https://shubhamgupta.dev",
     siteName: "Shubham Gupta",
     type: "profile",
+    images: [`${SITE.url}/og`],
   },
   twitter: {
     card: "summary_large_image",
@@ -84,6 +85,7 @@ export const metadata: Metadata = {
     title: "Shubham Gupta — Software Engineer @ WebMD",
     description:
       "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development.",
+    images: [`${SITE.url}/og`],
   },
   icons: {
     icon: "/icon.svg",

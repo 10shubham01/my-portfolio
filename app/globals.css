@@ -379,3 +379,17 @@
 .dark .fig-slider {
     --fig-thumb-ring: #171717;
 }
+
+/* Keyboard focus ring — shown only for keyboard users (not mouse/touch), so it
+   doesn't interfere with the canvas's own pointer-driven selection outline. */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid #18a0fb;
+    outline-offset: 2px;
+    border-radius: 2px;
+}
