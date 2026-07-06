@@ -46,6 +46,15 @@
       "scatter": false
     },
     {
+      "id": "resume",
+      "component": "resume-card",
+      "type": "resume",
+      "label": "resume",
+      "position": { "x": 460, "y": -540 },
+      "size": { "width": 200, "height": 200 },
+      "scatter": false
+    },
+    {
       "id": "waving",
       "component": "media",
       "type": "image",

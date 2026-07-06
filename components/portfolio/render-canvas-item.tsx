@@ -17,6 +17,7 @@ import { ManifestoCard } from "@/components/portfolio/manifesto-card"
 import { ContactCard } from "@/components/portfolio/contact-card"
 import { WebcamElement } from "@/components/portfolio/webcam-element"
 import { TaglineChar } from "@/components/portfolio/tagline-char"
+import { ResumeCard } from "@/components/portfolio/resume-card"
 
 export function RenderCanvasItem({
   item,
@@ -72,6 +73,8 @@ export function RenderCanvasItem({
       return <ContactCard interactive={active} onResize={onResize} />
     case "webcam":
       return <WebcamElement interactive={active} onResize={onResize} />
+    case "resume-card":
+      return <ResumeCard interactive={active} onResize={onResize} />
     case "tagline-char":
       return <TaglineChar char={item.char ?? frameItem.char ?? ""} />
     default:

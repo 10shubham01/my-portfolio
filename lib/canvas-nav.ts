@@ -25,6 +25,7 @@ function getNavGroup(item: CanvasItem): NavGroupId | null {
   if (item.type === "theme" || item.type === "tagline") return null
   if (item.type === "work") return "experience"
   if (item.type === "project") return "projects"
+  if (item.type === "resume") return "about"
   if (item.type === "github" || item.type === "socials" || item.type === "contact") return "connect"
   if (item.id === "me") return "about"
   if (item.type === "image" || item.type === "video" || item.type === "doodle" || item.type === "webcam") return "media"
