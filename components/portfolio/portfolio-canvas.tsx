@@ -35,6 +35,7 @@ import { getSpideyHomePosition } from "@/lib/spidey-position"
 import { KONAMI_SEQUENCE } from "@/lib/portfolio-shortcuts"
 import { useCanvasPresence } from "@/components/portfolio/use-canvas-presence"
 import { CanvasCursors, PresenceWeb } from "@/components/portfolio/canvas-cursors"
+import { PerfHud } from "@/components/portfolio/perf-hud"
 import { isSupabaseEnabled } from "@/lib/supabase"
 import type { SpideyMood } from "@/components/portfolio/spidey-context"
 
@@ -1003,6 +1004,13 @@ export function PortfolioCanvas() {
     />
 
     {isSupabaseEnabled ? <PresenceWeb members={presenceMembers} /> : null}
+
+    <PerfHud
+      visitors={Math.max(presenceCount, 1)}
+      cursors={cursors.length}
+      cards={CANVAS_ITEMS.length}
+      zoom={zoomLevel}
+    />
 
     <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
     </SpideyProvider>
