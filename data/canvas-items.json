@@ -19,6 +19,15 @@
       "scatter": false
     },
     {
+      "id": "love",
+      "component": "love",
+      "type": "love",
+      "label": "love the portfolio",
+      "position": { "x": -190, "y": 60 },
+      "size": { "width": 140, "height": 150 },
+      "scatter": false
+    },
+    {
       "id": "socials",
       "component": "socials",
       "type": "socials",

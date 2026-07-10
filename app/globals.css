@@ -263,6 +263,22 @@
     }
 }
 
+/* Love heart: a quick springy pop when tapped, acknowledging the click. */
+@keyframes love-pop {
+    0% {
+        transform: scale(1);
+    }
+    40% {
+        transform: scale(1.35);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .frame-content[data-active="true"] a,
     .frame-content[data-active="true"] button:not(:disabled),
@@ -392,4 +408,13 @@ select:focus-visible,
     outline: 2px solid #18a0fb;
     outline-offset: 2px;
     border-radius: 2px;
+}
+
+/* The contact slip is a technical-drawing layout with hairline rules; the bold
+   global ring reads as an intrusive box there (and it autofocuses on open). Opt
+   its fields out and let the card's own faint blue cell-wash signal focus. */
+.contact-slip input:focus-visible,
+.contact-slip textarea:focus-visible {
+    outline: none;
+    border-radius: 0;
 }

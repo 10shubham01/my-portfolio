@@ -4,7 +4,7 @@ import { Check, ChevronLeft, ChevronRight, Link } from "lucide-react"
 import posthog from "posthog-js"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { copyItemDeeplink } from "@/lib/canvas-deeplink"
-import { getThemeNavItem, type NavGroup, type NavItem } from "@/lib/canvas-nav"
+import { getLoveNavItem, getThemeNavItem, type NavGroup, type NavItem } from "@/lib/canvas-nav"
 import { canvasPanelScroll } from "@/components/portfolio/canvas-overlay-panel"
 import { cn } from "@/lib/utils"
 
@@ -108,6 +108,7 @@ function CanvasMenuPanel({
   const activeGroup = groups.find((group) => group.id === activeGroupId) ?? null
   const inItemsView = activeGroup !== null
   const themeItem = getThemeNavItem()
+  const loveItem = getLoveNavItem()
 
   useEffect(() => {
     if (!open) setActiveGroupId(null)
@@ -196,6 +197,15 @@ function CanvasMenuPanel({
           </div>
 
           <div className="mt-auto border-t border-dashed border-gray-200 p-1.5 dark:border-neutral-700">
+            {loveItem && (
+              <NavItemRow
+                item={loveItem}
+                active={selectedId === loveItem.id}
+                copied={copiedId === loveItem.id}
+                onNavigateToItem={onNavigateToItem}
+                onCopyLink={handleCopyLink}
+              />
+            )}
             {themeItem && (
               <NavItemRow
                 item={themeItem}

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import posthog from "posthog-js"
 import { cn } from "@/lib/utils"
 import { useFrameResize } from "@/components/portfolio/use-frame-resize"
@@ -53,9 +53,22 @@ export function ContactCard({
   onResize?: (width: number, height: number) => void
 }) {
   const ref = useFrameResize(onResize)
+  const nameRef = useRef<HTMLInputElement>(null)
   const [name, setName] = useState("")
   const [message, setMessage] = useState("")
   const [status, setStatus] = useState<Status>("idle")
+
+  // When the slip is selected (clicked, or flown-to after a love), drop the
+  // cursor into the From field so the visitor can start writing immediately.
+  // Delayed until the fly-to zoom settles; preventScroll keeps the canvas from
+  // jumping as focus lands.
+  useEffect(() => {
+    if (!interactive || status === "sent") return
+    const timer = window.setTimeout(() => {
+      nameRef.current?.focus({ preventScroll: true })
+    }, 350)
+    return () => window.clearTimeout(timer)
+  }, [interactive, status])
 
   const canSend =
     name.trim().length > 0 && message.trim().length > 0 && status !== "sending"
@@ -114,7 +127,7 @@ export function ContactCard({
     <div
       ref={ref}
       className={cn(
-        "relative flex h-full w-full flex-col bg-background/80 backdrop-blur-[1px]",
+        "contact-slip relative flex h-full w-full flex-col bg-background/80 backdrop-blur-[1px]",
         // Double-ruled frame: outer hairline + inset ring, the way a real
         // drawing border is drawn.
         "border",
@@ -151,8 +164,8 @@ export function ContactCard({
               className="h-2.5 w-2.5 shrink-0 rotate-45"
               style={{ backgroundColor: BLUE }}
             />
-            <span className="font-mono text-[12px] font-semibold tracking-[0.2em] text-foreground/80 uppercase dark:text-foreground/70">
-              Transmission
+            <span className="font-mono text-[12px] font-semibold tracking-[0.2em] whitespace-nowrap text-foreground/80 uppercase dark:text-foreground/70">
+              Leave a note
             </span>
           </div>
           <StampCell caption="No." value="001" className={cn("border-l", rule)} />
@@ -175,14 +188,15 @@ export function ContactCard({
             <span className={microLabel}>From</span>
           </div>
           <input
+            ref={nameRef}
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onPointerDown={stopDrag}
-            placeholder="your name"
+            placeholder="your name or email"
             maxLength={120}
             disabled={status === "sent"}
-            className="w-full bg-transparent px-3 py-2.5 font-mono text-[13px] tracking-wide text-foreground/85 placeholder:text-foreground/25 focus:outline-none dark:text-foreground/80"
+            className="w-full bg-transparent px-3 py-2.5 font-mono text-[13px] tracking-wide text-foreground/85 transition-colors placeholder:text-foreground/25 focus:bg-[#18A0FB]/[0.06] focus:outline-none dark:text-foreground/80"
           />
         </div>
 
@@ -210,7 +224,7 @@ export function ContactCard({
             placeholder="with great software comes great responsibility…"
             maxLength={MESSAGE_MAX}
             disabled={status === "sent"}
-            className="h-full w-full resize-none bg-transparent px-3 pt-7 pb-3 font-mono text-[13px] leading-[16px] tracking-wide text-foreground/85 placeholder:text-foreground/25 focus:outline-none dark:text-foreground/80"
+            className="h-full w-full resize-none bg-transparent px-3 pt-7 pb-3 font-mono text-[13px] leading-[16px] tracking-wide text-foreground/85 transition-colors placeholder:text-foreground/25 focus:bg-[#18A0FB]/[0.06] focus:outline-none dark:text-foreground/80"
             style={graphPaper}
           />
         </div>

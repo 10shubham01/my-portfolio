@@ -647,6 +647,22 @@ export function PortfolioCanvas() {
     return () => window.removeEventListener("popstate", onPopState)
   }, [ready, focusItem, resetView])
 
+  // Programmatic focus request from a card (e.g. the love heart flies the
+  // viewer to the contact slip after they love the portfolio).
+  useEffect(() => {
+    if (!ready) return
+
+    const onFocusItem = (event: Event) => {
+      const id = (event as CustomEvent<{ id?: string }>).detail?.id
+      if (!id) return
+      const item = CANVAS_ITEMS.find((entry) => entry.id === id)
+      if (item) focusItem(item)
+    }
+
+    window.addEventListener("canvas:focus-item", onFocusItem)
+    return () => window.removeEventListener("canvas:focus-item", onFocusItem)
+  }, [ready, focusItem])
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {

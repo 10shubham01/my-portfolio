@@ -22,7 +22,8 @@ const GROUPS: { id: NavGroupId; label: string }[] = [
 ]
 
 function getNavGroup(item: CanvasItem): NavGroupId | null {
-  if (item.type === "theme" || item.type === "tagline") return null
+  if (item.type === "theme" || item.type === "tagline" || item.type === "love")
+    return null
   if (item.type === "work") return "experience"
   if (item.type === "project") return "projects"
   if (item.type === "resume") return "about"
@@ -36,6 +37,14 @@ export function getThemeNavItem(items: CanvasItem[] = CANVAS_ITEMS): NavItem | n
   const theme = items.find((item) => item.type === "theme")
   if (!theme) return null
   return { id: theme.id, label: theme.label }
+}
+
+// The love heart is kept out of the grouped nav (it's a widget, not a section),
+// but we still surface a direct link to it in the right-click menu footer.
+export function getLoveNavItem(items: CanvasItem[] = CANVAS_ITEMS): NavItem | null {
+  const love = items.find((item) => item.type === "love")
+  if (!love) return null
+  return { id: love.id, label: love.label }
 }
 
 export function buildCanvasNavGroups(items: CanvasItem[] = CANVAS_ITEMS): NavGroup[] {

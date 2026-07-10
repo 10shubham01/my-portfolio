@@ -20,6 +20,7 @@ export type CanvasItemType =
   | "webcam"
   | "tagline"
   | "resume"
+  | "love"
 export type CanvasComponentId =
   | "intro"
   | "media"
@@ -38,6 +39,7 @@ export type CanvasComponentId =
   | "webcam"
   | "tagline-char"
   | "resume-card"
+  | "love"
 
 export interface CanvasItemConfig {
   id: string
