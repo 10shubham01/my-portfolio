@@ -1,10 +1,13 @@
 import { getIndexableCanvasItemIds, getCanvasItemMeta } from "@/lib/canvas-meta"
+import { SITE } from "@/lib/canvas-data"
 
-// The portfolio is a pan/zoom canvas — invisible to keyboard and screen-reader
-// users, and thin for crawlers. This renders a visually-hidden but fully
-// accessible skip link + a real <nav> of anchor links to every card's deeplink,
-// so the content is reachable without a pointer (and gives crawlers internal
-// links to each ?to= URL).
+// The portfolio is a pan/zoom canvas that only renders client-side (it returns
+// null on the server until `ready`). That leaves the initial HTML almost empty,
+// which is bad for both screen-reader users and crawlers. This server-rendered
+// layer is visually hidden (sr-only) but carries the real, indexable content:
+// an <h1> with the name, a short bio paragraph, and a <nav> of anchor links to
+// every card's deeplink. Same content the canvas shows — just guaranteed to be
+// in the HTML without JavaScript, so a name search reliably resolves here.
 export function CanvasA11yNav() {
   const ids = getIndexableCanvasItemIds()
 
@@ -16,6 +19,16 @@ export function CanvasA11yNav() {
       >
         Skip to content
       </a>
+
+      <header className="sr-only">
+        <h1>{SITE.name}</h1>
+        <p>
+          {SITE.name} is a {SITE.title.toLowerCase()} at {SITE.company}, based in{" "}
+          {SITE.location}, India. He builds fast, thoughtful web experiences with
+          React, Next.js, Vue, and TypeScript, and was previously a senior
+          engineer at novio.
+        </p>
+      </header>
 
       <nav aria-label="Portfolio sections" className="sr-only">
         <h2>Explore the portfolio</h2>

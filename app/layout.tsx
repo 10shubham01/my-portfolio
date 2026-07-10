@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
   title: "Shubham Gupta — Software Engineer @ WebMD",
   description:
-    "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development. Previously senior engineer at novio.",
+    "Shubham Gupta — senior software engineer at WebMD, based in Mumbai, India. I build fast, thoughtful web experiences with React, Next.js, Vue, and TypeScript. Previously at novio.",
   authors: [{ name: "Shubham Gupta", url: "https://shubhamgupta.dev" }],
   keywords: [
     "Shubham Gupta",
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Shubham Gupta — Software Engineer @ WebMD",
     description:
-      "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development.",
+      "Shubham Gupta — senior software engineer at WebMD, based in Mumbai, India. I build fast, thoughtful web experiences with React, Next.js, Vue, and TypeScript.",
     url: "https://shubhamgupta.dev",
     siteName: "Shubham Gupta",
     type: "profile",
@@ -84,7 +84,7 @@ export const metadata: Metadata = {
     creator: "@10shubham01",
     title: "Shubham Gupta — Software Engineer @ WebMD",
     description:
-      "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development.",
+      "Shubham Gupta — senior software engineer at WebMD, based in Mumbai, India. I build fast, thoughtful web experiences with React, Next.js, Vue, and TypeScript.",
     images: [`${SITE.url}/og`],
   },
   icons: {
@@ -102,9 +102,9 @@ const jsonLd = {
   givenName: "Shubham",
   familyName: "Gupta",
   url: "https://shubhamgupta.dev",
-  image: "https://shubhamgupta.dev/images/logo/og-image.png",
+  image: `${SITE.url}/og`,
   description:
-    "Shubham Gupta — senior software engineer at WebMD in Mumbai, India. Portfolio, work, and writing on React, Next.js, Vue, TypeScript, and full-stack web development. Previously senior engineer at novio.",
+    "Shubham Gupta — senior software engineer at WebMD, based in Mumbai, India. I build fast, thoughtful web experiences with React, Next.js, Vue, and TypeScript. Previously at novio.",
   jobTitle: "Senior Software Engineer",
   worksFor: {
     "@type": "Organization",
@@ -119,6 +119,7 @@ const jsonLd = {
     "https://www.linkedin.com/in/shubhamgupta001/",
     "https://peerlist.io/10shubham01",
     "https://www.instagram.com/m0re0fme/",
+    "https://x.com/10shubham01",
   ],
 }
 
