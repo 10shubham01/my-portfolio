@@ -21,6 +21,7 @@ export type CanvasItemType =
   | "tagline"
   | "resume"
   | "love"
+  | "clock"
 export type CanvasComponentId =
   | "intro"
   | "media"
@@ -40,6 +41,7 @@ export type CanvasComponentId =
   | "tagline-char"
   | "resume-card"
   | "love"
+  | "clock"
 
 export interface CanvasItemConfig {
   id: string

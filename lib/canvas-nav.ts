@@ -22,7 +22,12 @@ const GROUPS: { id: NavGroupId; label: string }[] = [
 ]
 
 function getNavGroup(item: CanvasItem): NavGroupId | null {
-  if (item.type === "theme" || item.type === "tagline" || item.type === "love")
+  if (
+    item.type === "theme" ||
+    item.type === "tagline" ||
+    item.type === "love" ||
+    item.type === "clock"
+  )
     return null
   if (item.type === "work") return "experience"
   if (item.type === "project") return "projects"
