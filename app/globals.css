@@ -342,26 +342,9 @@
     }
 }
 
-/* Presence: spiders dangling on threads sway like a pendulum */
-.presence-dangle {
-    transform-origin: top center;
-    animation: presence-sway 3.4s ease-in-out infinite;
-}
-
-@keyframes presence-sway {
-    0%,
-    100% {
-        transform: rotate(-4deg);
-    }
-    50% {
-        transform: rotate(4deg);
-    }
-}
-
 @media (prefers-reduced-motion: reduce) {
     .spidey-breathe,
-    .spidey-limb-sway,
-    .presence-dangle {
+    .spidey-limb-sway {
         animation: none;
     }
 }

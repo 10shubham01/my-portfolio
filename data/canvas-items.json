@@ -270,6 +270,17 @@
       "position": { "x": 1180, "y": -560 },
       "size": { "width": 420, "height": 430 },
       "scatter": false
+    },
+    {
+      "id": "baaghi4",
+      "component": "media",
+      "type": "image",
+      "label": "baaghi4.jpg",
+      "position": { "x": 1660, "y": 1300 },
+      "size": { "width": 260, "height": 326 },
+      "scatter": false,
+      "asset": "images/baaghi4.jpg",
+      "alt": "Baaghi 4 movie poster"
     }
   ]
 }

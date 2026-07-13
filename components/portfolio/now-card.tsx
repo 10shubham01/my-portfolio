@@ -1,6 +1,8 @@
 "use client"
 
-import { NOW } from "@/lib/now"
+import { useEffect, useState } from "react"
+import { NOW, formatUpdatedMonth, getNowFreshness, type NowFreshness } from "@/lib/now"
+import { cn } from "@/lib/utils"
 import {
   CardSectionTitle,
   CardSurface,
@@ -19,6 +21,16 @@ export function NowCard({
 }) {
   const ref = useFrameResize(onResize)
 
+  // Computed on the client so the relative label ("2 weeks ago") reflects the
+  // visitor's current time. Until then we fall back to the absolute month,
+  // which matches SSR output and avoids a hydration mismatch.
+  const absolute = formatUpdatedMonth(NOW.updated)
+  const [freshness, setFreshness] = useState<NowFreshness | null>(null)
+
+  useEffect(() => {
+    setFreshness(getNowFreshness(NOW.updated, new Date()))
+  }, [])
+
   return (
     <CardSurface ref={ref} interactive={interactive}>
       <CardSectionTitle>{NOW.heading}</CardSectionTitle>
@@ -31,8 +43,21 @@ export function NowCard({
         ))}
       </ul>
 
-      <p className={`mt-4 ${cardMetaClass}`}>
-        Updated <CardDate>{NOW.updated}</CardDate>
+      <p
+        className={`mt-4 flex items-center ${cardMetaClass}`}
+        title={`Last updated ${absolute}`}
+      >
+        {freshness ? (
+          <span
+            aria-hidden
+            className={cn(
+              "mr-1.5 h-1.5 w-1.5 shrink-0 rounded-full",
+              freshness.stale ? "bg-amber-500" : "bg-emerald-500"
+            )}
+          />
+        ) : null}
+        <span className="mr-1.5">Updated</span>
+        <CardDate>{freshness ? freshness.label : absolute}</CardDate>
       </p>
     </CardSurface>
   )

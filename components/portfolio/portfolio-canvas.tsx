@@ -33,10 +33,6 @@ import {
 import { getCanvasItemMeta, DEFAULT_META } from "@/lib/canvas-meta"
 import { getSpideyHomePosition } from "@/lib/spidey-position"
 import { KONAMI_SEQUENCE } from "@/lib/portfolio-shortcuts"
-import { useCanvasPresence } from "@/components/portfolio/use-canvas-presence"
-import { CanvasCursors, PresenceWeb } from "@/components/portfolio/canvas-cursors"
-import { PerfHud } from "@/components/portfolio/perf-hud"
-import { isSupabaseEnabled } from "@/lib/supabase"
 import type { SpideyMood } from "@/components/portfolio/spidey-context"
 
 const GRID_SPACING = 20
@@ -63,10 +59,6 @@ export function PortfolioCanvas() {
     withAnchoredLayout(generateScatterLayout(), getDefaultSizes())
   )
   const [sizes, setSizes] = useState(getDefaultSizes)
-
-  const { members: presenceMembers, count: presenceCount, cursors, sendCursor } =
-    useCanvasPresence(isSupabaseEnabled)
-  const prevPresenceCountRef = useRef(0)
 
   const containerRef = useRef<HTMLDivElement>(null)
   const dotsRef = useRef<HTMLDivElement>(null)
@@ -108,17 +100,6 @@ export function PortfolioCanvas() {
     query.addEventListener("change", update)
     return () => query.removeEventListener("change", update)
   }, [])
-
-  // When a new visitor swings in, Spidey perks up and announces it.
-  useEffect(() => {
-    const prev = prevPresenceCountRef.current
-    prevPresenceCountRef.current = presenceCount
-    if (presenceCount > prev && prev >= 1 && presenceCount >= 2) {
-      spideyApiRef.current?.setMood("excited")
-      spideyApiRef.current?.say("someone just swung in! 🕸️", 3600)
-      window.setTimeout(() => spideyApiRef.current?.setMood("idle"), 2400)
-    }
-  }, [presenceCount])
 
   const clampPan = useCallback((x: number, y: number, zoom: number) => {
     const { minX, maxX, minY, maxY } = boundsRef.current
@@ -773,13 +754,6 @@ export function PortfolioCanvas() {
 
   const onPointerMove = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
-      // Broadcast our cursor (canvas-space) to other visitors on every move,
-      // including plain hover when no pointer is pressed.
-      sendCursor(
-        (event.clientX - panRef.current.x) / zoomRef.current,
-        (event.clientY - panRef.current.y) / zoomRef.current
-      )
-
       if (!pointers.current.has(event.pointerId)) return
 
       pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY })
@@ -817,7 +791,7 @@ export function PortfolioCanvas() {
         }
       }
     },
-    [applyTransform, clampPan, clampZoom, sendCursor]
+    [applyTransform, clampPan, clampZoom]
   )
 
   const onPointerUp = useCallback(
@@ -940,7 +914,6 @@ export function PortfolioCanvas() {
           )
         })}
         <CanvasSpiderman />
-        <CanvasCursors cursors={cursors} />
       </div>
 
       <CanvasMenu
@@ -1017,15 +990,6 @@ export function PortfolioCanvas() {
       onNext={nextTourStep}
       onTogglePlay={toggleTourPlay}
       onExit={exitTour}
-    />
-
-    {isSupabaseEnabled ? <PresenceWeb members={presenceMembers} /> : null}
-
-    <PerfHud
-      visitors={Math.max(presenceCount, 1)}
-      cursors={cursors.length}
-      cards={CANVAS_ITEMS.length}
-      zoom={zoomLevel}
     />
 
     <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} />

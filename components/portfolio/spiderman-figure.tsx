@@ -1,5 +1,3 @@
-import { useId } from "react"
-
 const BLACK = "#161616"
 const WHITE = "#f6f9ff"
 
@@ -220,60 +218,5 @@ export function SpiderManFigure({
         </g>
       </g>
     </g>
-  )
-}
-
-/**
- * A compact, shaded Spider-Man used for realtime visitors (cursors + the
- * presence web). `accent` tints a soft glow ring so each visitor is
- * distinguishable while the suit stays recognizably Spidey.
- */
-export function MiniSpiderMan({ size = 30, accent }: { size?: number; accent?: string }) {
-  // Unique per instance so an unmounting cursor can't strip the shared gradient.
-  const id = "sm" + useId().replace(/[^a-zA-Z0-9]/g, "")
-  return (
-    <svg
-      width={size}
-      height={(size * 40) / 32}
-      viewBox="0 0 32 40"
-      fill="none"
-      aria-hidden
-      style={{ display: "block", filter: "drop-shadow(0 1px 1.5px rgba(0,0,0,0.35))" }}
-    >
-      <defs>
-        <linearGradient id={`${id}-r`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#ff5d5d" />
-          <stop offset="55%" stopColor="#df2a2a" />
-          <stop offset="100%" stopColor="#9c1414" />
-        </linearGradient>
-        <linearGradient id={`${id}-b`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#4f8bef" />
-          <stop offset="100%" stopColor="#142f78" />
-        </linearGradient>
-      </defs>
-
-      {accent ? <circle cx="16" cy="18" r="15" fill={accent} opacity="0.14" /> : null}
-
-      {/* legs + boots */}
-      <path d="M13 24 C12 29 11 33 11 36 L8 36 C8 31 9 26 11 23 Z" fill={`url(#${id}-b)`} />
-      <path d="M19 24 C20 29 21 33 21 36 L24 36 C24 31 23 26 21 23 Z" fill={`url(#${id}-b)`} />
-      <ellipse cx="9" cy="36.5" rx="2.6" ry="2" fill={`url(#${id}-r)`} />
-      <ellipse cx="23" cy="36.5" rx="2.6" ry="2" fill={`url(#${id}-r)`} />
-      {/* arms */}
-      <path d="M9 14 C5 16 2.5 20 2 24 C4 25 5.5 24 6 22 C7 19 8 17 10 15 Z" fill={`url(#${id}-b)`} />
-      <path d="M23 14 C27 16 29.5 20 30 24 C28 25 26.5 24 26 22 C25 19 24 17 22 15 Z" fill={`url(#${id}-b)`} />
-      <circle cx="2.5" cy="24.5" r="2.4" fill={`url(#${id}-r)`} />
-      <circle cx="29.5" cy="24.5" r="2.4" fill={`url(#${id}-r)`} />
-      {/* torso */}
-      <path d="M9 12 C7.5 16 8 22 11 26 C13 27.5 19 27.5 21 26 C24 22 24.5 16 23 12 C19 9.5 13 9.5 9 12 Z" fill={`url(#${id}-r)`} />
-      {/* emblem */}
-      <ellipse cx="16" cy="18" rx="1.5" ry="2.1" fill={BLACK} />
-      <circle cx="16" cy="15.4" r="1" fill={BLACK} />
-      {/* head */}
-      <path d="M16 1 C21 1 24 4.5 24 9 C24 13 20.5 15.6 16 16 C11.5 15.6 8 13 8 9 C8 4.5 11 1 16 1 Z" fill={`url(#${id}-r)`} stroke="#5e0c0c" strokeWidth="0.4" />
-      {/* eyes */}
-      <path d="M14 7 C11.5 5.3 8.5 6.6 8.9 9.6 C10.8 10.6 12.8 9.5 13.8 8.1 Z" fill={WHITE} stroke={BLACK} strokeWidth="0.6" strokeLinejoin="round" />
-      <path d="M18 7 C20.5 5.3 23.5 6.6 23.1 9.6 C21.2 10.6 19.2 9.5 18.2 8.1 Z" fill={WHITE} stroke={BLACK} strokeWidth="0.6" strokeLinejoin="round" />
-    </svg>
   )
 }
