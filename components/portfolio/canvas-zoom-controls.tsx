@@ -50,8 +50,10 @@ function FitIcon() {
   )
 }
 
+// Figma's measurement blue — the same primary accent the tour and contact
+// slip use.
 const controlClass =
-  "flex h-8 items-center justify-center rounded-md text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
+  "flex h-8 items-center justify-center rounded-md text-[#18A0FB] transition-colors hover:bg-[#18A0FB]/10"
 
 export function CanvasZoomControls({
   zoom,
