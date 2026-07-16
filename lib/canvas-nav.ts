@@ -25,8 +25,7 @@ function getNavGroup(item: CanvasItem): NavGroupId | null {
   if (
     item.type === "theme" ||
     item.type === "tagline" ||
-    item.type === "love" ||
-    item.type === "clock"
+    item.type === "love"
   )
     return null
   if (item.type === "work") return "experience"

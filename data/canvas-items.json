@@ -272,15 +272,6 @@
       "scatter": false
     },
     {
-      "id": "clock",
-      "component": "clock",
-      "type": "clock",
-      "label": "local time",
-      "position": { "x": 60, "y": -620 },
-      "size": { "width": 300, "height": 150 },
-      "scatter": false
-    },
-    {
       "id": "baaghi4",
       "component": "media",
       "type": "image",

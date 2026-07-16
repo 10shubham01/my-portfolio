@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { DM_Mono, Geist, Inter, Allura, Orbitron } from "next/font/google"
+import { DM_Mono, Geist, Inter, Allura } from "next/font/google"
 import localFont from "next/font/local"
 
 import "./globals.css"
@@ -20,14 +20,6 @@ const dmMono = DM_Mono({
   subsets: ["latin"],
   weight: ["300", "400", "500"],
   variable: "--font-dm-mono",
-})
-
-// Digital-clock display face for the canvas clock card.
-const orbitron = Orbitron({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--font-clock",
-  preload: false,
 })
 
 // Thin, flowing signature script for the contact slip's "Signed" line.
@@ -144,7 +136,6 @@ export default function RootLayout({
         geist.variable,
         inter.variable,
         dmMono.variable,
-        orbitron.variable,
         allura.variable,
         basteleur.variable,
         helveticaNeue.variable
