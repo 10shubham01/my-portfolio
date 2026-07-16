@@ -20,7 +20,7 @@ import { CanvasZoomControls } from "@/components/portfolio/canvas-zoom-controls"
 import { CanvasSpotlight } from "@/components/portfolio/canvas-spotlight"
 import { CanvasMobileMenu } from "@/components/portfolio/canvas-mobile-menu"
 import { CanvasTour } from "@/components/portfolio/canvas-tour"
-import { CANVAS_TOUR, TOUR_STEP_DURATION } from "@/lib/canvas-tour"
+import { CANVAS_TOUR } from "@/lib/canvas-tour"
 import { ShortcutsDialog } from "@/components/portfolio/shortcuts-dialog"
 import { SpideyProvider } from "@/components/portfolio/spidey-context"
 import { CanvasSpiderman } from "@/components/portfolio/canvas-spiderman"
@@ -50,7 +50,6 @@ export function PortfolioCanvas() {
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
   const [tourActive, setTourActive] = useState(false)
   const [tourStep, setTourStep] = useState(0)
-  const [tourPlaying, setTourPlaying] = useState(true)
   const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null)
   const [isMobile, setIsMobile] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -118,8 +117,6 @@ export function PortfolioCanvas() {
 
   const beginInteraction = useCallback(() => {
     deeplinkFocusPending.current = false
-    // A manual pan/zoom gesture takes the wheel from the auto-playing tour.
-    setTourPlaying(false)
     setInteracting(true)
     if (canvasRef.current) {
       canvasRef.current.style.willChange = "transform"
@@ -390,7 +387,6 @@ export function PortfolioCanvas() {
     setSpotlightOpen(false)
     setShortcutsOpen(false)
     setTourActive(true)
-    setTourPlaying(true)
     setTourStep(0)
     goToTourStep(0)
     posthog.capture("tour_started")
@@ -398,7 +394,6 @@ export function PortfolioCanvas() {
 
   const exitTour = useCallback(() => {
     setTourActive(false)
-    setTourPlaying(false)
     posthog.capture("tour_exited", { last_step: tourStep })
   }, [tourStep])
 
@@ -408,34 +403,13 @@ export function PortfolioCanvas() {
       posthog.capture("tour_completed")
       return
     }
-    setTourPlaying(false)
     goToTourStep(tourStep + 1)
   }, [tourStep, tourSteps.length, goToTourStep, exitTour])
 
   const prevTourStep = useCallback(() => {
     if (tourStep <= 0) return
-    setTourPlaying(false)
     goToTourStep(tourStep - 1)
   }, [tourStep, goToTourStep])
-
-  const toggleTourPlay = useCallback(() => {
-    setTourPlaying((current) => !current)
-  }, [])
-
-  // Hands-free auto-advance while playing.
-  useEffect(() => {
-    if (!tourActive || !tourPlaying) return
-    const timer = window.setTimeout(() => {
-      if (tourStep >= tourSteps.length - 1) {
-        setTourActive(false)
-        setTourPlaying(false)
-        posthog.capture("tour_completed")
-      } else {
-        goToTourStep(tourStep + 1)
-      }
-    }, TOUR_STEP_DURATION)
-    return () => window.clearTimeout(timer)
-  }, [tourActive, tourPlaying, tourStep, tourSteps.length, goToTourStep])
 
   const resetCanvasLayout = useCallback(() => {
     const baseSizes = getDefaultSizes()
@@ -985,10 +959,8 @@ export function PortfolioCanvas() {
       caption={tourSteps[tourStep]?.caption ?? ""}
       step={tourStep}
       total={tourSteps.length}
-      playing={tourPlaying}
       onPrev={prevTourStep}
       onNext={nextTourStep}
-      onTogglePlay={toggleTourPlay}
       onExit={exitTour}
     />
 

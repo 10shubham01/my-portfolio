@@ -21,10 +21,12 @@ export const CANVAS_TOUR: TourStep[] = [
   { id: "skills", caption: "The stack I reach for, day to day." },
   { id: "project-spotlight", caption: "A favourite side project — and yes, this canvas has one too (⌘K)." },
   { id: "project-scut-cli", caption: "scut — a CLI I built to speed up everyday dev work." },
+  { id: "project-moneyunwrapped", caption: "Money Unwrapped — drop in a bank statement, get a Spotify Wrapped–style recap of your money." },
+  { id: "project-text-command-palette", caption: "Text Command Palette — select text anywhere, transform it with a shortcut." },
+  { id: "project-easybg", caption: "easybg — 176+ ready-to-use Tailwind CSS backgrounds." },
+  { id: "project-dbspin", caption: "dbspin — a CLI to jump into PostgreSQL databases fast." },
+  { id: "project-talentagr", caption: "TalentAGR — a recruitment platform I designed and built end to end." },
   { id: "github", caption: "How the commits stack up over the year." },
   { id: "awards", caption: "A few things I'm proud of." },
   { id: "socials", caption: "That's the tour — here's where to find me. Say hi!" },
 ]
-
-/** Auto-advance delay (ms) per step when the tour plays hands-free. */
-export const TOUR_STEP_DURATION = 4200

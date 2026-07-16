@@ -259,7 +259,7 @@
       "type": "contact",
       "label": "transmission",
       "position": { "x": 1180, "y": 1800 },
-      "size": { "width": 480, "height": 460 },
+      "size": { "width": 480, "height": 530 },
       "scatter": false
     },
     {

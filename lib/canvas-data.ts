@@ -20,8 +20,8 @@ export const SITE = {
 export const SOCIAL_LINKS = [
   {
     platform: "LINKEDIN",
-    handle: "/IN/SHUBHAMGUPTA001",
-    href: "https://www.linkedin.com/in/shubhamgupta001/",
+    handle: "/IN/10SHUBHAM01",
+    href: "https://www.linkedin.com/in/10shubham01/",
   },
   {
     platform: "GITHUB",
