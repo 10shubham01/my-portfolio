@@ -5,7 +5,16 @@ import posthog from "posthog-js"
 import { cn } from "@/lib/utils"
 import { useFrameResize } from "@/components/portfolio/use-frame-resize"
 
-const STORAGE_KEY = "portfolio-loved"
+export const LOVE_STORAGE_KEY = "portfolio-loved"
+const STORAGE_KEY = LOVE_STORAGE_KEY
+
+// Tell the rest of the canvas (e.g. the dock's heart) that the loved state
+// changed, so mirrored icons stay in sync.
+function broadcastLoved(loved: boolean) {
+  window.dispatchEvent(
+    new CustomEvent("canvas:love-changed", { detail: { loved } })
+  )
+}
 
 // Compact counts: 5000 → "5K", 5100 → "5.1K", 1_200_000 → "1.2M".
 const compactFormatter = new Intl.NumberFormat("en-US", {
@@ -84,6 +93,7 @@ export function LoveCard({
   const [loved, setLoved] = useState(false)
   const [bump, setBump] = useState(false)
   const inFlight = useRef(false)
+  const toggleRef = useRef<() => void>(() => {})
 
   // Initial load: current global count + whether this browser already loved it.
   useEffect(() => {
@@ -106,6 +116,17 @@ export function LoveCard({
     }
   }, [])
 
+  // Programmatic love (e.g. the dock's heart button): loves the portfolio if
+  // this browser hasn't already — never undoes an existing love.
+  useEffect(() => {
+    const onLove = () => {
+      if (window.localStorage.getItem(STORAGE_KEY) === "1") return
+      toggleRef.current()
+    }
+    window.addEventListener("canvas:love", onLove)
+    return () => window.removeEventListener("canvas:love", onLove)
+  }, [])
+
   async function toggle() {
     if (inFlight.current) return
     inFlight.current = true
@@ -115,6 +136,7 @@ export function LoveCard({
 
     // Optimistic update — feels instant; reconciled with the server below.
     setLoved(nextLoved)
+    broadcastLoved(nextLoved)
     setCount((c) => Math.max(0, (c ?? 0) + (nextLoved ? 1 : -1)))
     setBump(true)
     window.setTimeout(() => setBump(false), 300)
@@ -143,12 +165,17 @@ export function LoveCard({
     } catch {
       // Roll back on failure.
       setLoved(!nextLoved)
+      broadcastLoved(!nextLoved)
       setCount((c) => Math.max(0, (c ?? 0) + (nextLoved ? -1 : 1)))
       window.localStorage.setItem(STORAGE_KEY, !nextLoved ? "1" : "0")
     } finally {
       inFlight.current = false
     }
   }
+
+  useEffect(() => {
+    toggleRef.current = toggle
+  })
 
   return (
     <div ref={ref} className="flex h-full w-full flex-col items-center justify-center gap-1.5">

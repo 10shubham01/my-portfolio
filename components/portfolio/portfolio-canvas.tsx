@@ -14,6 +14,16 @@ import {
 import { ANCHORED_ITEM_IDS, withAnchoredLayout } from "@/lib/canvas-layout"
 import { buildCanvasNavGroups } from "@/lib/canvas-nav"
 import { CanvasFrame } from "@/components/portfolio/canvas-frame"
+import {
+  MeasureOverlay,
+  SnapGuidesOverlay,
+} from "@/components/portfolio/canvas-guides"
+import {
+  computeMeasureLines,
+  computeSnap,
+  type Rect,
+  type SnapGuide,
+} from "@/lib/canvas-snap"
 import { RenderCanvasItem } from "@/components/portfolio/render-canvas-item"
 import { CanvasMenu } from "@/components/portfolio/canvas-menu"
 import { CardContextMenu } from "@/components/portfolio/card-context-menu"
@@ -34,12 +44,16 @@ import {
 import { getCanvasItemMeta, DEFAULT_META } from "@/lib/canvas-meta"
 import { getSpideyHomePosition } from "@/lib/spidey-position"
 import { KONAMI_SEQUENCE } from "@/lib/portfolio-shortcuts"
+import { LOVE_STORAGE_KEY } from "@/components/portfolio/love-card"
 import type { SpideyMood } from "@/components/portfolio/spidey-context"
 
 const GRID_SPACING = 20
 const ZOOM_MIN = 0.1
 const ZOOM_MAX = 2.5
 const ZOOM_STEP = 1.25
+const SNAP_TOLERANCE = 8 // on-screen px
+const UNDO_LIMIT = 50
+const NUDGE_UNDO_GROUP_MS = 800
 
 export function PortfolioCanvas() {
   const { canvasBg, toggleTheme } = useTheme()
@@ -62,6 +76,13 @@ export function PortfolioCanvas() {
     withAnchoredLayout(generateScatterLayout(), getDefaultSizes())
   )
   const [sizes, setSizes] = useState(getDefaultSizes)
+  const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const [altDown, setAltDown] = useState(false)
+  const [liked, setLiked] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.localStorage.getItem(LOVE_STORAGE_KEY) === "1"
+  )
 
   const containerRef = useRef<HTMLDivElement>(null)
   const dotsRef = useRef<HTMLDivElement>(null)
@@ -89,10 +110,61 @@ export function PortfolioCanvas() {
   const deeplinkFocusPending = useRef(
     typeof window !== "undefined" && !!getItemIdFromUrl(window.location.search)
   )
+  const positionsRef = useRef(positions)
+  const sizesRef = useRef(sizes)
+  const hoveredIdRef = useRef<string | null>(null)
+  const altDownRef = useRef(false)
+  const undoStack = useRef<Array<{ positions: typeof positions }>>([])
+  const redoStack = useRef<typeof undoStack.current>([])
+  const nudgeUndoAt = useRef(0)
+  const snapGuidesSetter = useRef<((guides: SnapGuide[]) => void) | null>(null)
 
   useEffect(() => {
     boundsRef.current = getContentBounds(positions, sizes)
+    positionsRef.current = positions
+    sizesRef.current = sizes
   }, [positions, sizes])
+
+  // Mirror the love card's state so the dock's heart stays filled once the
+  // visitor has loved the portfolio.
+  useEffect(() => {
+    const onLoveChanged = (event: Event) => {
+      const loved = (event as CustomEvent<{ loved?: boolean }>).detail?.loved
+      if (typeof loved === "boolean") setLiked(loved)
+    }
+    window.addEventListener("canvas:love-changed", onLoveChanged)
+    return () => window.removeEventListener("canvas:love-changed", onLoveChanged)
+  }, [])
+
+  // Alt held = Figma's distance-inspect mode (with a card selected, hover
+  // another card to measure the gap).
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Alt") return
+      event.preventDefault()
+      altDownRef.current = true
+      setAltDown(true)
+      setHoveredId(hoveredIdRef.current)
+    }
+    const onKeyUp = (event: KeyboardEvent) => {
+      if (event.key !== "Alt") return
+      altDownRef.current = false
+      setAltDown(false)
+    }
+    const onBlur = () => {
+      altDownRef.current = false
+      setAltDown(false)
+    }
+
+    window.addEventListener("keydown", onKeyDown)
+    window.addEventListener("keyup", onKeyUp)
+    window.addEventListener("blur", onBlur)
+    return () => {
+      window.removeEventListener("keydown", onKeyDown)
+      window.removeEventListener("keyup", onKeyUp)
+      window.removeEventListener("blur", onBlur)
+    }
+  }, [])
 
   // Track viewport so the toolbar opens a tap-friendly menu on mobile
   // instead of the keyboard-driven command palette.
@@ -443,12 +515,115 @@ export function PortfolioCanvas() {
     setSelectedId(id)
   }, [])
 
-  const moveItem = useCallback((id: string, x: number, y: number) => {
-    setPositions((current) => ({
-      ...current,
-      [id]: { ...current[id], x, y },
-    }))
+  const getItemRect = useCallback((id: string): Rect | null => {
+    const item = CANVAS_ITEMS.find((entry) => entry.id === id)
+    if (!item) return null
+    const pos = positionsRef.current[id] ?? { x: item.x, y: item.y }
+    const size = sizesRef.current[id] ?? { w: item.width, h: item.height }
+    return { x: pos.x, y: pos.y, w: size.w, h: size.h }
   }, [])
+
+  const pushUndo = useCallback(() => {
+    undoStack.current.push({ positions: positionsRef.current })
+    if (undoStack.current.length > UNDO_LIMIT) undoStack.current.shift()
+    redoStack.current = []
+  }, [])
+
+  const undo = useCallback(() => {
+    const snapshot = undoStack.current.pop()
+    if (!snapshot) return
+    redoStack.current.push({ positions: positionsRef.current })
+    setPositions(snapshot.positions)
+  }, [])
+
+  const redo = useCallback(() => {
+    const snapshot = redoStack.current.pop()
+    if (!snapshot) return
+    undoStack.current.push({ positions: positionsRef.current })
+    setPositions(snapshot.positions)
+  }, [])
+
+  // Live drag: snap the dragged card against its neighbours and publish the
+  // guide lines imperatively, so nothing re-renders per pointermove.
+  const handleDragMove = useCallback(
+    (id: string, x: number, y: number) => {
+      const rect = getItemRect(id)
+      if (!rect) return { x, y }
+
+      const zoom = zoomRef.current ?? 1
+      // Tagline letters are too many and too small to be useful snap targets.
+      const others: Rect[] = []
+      for (const entry of CANVAS_ITEMS) {
+        if (entry.id === id || entry.type === "tagline") continue
+        const other = getItemRect(entry.id)
+        if (other) others.push(other)
+      }
+
+      const snapped = computeSnap(
+        { x, y, w: rect.w, h: rect.h },
+        others,
+        SNAP_TOLERANCE / zoom
+      )
+      snapGuidesSetter.current?.(snapped.guides)
+
+      return { x: snapped.x, y: snapped.y }
+    },
+    [getItemRect]
+  )
+
+  const moveItem = useCallback(
+    (id: string, x: number, y: number) => {
+      pushUndo()
+      snapGuidesSetter.current?.([])
+      setPositions((current) => ({
+        ...current,
+        [id]: { ...current[id], x, y },
+      }))
+    },
+    [pushUndo]
+  )
+
+  const zoomToSelection = useCallback(() => {
+    if (!selectedId) return
+    const item = CANVAS_ITEMS.find((entry) => entry.id === selectedId)
+    if (item) focusItem(item, { replaceUrl: true })
+  }, [focusItem, selectedId])
+
+  const nudgeSelection = useCallback(
+    (dx: number, dy: number) => {
+      if (!selectedId) return false
+      const item = CANVAS_ITEMS.find((entry) => entry.id === selectedId)
+      if (!item) return false
+
+      // Consecutive nudges within a short window collapse into one undo step.
+      const now = Date.now()
+      if (now - nudgeUndoAt.current > NUDGE_UNDO_GROUP_MS) pushUndo()
+      nudgeUndoAt.current = now
+
+      setPositions((current) => {
+        const pos = current[selectedId] ?? { x: item.x, y: item.y }
+        return {
+          ...current,
+          [selectedId]: { ...pos, x: pos.x + dx, y: pos.y + dy },
+        }
+      })
+      return true
+    },
+    [pushUndo, selectedId]
+  )
+
+  const handleHoverChange = useCallback((id: string | null) => {
+    hoveredIdRef.current = id
+    // Only re-render for the measurement overlay while Alt is held.
+    if (altDownRef.current) setHoveredId(id)
+  }, [])
+
+  const registerGuides = useCallback(
+    (setGuides: (guides: SnapGuide[]) => void) => {
+      snapGuidesSetter.current = setGuides
+    },
+    []
+  )
 
   const resizeItem = useCallback((id: string, width: number, height: number) => {
     setSizes((current) => {
@@ -554,7 +729,36 @@ export function PortfolioCanvas() {
         return
       }
 
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "z") {
+        event.preventDefault()
+        if (event.shiftKey) {
+          redo()
+        } else {
+          undo()
+        }
+        return
+      }
+
+      if ((event.metaKey || event.ctrlKey) && event.key === "0") {
+        event.preventDefault()
+        zoomTo100()
+        return
+      }
+
       if (event.metaKey || event.ctrlKey || event.altKey) return
+
+      // Figma's zoom keys — physical digit keys so keyboard layout doesn't
+      // matter (Shift+2 is "@" on a US layout).
+      if (event.shiftKey && event.code === "Digit1") {
+        event.preventDefault()
+        fitAll()
+        return
+      }
+      if (event.shiftKey && event.code === "Digit2") {
+        event.preventDefault()
+        zoomToSelection()
+        return
+      }
 
       const key = event.key.toLowerCase()
       if (key === "r") {
@@ -586,6 +790,11 @@ export function PortfolioCanvas() {
     summonSpideyToSelection,
     triggerKonamiEasterEgg,
     startTour,
+    undo,
+    redo,
+    zoomTo100,
+    fitAll,
+    zoomToSelection,
   ])
 
   useEffect(() => {
@@ -640,7 +849,29 @@ export function PortfolioCanvas() {
 
       if (spotlightOpen || shortcutsOpen) return
 
-      if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+      const isArrow =
+        event.key === "ArrowRight" ||
+        event.key === "ArrowLeft" ||
+        event.key === "ArrowUp" ||
+        event.key === "ArrowDown"
+
+      // Alt+arrows nudge the selection 1px (10px with Shift), Figma-style.
+      // Plain ←/→ keep cycling cards.
+      if (isArrow && event.altKey) {
+        const step = event.shiftKey ? 10 : 1
+        const dx =
+          event.key === "ArrowLeft" ? -step : event.key === "ArrowRight" ? step : 0
+        const dy =
+          event.key === "ArrowUp" ? -step : event.key === "ArrowDown" ? step : 0
+        if (nudgeSelection(dx, dy)) event.preventDefault()
+        return
+      }
+
+      if (
+        (event.key === "ArrowRight" || event.key === "ArrowLeft") &&
+        !event.metaKey &&
+        !event.ctrlKey
+      ) {
         event.preventDefault()
         const currentIndex = CANVAS_ITEMS.findIndex((item) => item.id === selectedId)
         const nextIndex =
@@ -654,7 +885,15 @@ export function PortfolioCanvas() {
 
     window.addEventListener("keydown", onKeyDown)
     return () => window.removeEventListener("keydown", onKeyDown)
-  }, [focusItem, resetView, selectedId, spotlightOpen, shortcutsOpen, infoOpen])
+  }, [
+    focusItem,
+    resetView,
+    selectedId,
+    nudgeSelection,
+    spotlightOpen,
+    shortcutsOpen,
+    infoOpen,
+  ])
 
   useEffect(() => {
     const container = containerRef.current
@@ -704,23 +943,35 @@ export function PortfolioCanvas() {
     clickedFrameId.current = frame?.getAttribute("data-frame-id") ?? null
 
     if (pointers.current.size === 1) {
-      if (event.button !== 0 || interactive || spidey) return
-
       const isMobile = window.innerWidth < 768
+
+      const startPan = () => {
+        isPanning.current = true
+        panStart.current = {
+          x: event.clientX,
+          y: event.clientY,
+          ox: panRef.current.x,
+          oy: panRef.current.y,
+        }
+        containerRef.current?.setPointerCapture(event.pointerId)
+        canvasRef.current && (canvasRef.current.style.transition = "none")
+        beginInteraction()
+        setPanning(true)
+      }
+
+      // Middle-button drag always pans, Figma-style.
+      if (event.button === 1 && !isMobile) {
+        event.preventDefault()
+        didPan.current = true
+        startPan()
+        return
+      }
+
+      if (event.button !== 0 || interactive || spidey) return
       if (frame && !isMobile) return
 
-      isPanning.current = true
       didPan.current = false
-      panStart.current = {
-        x: event.clientX,
-        y: event.clientY,
-        ox: panRef.current.x,
-        oy: panRef.current.y,
-      }
-      containerRef.current?.setPointerCapture(event.pointerId)
-      canvasRef.current && (canvasRef.current.style.transition = "none")
-      beginInteraction()
-      setPanning(true)
+      startPan()
     } else if (pointers.current.size === 2) {
       const points = Array.from(pointers.current.values())
       pinchStart.current = Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y)
@@ -812,6 +1063,21 @@ export function PortfolioCanvas() {
 
   const contentBounds = getContentBounds(positions, sizes)
 
+  const rectFor = (id: string): Rect | null => {
+    const item = CANVAS_ITEMS.find((entry) => entry.id === id)
+    if (!item) return null
+    const pos = positions[id] ?? { x: item.x, y: item.y }
+    const size = sizes[id] ?? { w: item.width, h: item.height }
+    return { x: pos.x, y: pos.y, w: size.w, h: size.h }
+  }
+
+  let measureLines: ReturnType<typeof computeMeasureLines> = []
+  if (altDown && selectedId && hoveredId && hoveredId !== selectedId) {
+    const a = rectFor(selectedId)
+    const b = rectFor(hoveredId)
+    if (a && b) measureLines = computeMeasureLines(a, b)
+  }
+
   return (
     <SpideyProvider
       panRef={panRef}
@@ -895,6 +1161,8 @@ export function PortfolioCanvas() {
               onSelect={focusItem}
               onActivate={activateItem}
               onMove={moveItem}
+              onDragMove={handleDragMove}
+              onHoverChange={handleHoverChange}
               zoomRef={zoomRef}
               suppressHover={panning || interacting}
             >
@@ -908,6 +1176,8 @@ export function PortfolioCanvas() {
           )
         })}
         <CanvasSpiderman />
+        <SnapGuidesOverlay register={registerGuides} />
+        <MeasureOverlay lines={measureLines} />
       </div>
 
       <CardContextMenu
@@ -918,6 +1188,10 @@ export function PortfolioCanvas() {
         }
         anchor={cardMenu}
         onClose={() => setCardMenu(null)}
+        onZoomToItem={(id) => {
+          const item = CANVAS_ITEMS.find((entry) => entry.id === id)
+          if (item) focusItem(item, { replaceUrl: true })
+        }}
       />
 
       <CanvasMenu
@@ -943,7 +1217,33 @@ export function PortfolioCanvas() {
         onZoomIn={zoomIn}
         onZoomOut={zoomOut}
         onZoomReset={zoomTo100}
+        onZoomTo={zoomAtViewportCenter}
         onFitAll={fitAll}
+        onZoomToSelection={zoomToSelection}
+        hasSelection={!!selectedId}
+        liked={liked}
+        onLike={() => {
+          posthog.capture("dock_love_clicked")
+          const item = CANVAS_ITEMS.find((entry) => entry.id === "love")
+          if (item) focusItem(item, { replaceUrl: true })
+          // Let the fly-to animation land before the heart pops.
+          window.setTimeout(() => {
+            window.dispatchEvent(new CustomEvent("canvas:love"))
+          }, 700)
+        }}
+        onMessage={() => {
+          posthog.capture("dock_message_clicked")
+          window.dispatchEvent(
+            new CustomEvent("canvas:contact-prefill", {
+              detail: {
+                message:
+                  "Hey Shubham, let's build something together — I have an idea…",
+              },
+            })
+          )
+          const item = CANVAS_ITEMS.find((entry) => entry.id === "contact")
+          if (item) focusItem(item, { replaceUrl: true })
+        }}
         isMobile={isMobile}
         onOpenSpotlight={() => {
           if (isMobile) {

@@ -96,6 +96,26 @@ export function ContactCard({
     return () => window.clearTimeout(timer)
   }, [interactive, status])
 
+  // Programmatic prefill (e.g. the dock's chat button): seeds empty fields
+  // without clobbering anything the visitor already typed.
+  useEffect(() => {
+    const onPrefill = (event: Event) => {
+      const detail = (event as CustomEvent<{ name?: string; message?: string }>)
+        .detail
+      if (!detail) return
+      if (detail.name) {
+        setName((current) => current.trim() ? current : detail.name!.slice(0, 120))
+      }
+      if (detail.message) {
+        setMessage((current) =>
+          current.trim() ? current : detail.message!.slice(0, MESSAGE_MAX)
+        )
+      }
+    }
+    window.addEventListener("canvas:contact-prefill", onPrefill)
+    return () => window.removeEventListener("canvas:contact-prefill", onPrefill)
+  }, [])
+
   const canSend =
     name.trim().length > 0 && message.trim().length > 0 && status !== "sending"
 

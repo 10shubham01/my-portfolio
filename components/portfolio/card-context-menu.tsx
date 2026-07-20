@@ -1,6 +1,6 @@
 "use client"
 
-import { ArrowUpRight, Check, Link } from "lucide-react"
+import { ArrowUpRight, Check, Link, Maximize2 } from "lucide-react"
 import posthog from "posthog-js"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import type { CanvasItem } from "@/lib/canvas-config"
@@ -13,6 +13,18 @@ const VIEWPORT_PADDING = 8
 
 const rowClass =
   "flex w-full items-center gap-2 rounded px-1.5 py-1 text-left font-mono text-[11px] whitespace-nowrap text-gray-600 transition-colors hover:bg-gray-50 hover:text-[#18A0FB] dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-[#18A0FB]"
+
+function RowHint({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="ml-auto font-mono text-[10px] text-gray-400 dark:text-neutral-500">
+      {children}
+    </span>
+  )
+}
+
+function Divider() {
+  return <div className="my-1 h-px bg-gray-100 dark:bg-neutral-800" />
+}
 
 function clampToViewport(
   x: number,
@@ -35,10 +47,12 @@ function CardContextMenuPanel({
   item,
   anchor,
   onClose,
+  onZoomToItem,
 }: {
   item: CanvasItem
   anchor: { x: number; y: number }
   onClose: () => void
+  onZoomToItem?: (id: string) => void
 }) {
   const panelRef = useRef<HTMLDivElement>(null)
   const [copied, setCopied] = useState(false)
@@ -127,6 +141,24 @@ function CardContextMenuPanel({
             Visit
           </a>
         )}
+
+        {onZoomToItem && (
+          <>
+            <Divider />
+            <button
+              type="button"
+              className={rowClass}
+              onClick={() => {
+                onZoomToItem(item.id)
+                onClose()
+              }}
+            >
+              <Maximize2 className="size-3 shrink-0" strokeWidth={2} />
+              Zoom to selection
+              <RowHint>⇧2</RowHint>
+            </button>
+          </>
+        )}
       </div>
     </>
   )
@@ -140,10 +172,12 @@ export function CardContextMenu({
   item,
   anchor,
   onClose,
+  onZoomToItem,
 }: {
   item: CanvasItem | null
   anchor: { x: number; y: number } | null
   onClose: () => void
+  onZoomToItem?: (id: string) => void
 }) {
   if (!item || !anchor) return null
 
@@ -153,6 +187,7 @@ export function CardContextMenu({
       item={item}
       anchor={anchor}
       onClose={onClose}
+      onZoomToItem={onZoomToItem}
     />
   )
 }

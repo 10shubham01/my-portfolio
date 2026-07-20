@@ -24,6 +24,8 @@ export function CanvasFrame({
   onSelect,
   onActivate,
   onMove,
+  onDragMove,
+  onHoverChange,
   zoomRef,
   suppressHover = false,
   children,
@@ -33,6 +35,9 @@ export function CanvasFrame({
   onSelect: (item: CanvasItem) => void
   onActivate: (id: string) => void
   onMove: (id: string, x: number, y: number) => void
+  /** Called per drag move with the proposed position; returns the snapped one. */
+  onDragMove?: (id: string, x: number, y: number) => { x: number; y: number }
+  onHoverChange?: (id: string | null) => void
   zoomRef: React.RefObject<number>
   suppressHover?: boolean
   children: React.ReactNode
@@ -44,6 +49,7 @@ export function CanvasFrame({
   const pointerActive = useRef(false)
   const moved = useRef(false)
   const dragStart = useRef({ px: 0, py: 0, wx: 0, wy: 0 })
+  const dragPos = useRef({ x: 0, y: 0 })
 
   useEffect(() => {
     if (suppressHover) setHovered(false)
@@ -75,20 +81,13 @@ export function CanvasFrame({
     outlineOffset: "calc(-1 * (1.5px / var(--canvas-zoom, 1)))",
   } as const
 
-  const finishPointer = (event: React.PointerEvent<HTMLDivElement>) => {
+  const finishPointer = () => {
     if (!pointerActive.current) return
     pointerActive.current = false
     setDragging(false)
 
     if (moved.current) {
-      const dx = event.clientX - dragStart.current.px
-      const dy = event.clientY - dragStart.current.py
-      const zoom = zoomRef.current ?? 1
-      onMove(
-        item.id,
-        dragStart.current.wx + dx / zoom,
-        dragStart.current.wy + dy / zoom
-      )
+      onMove(item.id, dragPos.current.x, dragPos.current.y)
     } else {
       onSelect(item)
     }
@@ -141,16 +140,24 @@ export function CanvasFrame({
         if (!moved.current || !frameRef.current) return
 
         const zoom = zoomRef.current ?? 1
-        frameRef.current.style.left = `${dragStart.current.wx + dx / zoom}px`
-        frameRef.current.style.top = `${dragStart.current.wy + dy / zoom}px`
+        const rawX = dragStart.current.wx + dx / zoom
+        const rawY = dragStart.current.wy + dy / zoom
+        const next = onDragMove?.(item.id, rawX, rawY) ?? { x: rawX, y: rawY }
+        dragPos.current = next
+        frameRef.current.style.left = `${next.x}px`
+        frameRef.current.style.top = `${next.y}px`
       }}
       onPointerUp={finishPointer}
       onPointerCancel={finishPointer}
       onDragStart={(event) => event.preventDefault()}
       onPointerEnter={() => {
         if (window.innerWidth >= 768 && !suppressHover) setHovered(true)
+        onHoverChange?.(item.id)
       }}
-      onPointerLeave={() => setHovered(false)}
+      onPointerLeave={() => {
+        setHovered(false)
+        onHoverChange?.(null)
+      }}
     >
       {item.type !== "tagline" && (
       <div className="mb-1.5">
