@@ -16,6 +16,7 @@ import { buildCanvasNavGroups } from "@/lib/canvas-nav"
 import { CanvasFrame } from "@/components/portfolio/canvas-frame"
 import { RenderCanvasItem } from "@/components/portfolio/render-canvas-item"
 import { CanvasMenu } from "@/components/portfolio/canvas-menu"
+import { CardContextMenu } from "@/components/portfolio/card-context-menu"
 import { CanvasZoomControls } from "@/components/portfolio/canvas-zoom-controls"
 import { CanvasSpotlight } from "@/components/portfolio/canvas-spotlight"
 import { CanvasMobileMenu } from "@/components/portfolio/canvas-mobile-menu"
@@ -51,6 +52,9 @@ export function PortfolioCanvas() {
   const [tourActive, setTourActive] = useState(false)
   const [tourStep, setTourStep] = useState(0)
   const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null)
+  const [cardMenu, setCardMenu] = useState<{ id: string; x: number; y: number } | null>(
+    null
+  )
   const [isMobile, setIsMobile] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [zoomLevel, setZoomLevel] = useState(1)
@@ -833,6 +837,22 @@ export function PortfolioCanvas() {
       onPointerCancel={onPointerUp}
       onContextMenu={(event) => {
         event.preventDefault()
+
+        // Right-click on a card opens its own menu; anywhere else opens the
+        // canvas navigation menu.
+        const frameId = (event.target as HTMLElement)
+          .closest("[data-frame-id]")
+          ?.getAttribute("data-frame-id")
+
+        if (frameId && CANVAS_ITEMS.some((entry) => entry.id === frameId)) {
+          activateItem(frameId)
+          setInfoOpen(false)
+          setMenuAnchor(null)
+          setCardMenu({ id: frameId, x: event.clientX, y: event.clientY })
+          return
+        }
+
+        setCardMenu(null)
         setMenuAnchor({ x: event.clientX, y: event.clientY })
         setInfoOpen(true)
       }}
@@ -889,6 +909,16 @@ export function PortfolioCanvas() {
         })}
         <CanvasSpiderman />
       </div>
+
+      <CardContextMenu
+        item={
+          cardMenu
+            ? (CANVAS_ITEMS.find((entry) => entry.id === cardMenu.id) ?? null)
+            : null
+        }
+        anchor={cardMenu}
+        onClose={() => setCardMenu(null)}
+      />
 
       <CanvasMenu
         open={infoOpen}

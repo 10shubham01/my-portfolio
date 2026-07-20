@@ -8,9 +8,7 @@ import {
   CtaCursor,
 } from "@/components/portfolio/card-chrome"
 import { useFrameResize } from "@/components/portfolio/use-frame-resize"
-
-const PEERLIST_PROJECT_URL =
-  "https://peerlist.io/10shubham01/project/shubhams-portfolio"
+import { PEERLIST_PROJECT_URL } from "@/lib/canvas-links"
 
 export function PeerlistCard({
   interactive,

@@ -3,8 +3,7 @@
 import Image from "next/image"
 import posthog from "posthog-js"
 import { useFrameResize } from "@/components/portfolio/use-frame-resize"
-
-const RESUME_URL = "/shubham-gupta.pdf"
+import { RESUME_URL } from "@/lib/canvas-links"
 
 export function ResumeCard({
   interactive,
