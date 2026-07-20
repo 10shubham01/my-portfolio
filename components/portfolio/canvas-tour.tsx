@@ -92,7 +92,7 @@ export function CanvasTour({
 
   return (
     <div
-      className="fixed bottom-4 left-1/2 z-[200] flex w-[min(calc(100vw-2rem),440px)] -translate-x-1/2 items-center gap-2 px-2 py-1"
+      className="fixed top-4 left-1/2 z-[200] flex w-[min(calc(100vw-2rem),440px)] -translate-x-1/2 items-center gap-2 px-2 py-1"
       onPointerDown={(event) => event.stopPropagation()}
       role="dialog"
       aria-label="Guided tour"
