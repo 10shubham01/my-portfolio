@@ -16,16 +16,6 @@ const MESSAGE_FIELD = "entry.134234257"
 // Hard cap on the message body, surfaced as a live counter on the slip.
 const MESSAGE_MAX = 800
 
-// One-tap reactions: the zero-effort path. Most visitors won't compose a
-// message to a stranger, but they will tap a chip — each tap posts through
-// the same form so every reaction still lands in the inbox.
-const REACTIONS = [
-  { id: "love", label: "🔥 love the design" },
-  { id: "hi", label: "👋 just saying hi" },
-  { id: "work", label: "💼 let's work together" },
-  { id: "how", label: "🤯 how did you build this?" },
-] as const
-
 async function postToForm(name: string, message: string) {
   const body = new URLSearchParams()
   body.append(NAME_FIELD, name)
@@ -82,8 +72,6 @@ export function ContactCard({
   const [name, setName] = useState("")
   const [message, setMessage] = useState("")
   const [status, setStatus] = useState<Status>("idle")
-  const [sentReactions, setSentReactions] = useState<Set<string>>(new Set())
-  const [sendingReaction, setSendingReaction] = useState<string | null>(null)
 
   // When the slip is selected (clicked, or flown-to after a love), drop the
   // cursor into the From field so the visitor can start writing immediately.
@@ -146,27 +134,6 @@ export function ContactCard({
     } catch {
       setStatus("error")
       posthog.capture("contact_error")
-    }
-  }
-
-  // Chip tap → sent immediately, signed with the From field if the visitor
-  // filled it in, anonymous otherwise. Each chip can fire once per visit.
-  async function sendReaction(reaction: (typeof REACTIONS)[number]) {
-    if (sendingReaction || sentReactions.has(reaction.id)) return
-    setSendingReaction(reaction.id)
-    posthog.capture("contact_reaction", { reaction: reaction.id })
-
-    try {
-      await postToForm(name.trim() || "anonymous visitor", reaction.label)
-      notifyActivity("reaction", {
-        reaction: reaction.label,
-        name: name.trim() || undefined,
-      })
-      setSentReactions((prev) => new Set(prev).add(reaction.id))
-    } catch {
-      posthog.capture("contact_error", { source: "reaction" })
-    } finally {
-      setSendingReaction(null)
     }
   }
 
@@ -233,36 +200,6 @@ export function ContactCard({
             value="1:1"
             className={cn("border-l", rule)}
           />
-        </div>
-
-        {/* ── Quick reactions: the one-tap path ───────────────────────── */}
-        <div className={cn("border-b px-3 py-2.5", rule)}>
-          <div className="flex flex-wrap gap-1.5">
-            {REACTIONS.map((reaction) => {
-              const sent = sentReactions.has(reaction.id)
-              const sending = sendingReaction === reaction.id
-              return (
-                <button
-                  key={reaction.id}
-                  type="button"
-                  onClick={() => sendReaction(reaction)}
-                  onPointerDown={stopDrag}
-                  disabled={sent || sending}
-                  className={cn(
-                    "border px-2.5 py-1 font-mono text-[11px] tracking-wide transition-all duration-150",
-                    sent
-                      ? "cursor-default text-[#18A0FB]"
-                      : sending
-                        ? "cursor-wait border-foreground/20 text-foreground/40"
-                        : "cursor-pointer border-foreground/20 text-foreground/65 hover:-translate-y-px hover:text-[#18A0FB] active:scale-95 dark:text-foreground/55"
-                  )}
-                  style={sent ? { borderColor: BLUE } : undefined}
-                >
-                  {sending ? "···" : sent ? `✓ ${reaction.label}` : reaction.label}
-                </button>
-              )
-            })}
-          </div>
         </div>
 
         {/* ── FROM field ──────────────────────────────────────────────── */}

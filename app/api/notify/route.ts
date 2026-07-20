@@ -45,16 +45,6 @@ const BUILDERS: Record<string, (data: Data) => BarkPayload | null> = {
     }
   },
 
-  reaction: (data) => {
-    const reaction = clean(data.reaction, 80)
-    if (!reaction) return null
-    const name = clean(data.name, 120) || "anonymous"
-    return {
-      title: `⚡ ${reaction}`,
-      body: `from ${name}`,
-    }
-  },
-
   link: (data) => {
     const href = clean(data.href, 300)
     if (!href) return null
@@ -129,11 +119,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false }, { status: 400 })
   }
 
-  // Every beacon carries the visitor's PostHog session id, printed in the
-  // body so the session can be looked up in PostHog.
+  // Every beacon carries the visitor's PostHog session id: printed in the
+  // body for lookup, and used as the Bark group so all pushes from one
+  // visitor session stack together in the notification center.
   const sessionId = clean(data.sessionId, 120)
   if (sessionId) {
     payload.body += `\nposthog session: ${sessionId}`
+    payload.group = sessionId
   }
 
   // Respond immediately; resolve the visitor's location and deliver the

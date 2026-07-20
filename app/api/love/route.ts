@@ -56,6 +56,9 @@ export async function POST(request: Request) {
       await sendBark({
         title: action === "unlove" ? "💔 Love removed" : "❤️ Portfolio loved",
         body: `${total} total${session ? `\nposthog session: ${session}` : ""}${geo ? `\n📍 ${geo}` : ""}`,
+        // Same Bark group as the session's other activity, so one visitor's
+        // pushes stack together.
+        group: session ?? undefined,
       })
     })
 

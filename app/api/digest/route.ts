@@ -94,7 +94,7 @@ export async function GET(request: Request) {
       safe(
         hogql(
           `SELECT event, count() FROM events WHERE ${YESTERDAY}
-           AND event IN ('$pageview','contact_submitted','contact_reaction',
+           AND event IN ('$pageview','contact_submitted',
                          'tour_started','tour_completed','link_clicked')
            GROUP BY event`
         ),
@@ -154,7 +154,7 @@ export async function GET(request: Request) {
   const lines = [
     `Visitors: ${uniqueVisitors} (${byEvent.$pageview ?? 0} pageviews)`,
     `Loves: ${lovesYesterday}${loveTotal !== null ? ` (${loveTotal} total)` : ""}`,
-    `Messages: ${byEvent.contact_submitted ?? 0} | Reactions: ${byEvent.contact_reaction ?? 0}`,
+    `Messages: ${byEvent.contact_submitted ?? 0}`,
     `Tours: ${byEvent.tour_started ?? 0} started, ${byEvent.tour_completed ?? 0} completed`,
     `Link clicks: ${byEvent.link_clicked ?? 0}`,
   ]

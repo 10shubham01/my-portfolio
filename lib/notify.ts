@@ -18,7 +18,6 @@ export function posthogSessionContext(): { sessionId?: string } {
 export type ActivityEvent =
   | "visit"
   | "message"
-  | "reaction"
   | "link"
   | "share"
   | "tour_started"
