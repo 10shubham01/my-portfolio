@@ -6,6 +6,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import type { CanvasItem } from "@/lib/canvas-config"
 import { copyItemDeeplink } from "@/lib/canvas-deeplink"
 import { getItemExternalUrl } from "@/lib/canvas-links"
+import { notifyActivity } from "@/lib/notify"
 import { cn } from "@/lib/utils"
 
 const MENU_WIDTH = 220
@@ -133,6 +134,11 @@ function CardContextMenuPanel({
                 label: "visit",
                 source: "card_context_menu",
                 item_id: item.id,
+              })
+              notifyActivity("link", {
+                href: externalUrl,
+                label: item.label,
+                source: "context-menu",
               })
               onClose()
             }}

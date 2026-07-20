@@ -9,6 +9,7 @@ import {
 } from "@/components/portfolio/card-chrome"
 import { useFrameResize } from "@/components/portfolio/use-frame-resize"
 import { PEERLIST_PROJECT_URL } from "@/lib/canvas-links"
+import { notifyActivity } from "@/lib/notify"
 
 export function PeerlistCard({
   interactive,
@@ -32,6 +33,11 @@ export function PeerlistCard({
         onClick={() => {
           setClicked(true)
           posthog.capture("link_clicked", {
+            href: PEERLIST_PROJECT_URL,
+            label: "peerlist project of the week",
+            source: "peerlist-card",
+          })
+          notifyActivity("link", {
             href: PEERLIST_PROJECT_URL,
             label: "peerlist project of the week",
             source: "peerlist-card",

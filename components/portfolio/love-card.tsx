@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import posthog from "posthog-js"
 import { cn } from "@/lib/utils"
+import { posthogSessionContext } from "@/lib/notify"
 import { useFrameResize } from "@/components/portfolio/use-frame-resize"
 
 export const LOVE_STORAGE_KEY = "portfolio-loved"
@@ -148,7 +149,8 @@ export function LoveCard({
       const res = await fetch("/api/love", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ action }),
+        // Session context lets the Bark push deep-link into the PostHog replay.
+        body: JSON.stringify({ action, ...posthogSessionContext() }),
       })
       const data = await res.json()
       if (typeof data?.count === "number") setCount(data.count)

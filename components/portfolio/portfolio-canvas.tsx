@@ -45,6 +45,7 @@ import { getCanvasItemMeta, DEFAULT_META } from "@/lib/canvas-meta"
 import { getSpideyHomePosition } from "@/lib/spidey-position"
 import { KONAMI_SEQUENCE } from "@/lib/portfolio-shortcuts"
 import { LOVE_STORAGE_KEY } from "@/components/portfolio/love-card"
+import { notifyActivity } from "@/lib/notify"
 import type { SpideyMood } from "@/components/portfolio/spidey-context"
 
 const GRID_SPACING = 20
@@ -124,6 +125,17 @@ export function PortfolioCanvas() {
     positionsRef.current = positions
     sizesRef.current = sizes
   }, [positions, sizes])
+
+  // One "new visitor" ping per tab session.
+  useEffect(() => {
+    try {
+      if (window.sessionStorage.getItem("portfolio-visit-notified")) return
+      window.sessionStorage.setItem("portfolio-visit-notified", "1")
+    } catch {
+      // Private mode without sessionStorage still gets one ping per load.
+    }
+    notifyActivity("visit", { referrer: document.referrer || undefined })
+  }, [])
 
   // Mirror the love card's state so the dock's heart stays filled once the
   // visitor has loved the portfolio.
@@ -332,6 +344,7 @@ export function PortfolioCanvas() {
     spideyApiRef.current?.travelTo({ x: centerX, y: centerY }, { endMood: "excited" })
     spideyApiRef.current?.say("you found the code! 🕷️", 4000)
     posthog.capture("konami_code_triggered")
+    notifyActivity("konami")
   }, [])
 
   const focusItem = useCallback(
@@ -466,6 +479,7 @@ export function PortfolioCanvas() {
     setTourStep(0)
     goToTourStep(0)
     posthog.capture("tour_started")
+    notifyActivity("tour_started")
   }, [goToTourStep])
 
   const exitTour = useCallback(() => {
@@ -477,6 +491,7 @@ export function PortfolioCanvas() {
     if (tourStep >= tourSteps.length - 1) {
       exitTour()
       posthog.capture("tour_completed")
+      notifyActivity("tour_completed")
       return
     }
     goToTourStep(tourStep + 1)

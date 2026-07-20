@@ -1,5 +1,6 @@
 import { Redis } from "@upstash/redis"
-import { NextResponse } from "next/server"
+import { NextResponse, after } from "next/server"
+import { sendBark, resolveGeo } from "@/lib/bark"
 
 // Global "love the portfolio" counter, stored in Upstash Redis. Server-only —
 // the tokens live in KV_REST_API_* env vars and are never sent to the client;
@@ -28,9 +29,12 @@ export async function GET() {
 
 // POST { action: "love" | "unlove" } → increment / decrement, clamped at 0.
 export async function POST(request: Request) {
-  const { action } = await request
+  const { action, sessionId } = (await request
     .json()
-    .catch(() => ({ action: "love" as const }))
+    .catch(() => ({ action: "love" as const }))) as {
+    action?: "love" | "unlove"
+    sessionId?: unknown
+  }
 
   try {
     let count =
@@ -41,6 +45,19 @@ export async function POST(request: Request) {
       await redis.set(KEY, 0)
       count = 0
     }
+
+    // Push the moment to my phone — after the response, never blocking it.
+    // The PostHog session id in the body links the push to the session.
+    const total = count
+    const session =
+      typeof sessionId === "string" ? sessionId.slice(0, 120) : null
+    after(async () => {
+      const geo = await resolveGeo(request.headers)
+      await sendBark({
+        title: action === "unlove" ? "💔 Love removed" : "❤️ Portfolio loved",
+        body: `${total} total${session ? `\nposthog session: ${session}` : ""}${geo ? `\n📍 ${geo}` : ""}`,
+      })
+    })
 
     return NextResponse.json({ count }, { headers: noStore })
   } catch {

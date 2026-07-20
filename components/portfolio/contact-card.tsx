@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import posthog from "posthog-js"
 import { cn } from "@/lib/utils"
+import { notifyActivity } from "@/lib/notify"
 import { useFrameResize } from "@/components/portfolio/use-frame-resize"
 
 // Google Form submission. The form has two fields; their entry ids were read
@@ -138,6 +139,7 @@ export function ContactCard({
 
     try {
       await postToForm(name, message)
+      notifyActivity("message", { name, message })
       setStatus("sent")
       setName("")
       setMessage("")
@@ -156,6 +158,10 @@ export function ContactCard({
 
     try {
       await postToForm(name.trim() || "anonymous visitor", reaction.label)
+      notifyActivity("reaction", {
+        reaction: reaction.label,
+        name: name.trim() || undefined,
+      })
       setSentReactions((prev) => new Set(prev).add(reaction.id))
     } catch {
       posthog.capture("contact_error", { source: "reaction" })

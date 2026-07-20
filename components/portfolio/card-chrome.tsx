@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { MousePointerClick } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { notifyActivity } from "@/lib/notify"
 import posthog from "posthog-js"
 
 export const cardTitleClass =
@@ -115,6 +116,11 @@ export function VisitLink({
             label: label.toLowerCase(),
             source: trackingSource ?? "unknown",
             ...trackingProps,
+          })
+          notifyActivity("link", {
+            href,
+            label: trackingSource ?? label.toLowerCase(),
+            source: trackingSource,
           })
           onClick?.()
         }}

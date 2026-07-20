@@ -4,6 +4,7 @@ import Image from "next/image"
 import posthog from "posthog-js"
 import { useFrameResize } from "@/components/portfolio/use-frame-resize"
 import { RESUME_URL } from "@/lib/canvas-links"
+import { notifyActivity } from "@/lib/notify"
 
 export function ResumeCard({
   interactive,
@@ -26,13 +27,18 @@ export function ResumeCard({
         aria-label="Download resume"
         title="Download resume"
         className="inline-flex"
-        onClick={() =>
+        onClick={() => {
           posthog.capture("link_clicked", {
             href: RESUME_URL,
             label: "download resume",
             source: "resume-icon",
           })
-        }
+          notifyActivity("link", {
+            href: RESUME_URL,
+            label: "resume downloaded",
+            source: "resume-icon",
+          })
+        }}
       >
         <Image
           src="/assets/images/resume-icon.png"

@@ -1,4 +1,5 @@
 import { CANVAS_ITEMS } from "@/lib/canvas-config"
+import { notifyActivity } from "@/lib/notify"
 
 const PARAM = "to"
 const VIEW_PARAM = "view"
@@ -43,6 +44,7 @@ export function buildViewDeeplink(view: CanvasView, origin?: string): string {
 export async function copyViewDeeplink(view: CanvasView): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(buildViewDeeplink(view))
+    notifyActivity("share", { target: "view" })
     return true
   } catch {
     return false
@@ -94,6 +96,7 @@ export function setItemDeeplink(id: string | null, replace = true) {
 export async function copyItemDeeplink(id: string): Promise<boolean> {
   try {
     await navigator.clipboard.writeText(buildItemDeeplink(id))
+    notifyActivity("share", { target: id })
     return true
   } catch {
     return false
