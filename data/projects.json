@@ -1,6 +1,22 @@
 {
   "projects": [
     {
+      "id": "slashslash",
+      "name": "slash slash",
+      "tagline": "Text snippets anywhere, triggered by //",
+      "description": "Save text templates once and insert them in any text field on the web by typing //. Minimal, fast, and private — everything stays on your device.",
+      "highlights": [
+        "Type // in any text box — Gmail, LinkedIn, Notion, GitHub, forms — to insert saved snippets",
+        "Smart variables: dates, clipboard, page URL/title, UUIDs, cursor placement, and fill-in fields",
+        "Folders, search, drag-to-reorder, themes, and JSON import/export — with zero server communication"
+      ],
+      "stack": ["Chrome Extension", "JavaScript", "Manifest V3"],
+      "href": "https://chromewebstore.google.com/detail/slash-slash-%E2%80%94-text-snippe/khageenbiegmhkklkddemidkbabmeing",
+      "media": "/assets/gifs/slashslash.gif",
+      "mediaAlt": "slash slash — text snippets demo",
+      "mediaAspect": "640/400"
+    },
+    {
       "id": "moneyunwrapped",
       "name": "Money Unwrapped",
       "tagline": "A cinematic recap of your payments",

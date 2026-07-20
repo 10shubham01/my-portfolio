@@ -213,6 +213,16 @@
       "scatter": false
     },
     {
+      "id": "project-slashslash",
+      "component": "project",
+      "type": "project",
+      "label": "slash slash",
+      "projectId": "slashslash",
+      "position": { "x": -3500, "y": 1128 },
+      "size": { "width": 400, "height": 380 },
+      "scatter": false
+    },
+    {
       "id": "project-moneyunwrapped",
       "component": "project",
       "type": "project",
