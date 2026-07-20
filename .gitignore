@@ -36,3 +36,6 @@ pnpm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 .env.local
+
+# local AI story log — never commit
+asterix_story_log.json
