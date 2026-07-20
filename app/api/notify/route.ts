@@ -65,6 +65,23 @@ const BUILDERS: Record<string, (data: Data) => BarkPayload | null> = {
     }
   },
 
+  card_focused: (data) => {
+    const label = clean(data.label, 80)
+    if (!label) return null
+    const count = clean(data.count, 10)
+    const trail = clean(data.trail, 400)
+    return {
+      title: `🗂️ Card viewed: ${label}`,
+      body:
+        [
+          count ? `${count} card${count === "1" ? "" : "s"} this session` : null,
+          trail ? `trail: ${trail}` : null,
+        ]
+          .filter(Boolean)
+          .join("\n") || label,
+    }
+  },
+
   tour_started: () => ({
     title: "🎬 Tour started",
     body: "someone is taking the walkthrough",

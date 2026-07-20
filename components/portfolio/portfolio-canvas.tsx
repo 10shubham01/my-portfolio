@@ -45,7 +45,7 @@ import { getCanvasItemMeta, DEFAULT_META } from "@/lib/canvas-meta"
 import { getSpideyHomePosition } from "@/lib/spidey-position"
 import { KONAMI_SEQUENCE } from "@/lib/portfolio-shortcuts"
 import { LOVE_STORAGE_KEY } from "@/components/portfolio/love-card"
-import { notifyActivity } from "@/lib/notify"
+import { notifyActivity, notifyCardFocus } from "@/lib/notify"
 import type { SpideyMood } from "@/components/portfolio/spidey-context"
 
 const GRID_SPACING = 20
@@ -390,6 +390,7 @@ export function PortfolioCanvas() {
         item_type: item.type,
         item_label: item.label,
       })
+      notifyCardFocus(item.id, item.label)
       if (item.type === "project") {
         posthog.capture("project_card_viewed", {
           item_id: item.id,
@@ -528,6 +529,8 @@ export function PortfolioCanvas() {
 
   const activateItem = useCallback((id: string) => {
     setSelectedId(id)
+    const item = CANVAS_ITEMS.find((entry) => entry.id === id)
+    if (item) notifyCardFocus(item.id, item.label)
   }, [])
 
   const getItemRect = useCallback((id: string): Rect | null => {

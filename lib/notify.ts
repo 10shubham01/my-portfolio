@@ -23,6 +23,39 @@ export type ActivityEvent =
   | "tour_started"
   | "tour_completed"
   | "konami"
+  | "card_focused"
+
+// Distinct cards this visitor has focused, in navigation order. Each first
+// focus of a card sends one push carrying the running count and full trail,
+// so a single notification answers "how many cards, and which ones". Repeat
+// focuses of an already-seen card stay silent.
+const CARD_TRAIL_KEY = "portfolio:card-trail"
+
+export function notifyCardFocus(id: string, label: string) {
+  if (typeof window === "undefined") return
+
+  try {
+    let trail: { id: string; label: string }[] = []
+    try {
+      const stored = JSON.parse(sessionStorage.getItem(CARD_TRAIL_KEY) ?? "[]")
+      if (Array.isArray(stored)) trail = stored
+    } catch {
+      // Corrupt storage → start a fresh trail.
+    }
+
+    if (trail.some((entry) => entry.id === id)) return
+    trail.push({ id, label })
+    sessionStorage.setItem(CARD_TRAIL_KEY, JSON.stringify(trail))
+
+    notifyActivity("card_focused", {
+      label,
+      count: String(trail.length),
+      trail: trail.map((entry) => entry.label).join(" → "),
+    })
+  } catch {
+    // Never let telemetry break the page.
+  }
+}
 
 export function notifyActivity(
   event: ActivityEvent,
