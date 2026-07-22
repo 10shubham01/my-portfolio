@@ -218,6 +218,7 @@ export function CanvasFrame({
               ...outlineBase,
               outlineStyle: "dashed",
               outlineColor: "#18A0FB",
+              zIndex: 10,
             }}
           />
         )}

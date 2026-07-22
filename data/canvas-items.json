@@ -282,6 +282,19 @@
       "scatter": false
     },
     {
+      "id": "hireme",
+      "component": "media",
+      "type": "video",
+      "label": "hireme.mp4",
+      "position": { "x": 1200, "y": 1260 },
+      "size": { "width": 300, "height": 275 },
+      "scatter": false,
+      "asset": "videos/hireme.mp4",
+      "placeholderColor": "#000",
+      "muted": false,
+      "padding": 12
+    },
+    {
       "id": "baaghi4",
       "component": "media",
       "type": "image",

@@ -1,8 +1,10 @@
 "use client"
 
 import Image from "next/image"
+import posthog from "posthog-js"
 import { useEffect, useRef, useState } from "react"
 import type { CanvasItem } from "@/lib/canvas-config"
+import { notifyVideoPlay } from "@/lib/notify"
 
 export function MediaItem({
   item,
@@ -16,6 +18,7 @@ export function MediaItem({
   const [loaded, setLoaded] = useState(false)
   const [playing, setPlaying] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const playStartedAt = useRef<number | null>(null)
 
   const isVideo = item.type === "video"
   const isGif = item.type === "image" && item.src?.endsWith(".gif")
@@ -89,7 +92,8 @@ export function MediaItem({
 
     if (onResize && target.naturalWidth && target.naturalHeight) {
       const ratio = target.naturalWidth / target.naturalHeight
-      onResize(item.width, item.width / ratio)
+      const pad = (item.padding ?? 0) * 2
+      onResize(item.width, (item.width - pad) / ratio + pad)
     }
   }
 
@@ -110,7 +114,8 @@ export function MediaItem({
 
     if (onResize && video.videoWidth && video.videoHeight) {
       const ratio = video.videoWidth / video.videoHeight
-      onResize(item.width, item.width / ratio)
+      const pad = (item.padding ?? 0) * 2
+      onResize(item.width, (item.width - pad) / ratio + pad)
     }
   }
 
@@ -119,11 +124,20 @@ export function MediaItem({
       style={{
         width: "100%",
         height: "100%",
+        // Inset the media from the frame edge so hover/selection chrome
+        // (dashed outline, handles) stays visible around it.
+        padding: item.padding,
+        pointerEvents: "none",
+      }}
+    >
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
         position: "relative",
         overflow: "hidden",
         backgroundColor: item.placeholderColor || "transparent",
         transition: "all 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
-        pointerEvents: "none",
       }}
     >
       {showImagePreview && (
@@ -172,10 +186,31 @@ export function MediaItem({
             ref={videoRef}
             src={item.src}
             loop
-            muted
+            muted={item.muted ?? true}
             playsInline
             preload="auto"
-            onPlay={() => setPlaying(true)}
+            onPlay={(event) => {
+              setPlaying(true)
+              playStartedAt.current = performance.now()
+              posthog.capture("video_played", {
+                video_id: item.id,
+                label: item.label,
+                muted: event.currentTarget.muted,
+                resumed: event.currentTarget.currentTime > 0,
+              })
+              notifyVideoPlay(item.id, item.label)
+            }}
+            onPause={(event) => {
+              if (playStartedAt.current === null) return
+              const seconds = (performance.now() - playStartedAt.current) / 1000
+              playStartedAt.current = null
+              posthog.capture("video_paused", {
+                video_id: item.id,
+                label: item.label,
+                muted: event.currentTarget.muted,
+                seconds_watched: Math.round(seconds * 10) / 10,
+              })
+            }}
             onLoadedMetadata={(event) => handleVideoMetadata(event.currentTarget)}
             style={{
               width: "100%",
@@ -215,6 +250,7 @@ export function MediaItem({
           }}
         />
       )}
+    </div>
     </div>
   )
 }

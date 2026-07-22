@@ -82,6 +82,15 @@ const BUILDERS: Record<string, (data: Data) => BarkPayload | null> = {
     }
   },
 
+  video_played: (data) => {
+    const label = clean(data.label, 80)
+    if (!label) return null
+    return {
+      title: `▶️ Video played: ${label}`,
+      body: label,
+    }
+  },
+
   tour_started: () => ({
     title: "🎬 Tour started",
     body: "someone is taking the walkthrough",

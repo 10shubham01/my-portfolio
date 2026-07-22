@@ -54,6 +54,8 @@ export interface CanvasItemConfig {
   mediaClassName?: string
   placeholderColor?: string
   thumbnail?: string
+  muted?: boolean
+  padding?: number
   workId?: string
   projectId?: string
   char?: string

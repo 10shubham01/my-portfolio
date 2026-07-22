@@ -24,6 +24,7 @@ export type ActivityEvent =
   | "tour_completed"
   | "konami"
   | "card_focused"
+  | "video_played"
 
 // Distinct cards this visitor has focused, in navigation order. Each first
 // focus of a card sends one push carrying the running count and full trail,
@@ -57,11 +58,44 @@ export function notifyCardFocus(id: string, label: string) {
   }
 }
 
+// Videos this visitor has played. First play of each video sends one push;
+// replays after re-focusing the card stay silent.
+const VIDEOS_PLAYED_KEY = "portfolio:videos-played"
+
+export function notifyVideoPlay(id: string, label: string) {
+  if (typeof window === "undefined") return
+
+  try {
+    let played: string[] = []
+    try {
+      const stored = JSON.parse(sessionStorage.getItem(VIDEOS_PLAYED_KEY) ?? "[]")
+      if (Array.isArray(stored)) played = stored
+    } catch {
+      // Corrupt storage → treat as nothing played yet.
+    }
+
+    if (played.includes(id)) return
+    played.push(id)
+    sessionStorage.setItem(VIDEOS_PLAYED_KEY, JSON.stringify(played))
+
+    notifyActivity("video_played", { label })
+  } catch {
+    // Never let telemetry break the page.
+  }
+}
+
+// Local development shouldn't ping my phone.
+function isLocalhost(): boolean {
+  const host = window.location.hostname
+  return host === "localhost" || host === "127.0.0.1" || host === "[::1]"
+}
+
 export function notifyActivity(
   event: ActivityEvent,
   data: Record<string, string | undefined> = {}
 ) {
   if (typeof window === "undefined") return
+  if (isLocalhost()) return
 
   try {
     const payload = JSON.stringify({
