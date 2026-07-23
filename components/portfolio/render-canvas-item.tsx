@@ -19,6 +19,7 @@ import { WebcamElement } from "@/components/portfolio/webcam-element"
 import { TaglineChar } from "@/components/portfolio/tagline-char"
 import { ResumeCard } from "@/components/portfolio/resume-card"
 import { LoveCard } from "@/components/portfolio/love-card"
+import { McpCard } from "@/components/portfolio/mcp-card"
 
 export function RenderCanvasItem({
   item,
@@ -78,6 +79,8 @@ export function RenderCanvasItem({
       return <ResumeCard interactive={active} onResize={onResize} />
     case "love":
       return <LoveCard interactive={active} onResize={onResize} />
+    case "mcp":
+      return <McpCard interactive={active} onResize={onResize} />
     case "tagline-char":
       return <TaglineChar char={item.char ?? frameItem.char ?? ""} />
     default:

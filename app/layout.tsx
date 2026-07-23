@@ -5,6 +5,7 @@ import localFont from "next/font/local"
 import "./globals.css"
 import { cn } from "@/lib/utils"
 import { SITE } from "@/lib/canvas-data"
+import { getSkillGroups } from "@/lib/skills"
 
 const geist = Geist({
   subsets: ["latin"],
@@ -102,30 +103,50 @@ export const metadata: Metadata = {
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "Person",
-  "@id": "https://shubhamgupta.dev/#person",
-  name: "Shubham Gupta",
-  givenName: "Shubham",
-  familyName: "Gupta",
-  url: "https://shubhamgupta.dev",
-  image: `${SITE.url}/og`,
-  description:
-    "Shubham Gupta — senior software engineer at WebMD, based in Mumbai, India. I build fast, thoughtful web experiences with React, Next.js, Vue, and TypeScript. Previously at novio.",
-  jobTitle: "Senior Software Engineer",
-  worksFor: {
-    "@type": "Organization",
-    name: "WebMD",
-  },
-  homeLocation: {
-    "@type": "Place",
-    name: "Mumbai, India",
-  },
-  sameAs: [
-    "https://github.com/10shubham01",
-    "https://www.linkedin.com/in/10shubham01/",
-    "https://peerlist.io/10shubham01",
-    "https://www.instagram.com/m0re0fme/",
-    "https://x.com/10shubham01",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://shubhamgupta.dev/#person",
+      name: "Shubham Gupta",
+      givenName: "Shubham",
+      familyName: "Gupta",
+      url: "https://shubhamgupta.dev",
+      image: `${SITE.url}/og`,
+      description:
+        "Shubham Gupta — senior software engineer at WebMD, based in Mumbai, India. I build fast, thoughtful web experiences with React, Next.js, Vue, and TypeScript. Previously at novio.",
+      jobTitle: "Senior Software Engineer",
+      worksFor: {
+        "@type": "Organization",
+        name: "WebMD",
+      },
+      homeLocation: {
+        "@type": "Place",
+        name: "Mumbai, India",
+      },
+      knowsAbout: getSkillGroups().flatMap((group) =>
+        group.skills.map((skill) => skill.name)
+      ),
+      sameAs: [
+        "https://github.com/10shubham01",
+        "https://www.linkedin.com/in/10shubham01/",
+        "https://peerlist.io/10shubham01",
+        "https://www.instagram.com/m0re0fme/",
+        "https://x.com/10shubham01",
+      ],
+    },
+    // The portfolio's MCP endpoint as a first-class entity, so crawlers that
+    // read structured data learn there is a machine-queryable API for this
+    // person — not just rendered HTML.
+    {
+      "@type": "WebAPI",
+      "@id": `${SITE.url}/#mcp`,
+      name: "Shubham Gupta portfolio MCP server",
+      description:
+        "Model Context Protocol server for this portfolio. AI agents can connect over streamable HTTP to query Shubham Gupta's experience, projects, skills, awards, and principles, or send him a message.",
+      url: `${SITE.url}/api/mcp`,
+      documentation: `${SITE.url}/llms.txt`,
+      provider: { "@id": "https://shubhamgupta.dev/#person" },
+    },
   ],
 }
 

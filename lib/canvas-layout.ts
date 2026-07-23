@@ -13,6 +13,7 @@ export const ANCHORED_ITEM_IDS = [
   "github",
   "socials",
   "contact",
+  "mcp",
 ] as const
 
 function getItem(id: string) {
@@ -137,6 +138,27 @@ export function getContactPosition(
   }
 }
 
+export function getMcpPosition(
+  positions: Record<string, Position>,
+  sizes: Record<string, Size>
+): Position {
+  const contact = getItem("contact")
+  const mcp = getItem("mcp")
+  if (!contact || !mcp) {
+    return positions.mcp ?? { x: mcp?.x ?? 0, y: mcp?.y ?? 0 }
+  }
+
+  const contactPos = positions.contact ?? { x: contact.x, y: contact.y }
+  const contactSize = sizes.contact ?? { w: contact.width, h: contact.height }
+
+  // Contact itself is anchored to github's right at runtime, so the MCP card
+  // chains off contact's resolved position rather than its static config.
+  return {
+    x: contactPos.x + contactSize.w + FRAME_GAP,
+    y: contactPos.y,
+  }
+}
+
 export function withAnchoredLayout(
   positions: Record<string, Position>,
   sizes: Record<string, Size>,
@@ -167,8 +189,13 @@ export function withAnchoredLayout(
     socials: getSocialsPosition(withGitHub, sizes),
   }
 
-  return {
+  const withContact = {
     ...withSocials,
     contact: getContactPosition(withSocials, sizes),
+  }
+
+  return {
+    ...withContact,
+    mcp: getMcpPosition(withContact, sizes),
   }
 }

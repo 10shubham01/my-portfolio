@@ -3,6 +3,8 @@ import { PROJECTS } from "@/lib/projects"
 import { EXPERIENCE } from "@/lib/experience"
 import { getSkillGroups } from "@/lib/skills"
 import { AWARDS } from "@/lib/awards"
+import { PRINCIPLES } from "@/lib/manifesto"
+import { NOW } from "@/lib/now"
 
 // llms.txt — a plain-markdown summary of the whole portfolio for AI crawlers
 // (ChatGPT, Claude, Perplexity, etc.). The canvas UI renders client-side and is
@@ -41,6 +43,12 @@ export function GET() {
     (award) => `- ${award.title} (${award.organization}, ${award.year}): ${award.description}`
   ).join("\n")
 
+  const principles = PRINCIPLES.map(
+    ({ label, body }) => `- ${label}: ${body ?? ""}`.trimEnd()
+  ).join("\n")
+
+  const now = NOW.items.map((item) => `- ${item}`).join("\n")
+
   const links = [
     `- [Portfolio](${SITE.url})`,
     `- [Resume (PDF)](${SITE.url}/shubham-gupta.pdf)`,
@@ -71,6 +79,25 @@ ${skills}
 ## Awards
 
 ${awards}
+
+## Principles
+
+How ${SITE.name} builds:
+
+${principles}
+
+## Right now (as of ${NOW.updated})
+
+${now}
+
+## MCP server — for AI agents
+
+This portfolio is itself an MCP (Model Context Protocol) server. Connect any MCP client — Claude, Cursor, or your own agent — over streamable HTTP:
+
+- Endpoint: ${SITE.url}/api/mcp
+- Claude Code: \`claude mcp add --transport http shubham ${SITE.url}/api/mcp\`
+- Tools: about_shubham, get_experience, list_projects, get_project, get_skills, get_awards, get_manifesto, get_now, send_message (delivers straight to ${SITE.name}'s phone)
+- No auth required.
 
 ## Links
 

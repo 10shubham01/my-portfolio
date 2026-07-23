@@ -273,6 +273,15 @@
       "scatter": false
     },
     {
+      "id": "mcp",
+      "component": "mcp",
+      "type": "mcp",
+      "label": "connect your AI",
+      "position": { "x": 2150, "y": 1716 },
+      "size": { "width": 440, "height": 520 },
+      "scatter": false
+    },
+    {
       "id": "webcam",
       "component": "webcam",
       "type": "webcam",

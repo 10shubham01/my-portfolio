@@ -1,0 +1,12 @@
+{
+  "name": "shubham-gupta-portfolio",
+  "description": "MCP server for Shubham Gupta's portfolio — query his experience, projects, skills, awards, and principles, or send him a message.",
+  "endpoint": "https://shubhamgupta.dev/api/mcp",
+  "transport": "streamable-http",
+  "authentication": "none",
+  "documentation": "https://shubhamgupta.dev/llms.txt",
+  "provider": {
+    "name": "Shubham Gupta",
+    "url": "https://shubhamgupta.dev"
+  }
+}

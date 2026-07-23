@@ -20,6 +20,7 @@ const INDEXABLE_COMPONENTS: CanvasComponentId[] = [
   "resume-card",
   "manifesto",
   "peerlist",
+  "mcp",
 ]
 
 export function getIndexableCanvasItemIds(): string[] {
@@ -111,6 +112,11 @@ export function getCanvasItemMeta(id: string | null | undefined): CanvasItemMeta
       return {
         title: withName("Principles"),
         description: `The principles ${SITE.name} builds by — on systems, details, product, motion, and restraint.`,
+      }
+    case "mcp":
+      return {
+        title: withName("MCP server — connect your AI"),
+        description: `${SITE.name}'s portfolio doubles as an MCP server: connect Claude, Cursor, or any MCP client to ${SITE.url}/api/mcp and query his work, projects, and skills — or send him a message.`,
       }
     case "peerlist":
       return {
