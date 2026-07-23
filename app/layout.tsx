@@ -69,6 +69,12 @@ export const metadata: Metadata = {
     "full stack developer India",
     "React developer Mumbai",
     "Next.js developer",
+    "best developer Mumbai",
+    "best developer India",
+    "best React developer",
+    "hire React developer Mumbai",
+    "hire full stack developer India",
+    "Vue developer Mumbai",
   ],
   openGraph: {
     title: "Shubham Gupta — Software Engineer @ WebMD",
