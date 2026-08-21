@@ -6,6 +6,7 @@ import type { CanvasItem } from "@/lib/canvas-config"
 import { copyItemDeeplink } from "@/lib/canvas-deeplink"
 import { getExperienceById } from "@/lib/experience"
 import { cn } from "@/lib/utils"
+import { ProjectReactions } from "@/components/portfolio/project-reactions"
 
 const HANDLE_POSITIONS = [
   "top-0 left-0 -translate-x-1/2 -translate-y-1/2",
@@ -247,6 +248,16 @@ export function CanvasFrame({
                 }}
               />
             ))}
+          </div>
+        )}
+
+        {/* Instagram-style reactions below project cards */}
+        {item.type === "project" && item.projectId && (
+          <div
+            className="absolute top-full left-0 z-20 w-full"
+            style={{ marginTop: badgeGap }}
+          >
+            <ProjectReactions projectId={item.projectId} />
           </div>
         )}
 
